@@ -22,7 +22,7 @@ const ld = {
 <Base title={guide.title} description={guide.description} image={img(guide.image)} nav="guides" jsonLd={ld}>
   <article>
     <div class="wrap" style="max-width:880px;padding-top:24px;display:flex;flex-direction:column;gap:14px">
-      <nav class="crumbs" aria-label="פירורי לחם" style="padding:0"><a href="/">דף הבית</a> › <a href="/guides/">מדריכים</a> › {guide.title}</nav>
+      <nav class="crumbs" aria-label="פירורי לחם" style="padding:0"><a href="/">דף הבית</a> › <a href="/guides/">מאמרים</a> › {guide.title}</nav>
       <span class="pill pill-soft" style="align-self:flex-start">{guide.tag}</span>
       <h1 style="font-size:clamp(32px,5vw,46px);font-weight:800">{guide.title}</h1>
       <p style="font-size:20px;line-height:1.6;color:#4B5563">{guide.description}</p>
@@ -37,7 +37,7 @@ const ld = {
 
     <div class="wrap a-layout">
       <aside class="toc" aria-label="תוכן עניינים">
-        <strong>במדריך הזה</strong>
+        <strong>במאמר הזה</strong>
         {guide.sections.map((s) => <a href={`#${s.id}`} data-toc={s.id}>{s.title}</a>)}
       </aside>
       <div class="prose">

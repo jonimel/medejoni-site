@@ -24,7 +24,7 @@ const navItems = [
   { key: 'destinations', href: '/destinations/', label: 'יעדים' },
   { key: 'tours', href: '/tours/', label: 'טיולים' },
   { key: 'services', href: '/services/', label: 'הסעות וטיסות' },
-  { key: 'guides', href: '/guides/', label: 'מדריכים' },
+  { key: 'guides', href: '/guides/', label: 'מאמרים' },
   { key: 'about', href: '/about/', label: 'מי אני' },
 ];
 const orgLd = {
@@ -81,8 +81,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
       <button class="menu-btn" type="button" aria-label="תפריט" aria-expanded="false" aria-controls="mobile-nav" data-menu-btn><Icon name="menu" size={26} /></button>
     </div>
     <nav id="mobile-nav" class="mobile-nav" aria-label="תפריט נייד">
-      {navItems.map((n) => <a href={n.href}>{n.label}</a>)}
-      <a href={wa} target="_blank" rel="noopener">וואטסאפ ליונתן</a>
+      {[...navItems.filter((n) => n.key === 'about'), ...navItems.filter((n) => n.key !== 'about')].map((n) => <a href={n.href}>{n.label}</a>)}
     </nav>
     <div class="flag flag-thin" aria-hidden="true"><span></span><span></span><span></span></div>
   </header>
@@ -98,7 +97,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
           <a href="/tours/" style="color: var(--yellow)">לכל הטיולים ←</a>
         </div>
         <div class="col">
-          <strong>מדריכים</strong>
+          <strong>מאמרים</strong>
           {guides.map((g) => <a href={`/guides/${g.slug}/`}>{g.title}</a>)}
         </div>
         <div class="col">

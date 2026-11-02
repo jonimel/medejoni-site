@@ -34,7 +34,7 @@ const others = destinations.filter((d) => !d.comingSoon && d.slug !== dest.slug)
       <a href="#tours">טיולים</a>
       {dest.highlights && <a href="#highlights">מה רואים</a>}
       {dest.bestTime && <a href="#when">מתי לטוס</a>}
-      {related.length > 0 && <a href="#guides">מדריכים</a>}
+      {related.length > 0 && <a href="#guides">מאמרים</a>}
     </div>
   </nav>
 
@@ -76,7 +76,7 @@ const others = destinations.filter((d) => !d.comingSoon && d.slug !== dest.slug)
   {related.length > 0 && (
     <section id="guides" style="background:var(--sky)">
       <div class="wrap section">
-        <h2 class="section-title">מדריכים על {dest.name}</h2>
+        <h2 class="section-title">מאמרים על {dest.name}</h2>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px">
           {related.map((g) => (
             <a href={`/guides/${g.slug}/`} class="card" style="display:flex;gap:16px;align-items:center;background:#fff;border-radius:16px;padding:12px;text-decoration:none;color:inherit">
