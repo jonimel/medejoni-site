@@ -246,3 +246,11 @@ button { font: inherit; }
   background: linear-gradient(90deg, #D9A400 0%, #D9A400 30%, #1A4A9E 50%, #1A4A9E 68%, #B8202F 88%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
+
+/* Home tours list: on phones, a sideways swipe row instead of a very long column. */
+@media (max-width: 700px) {
+  .tour-swipe { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 24px; scrollbar-width: none; margin-inline: -24px; padding: 6px 24px 14px; }
+  .tour-swipe::-webkit-scrollbar { display: none; }
+  .tour-swipe > .tour-card { flex: 0 0 80%; scroll-snap-align: start; }
+  .tour-swipe > .tour-card[hidden] { display: none; }
+}

@@ -110,7 +110,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
     <div class="chips" role="group" aria-label="סינון לפי סוג טיול">
       {cats.map(([k, label], i) => <button type="button" class="chip" aria-pressed={i === 0 ? 'true' : 'false'} data-cat={k}>{label}</button>)}
     </div>
-    <div class="tour-grid">
+    <div class="tour-grid tour-swipe">
       {tours.map((t) => <TourCard tour={t} />)}
     </div>
     <div style="text-align:center;margin-top:36px"><a href="/tours/" class="btn btn-outline">לכל הטיולים</a></div>
@@ -245,6 +245,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
     chips.forEach((c) => c.addEventListener('click', () => {
       chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
       cards.forEach((card) => { card.hidden = c.dataset.cat !== 'all' && card.dataset.kind !== c.dataset.cat; });
+      root.querySelector('.tour-swipe')?.scrollTo({ left: 0 });
     }));
   });
 </script>
