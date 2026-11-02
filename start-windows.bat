@@ -13,5 +13,8 @@ if not exist node_modules (
   call npm install
 )
 start "" http://localhost:4321
-call npm run dev
+echo.
+echo To open on your phone (same Wi-Fi), type the "Network" address shown below into the phone browser.
+echo.
+call npm run dev -- --host
 pause
