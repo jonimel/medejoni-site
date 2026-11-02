@@ -64,6 +64,19 @@ const ld = [
       </aside>
       <div class="prose">
         {Content && <div class="md"><Content /></div>}
+        {guide.tours && guide.tours.length > 0 && (
+          <section>
+            <h2>הטיולים מהמאמר</h2>
+            <div class="embeds">
+              {guide.tours.map(getTour).filter(Boolean).map((t) => (
+                <a href={`/tours/${t!.slug}/`} class="card">
+                  <img src={img(t!.images[0])} alt={t!.title} loading="lazy" />
+                  <div><strong>{t!.title}</strong><span>{hasTiers(t!) ? 'החל מ־' : ''}{formatCOP(fromPrice(t!))} לאדם</span><span style="color:var(--blue);font-weight:600">להזמנה ←</span></div>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
         {guide.sections.map((s) => (
           <section id={s.id} data-sec>
             <h2>{s.title}</h2>

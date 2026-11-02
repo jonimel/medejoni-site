@@ -24,7 +24,7 @@ const org = { '@id': new URL('/#org', Astro.site).toString() };
 const prices = tour.tiers.map((t) => t.price);
 const offerBase = { priceCurrency: 'COP', availability: 'https://schema.org/InStock', url: pageUrl, seller: org };
 // Guides that mention this tour (only finished ones), for internal links.
-const relatedGuides = guides.filter((g) => !isDraft(g) && g.sections.some((s) => s.tours?.includes(tour.slug)));
+const relatedGuides = guides.filter((g) => !isDraft(g) && (g.tours?.includes(tour.slug) || g.sections.some((s) => s.tours?.includes(tour.slug))));
 const ld = [
   {
     '@context': 'https://schema.org',
