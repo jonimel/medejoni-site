@@ -11,7 +11,7 @@ interface Props {
   description: string;
   image?: string;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
-  nav?: 'tours' | 'destinations' | 'services' | 'guides' | 'about';
+  nav?: 'home' | 'tours' | 'destinations' | 'services' | 'guides' | 'about';
   waText?: string;
   noindex?: boolean;
 }
@@ -21,6 +21,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image.replace(/\.webp$/, '.jpg'), Astro.site);
 const wa = waLink(waText);
 const navItems = [
+  { key: 'home', href: '/', label: 'דף הבית' },
   { key: 'destinations', href: '/destinations/', label: 'יעדים' },
   { key: 'tours', href: '/tours/', label: 'טיולים' },
   { key: 'services', href: '/services/', label: 'הסעות וטיסות' },
@@ -75,7 +76,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
         </span>
       </a>
       <nav class="main-nav" aria-label="ניווט ראשי">
-        {navItems.map((n) => <a href={n.href} aria-current={nav === n.key ? 'page' : undefined}>{n.label}</a>)}
+        {navItems.map((n) => <a href={n.href} aria-current={(nav ?? (Astro.url.pathname === '/' ? 'home' : undefined)) === n.key ? 'page' : undefined}>{n.label}</a>)}
       </nav>
       <button class="menu-btn" type="button" aria-label="תפריט" aria-expanded="false" aria-controls="mobile-nav" data-menu-btn><Icon name="menu" size={26} /></button>
     </div>
