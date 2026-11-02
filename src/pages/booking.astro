@@ -25,6 +25,7 @@ const data = JSON.stringify(tours.map((t) => ({
         <input type="hidden" name="form-name" value="booking" />
         <input type="hidden" name="addons" data-h-addons />
         <input type="hidden" name="total" data-h-total />
+        <input type="hidden" name="tour_title" data-h-title />
         <p hidden><label>Company <input name="company" /></label></p>
         <fieldset data-step="1">
           <legend>הטיול שבחרתם</legend>
@@ -60,16 +61,26 @@ const data = JSON.stringify(tours.map((t) => ({
           <legend>אישור ושליחה</legend>
           <div class="note">
             <strong>איך זה עובד?</strong>
-            <span>ההזמנה נשלחת ליונתן בוואטסאפ. הוא מאשר זמינות ושולח פרטי תשלום. תשלום באתר (מלא או מקדמה) יתווסף בהמשך.</span>
+            <span>ההזמנה נשלחת ליונתן. הוא חוזר אליכם לאישור זמינות ופרטי תשלום, בדרך כלל באותו יום. תשלום באתר (מלא או מקדמה) יתווסף בהמשך.</span>
           </div>
           <dl class="review" data-review></dl>
           <label class="check"><input type="checkbox" required data-terms /> קראתי ואני מסכים/ה לתנאי הביטול: ביטול עד 12 שעות לפני הטיול.</label>
           <div class="nav-row">
             <button type="button" class="btn btn-outline" data-back>חזרה</button>
-            <button type="submit" class="btn btn-yellow"><Icon name="whatsapp" size={18} />שליחת ההזמנה בוואטסאפ</button>
+            <button type="submit" class="btn btn-yellow" data-submit>שליחת ההזמנה</button>
           </div>
           <p class="err" data-err hidden></p>
         </fieldset>
+
+        <div class="done" data-done hidden tabindex="-1">
+          <span class="done-icon" aria-hidden="true">✓</span>
+          <h2>ההזמנה התקבלה!</h2>
+          <p>תודה <span data-done-name></span>. יונתן יחזור אליכם בהקדם לאישור הזמנה ופרטי תשלום.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+            <a href="/tours/" class="btn btn-outline">לעוד טיולים</a>
+            <a class="btn btn-yellow" target="_blank" rel="noopener" data-done-wa><Icon name="whatsapp" size={18} />רוצים תשובה מהירה? וואטסאפ</a>
+          </div>
+        </div>
       </form>
 
       <aside class="summary" aria-label="סיכום הזמנה">
@@ -113,6 +124,11 @@ const data = JSON.stringify(tours.map((t) => ({
   .review :global(dt) { color: var(--muted); }
   .review :global(dd) { margin: 0; font-weight: 600; }
   .err { color: var(--red); font-weight: 600; }
+  .done { border: 1px solid var(--line); border-radius: 20px; padding: 40px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; animation: fade 300ms ease; }
+  .done[hidden] { display: none; }
+  .done h2 { font-size: 30px; }
+  .done p { font-size: 18px; line-height: 1.6; color: var(--text); max-width: 460px; }
+  .done-icon { width: 72px; height: 72px; border-radius: 50%; background: #D9F7EF; color: #0F7A55; font-size: 36px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
   :global(.addon-list) { display: flex; flex-direction: column; gap: 4px; }
   :global(.addon-list label) { display: flex; align-items: center; gap: 10px; min-height: 40px; cursor: pointer; }
   :global(.addon-list input) { width: 18px; height: 18px; accent-color: var(--blue); }
@@ -247,7 +263,7 @@ const data = JSON.stringify(tours.map((t) => ({
   fTour.addEventListener('change', setupTour);
   [fDate, fPeople].forEach((el) => el.addEventListener('input', render));
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const terms = form.querySelector<HTMLInputElement>('[data-terms]')!;
     if (!terms.checked) { terms.reportValidity(); return; }
@@ -266,13 +282,37 @@ const data = JSON.stringify(tours.map((t) => ({
       fd.get('hotel') ? `איסוף מ: ${fd.get('hotel')}` : '',
       fd.get('notes') ? `הערות: ${fd.get('notes')}` : '',
     ].filter(Boolean).join('\n');
-    // Save the lead (Netlify Forms emails it), then open WhatsApp.
+    // Send the booking to Netlify Forms, which emails it to Jonathan.
     form.querySelector<HTMLInputElement>('[data-h-addons]')!.value = extras.map((x) => x.name).join(', ');
     form.querySelector<HTMLInputElement>('[data-h-total]')!.value = fmt(total);
-    const body = new URLSearchParams(new FormData(form) as any).toString();
-    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body, keepalive: true }).catch(() => {});
-    const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
-    window.open(url, '_blank', 'noopener');
+    form.querySelector<HTMLInputElement>('[data-h-title]')!.value = t.title;
+    const btn = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const err = form.querySelector<HTMLElement>('[data-err]')!;
+    btn.disabled = true;
+    btn.textContent = 'שולח...';
+    err.hidden = true;
+    try {
+      const res = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(new FormData(form) as any).toString(),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      steps.forEach((s) => (s.hidden = true));
+      inds.forEach((el) => { el.classList.remove('is-current'); el.classList.add('is-done'); });
+      const done = form.querySelector<HTMLElement>('[data-done]')!;
+      done.querySelector('[data-done-name]')!.textContent = String(fd.get('name') ?? '');
+      done.querySelector<HTMLAnchorElement>('[data-done-wa]')!.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
+      done.hidden = false;
+      done.focus();
+      root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch {
+      err.textContent = 'משהו השתבש בשליחה. נסו שוב, או כתבו ליונתן בוואטסאפ.';
+      err.hidden = false;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'שליחת ההזמנה';
+    }
   });
 
   setupTour();
