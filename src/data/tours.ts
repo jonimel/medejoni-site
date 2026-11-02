@@ -117,10 +117,11 @@ export const tours: Tour[] = [
     includes: ['הסעה פרטית', 'נהג', 'מדריך צמוד', 'ארוחת בוקר', 'כיבוד קל'],
     excludes: ['אטרקציות על האגם (בתוספת תשלום)'],
     tiers: [
-      { min: 4, price: 259000, label: '4 משתתפים' },
-      { min: 5, price: 209000, label: '5 משתתפים ומעלה' },
+      { min: 3, price: 379000, label: '3 משתתפים' },
+      { min: 4, price: 309000, label: '4 עד 6 משתתפים' },
+      { min: 7, price: 179000, label: '7 עד 8 משתתפים' },
     ],
-    minPeople: 4,
+    minPeople: 3,
     addOns: [
       { id: 'jetski', name: 'אופנועי ים' },
       { id: 'wakeboard', name: 'ווייקבורד' },
@@ -154,8 +155,9 @@ export const tours: Tour[] = [
     includes: [pickupHotel, 'נהג', 'מדריך צמוד'],
     excludes: [],
     tiers: [
-      { min: 3, price: 179000, label: '3 משתתפים' },
-      { min: 4, price: 159000, label: '4 משתתפים ומעלה' },
+      { min: 3, price: 189000, label: '3 משתתפים' },
+      { min: 4, price: 149000, label: '4 עד 6 משתתפים' },
+      { min: 7, price: 89000, label: '7 עד 8 משתתפים' },
     ],
     minPeople: 3,
     addOns: [],
@@ -201,11 +203,11 @@ export const tours: Tour[] = [
     includes: ['נהג', 'הסעה', 'ארוחת בוקר'],
     excludes: ['ארוחת צהריים', 'אטרקציות'],
     tiers: [
-      { min: 4, price: 209000, label: '4 משתתפים' },
-      { min: 5, price: 179000, label: '5 משתתפים' },
-      { min: 6, price: 159000, label: '6 משתתפים ומעלה' },
+      { min: 3, price: 319000, label: '3 משתתפים' },
+      { min: 4, price: 259000, label: '4 עד 6 משתתפים' },
+      { min: 7, price: 149000, label: '7 עד 8 משתתפים' },
     ],
-    minPeople: 4,
+    minPeople: 3,
     addOns: [
       { id: 'paragliding', name: 'מצנח רחיפה' },
       { id: 'paintball', name: 'פיינטבול' },
@@ -278,11 +280,11 @@ export const tours: Tour[] = [
     ],
     excludes: ['ארוחת צהריים'],
     tiers: [
-      { min: 4, price: 369000, label: '4 משתתפים' },
-      { min: 5, price: 329000, label: '5 עד 6 משתתפים' },
-      { min: 7, price: 259000, label: '7 עד 8 משתתפים' },
+      { min: 3, price: 509000, label: '3 משתתפים' },
+      { min: 4, price: 409000, label: '4 עד 6 משתתפים' },
+      { min: 7, price: 239000, label: '7 עד 8 משתתפים' },
     ],
-    minPeople: 4,
+    minPeople: 3,
     addOns: [],
     schedule: [
       { title: 'איסוף מהמלון או מהדירה ב־7:00', text: 'נוסעים לחרדין בין הנופים הירוקים של אנטיוקיה.' },
