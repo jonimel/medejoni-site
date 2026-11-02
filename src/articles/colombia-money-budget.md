@@ -68,10 +68,3 @@
 בלי לדעת את המסלול, רמת הלינה והתאריכים, סכום יחיד יהיה מטעה. חשבו 13 או 14 לילות בהתאם לטיסות בפועל, הוסיפו מעברים ופעילויות, ורק אז חלקו את העלות למספר המטיילים.
 
 [רוצים לבנות מסלול שמתאים לתקציב שלכם?](/services/#trip-planning) שלחו תאריכים, מספר מטיילים וסגנון לינה מועדף, כדי להתחיל מהבחירות שישפיעו באמת על העלות.
-
-## מקורות
-
-- [Colombia Travel — מטבע ואמצעי תשלום](https://colombia.travel/en/practical-information/currency-information)
-- [Visit Bogotá — מידע למטייל](https://visitbogota.co/en/traveler-information)
-- [Banco de la República — מהו TRM](https://www.banrep.gov.co/es/glosario/tasa-cambio-trm)
-- [Visa — המרת מטבע דינמית](https://www.visa.com.co/viaja-con-visa/dynamic-currency-conversion.html)

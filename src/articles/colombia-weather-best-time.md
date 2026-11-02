@@ -73,15 +73,3 @@
 כן. תכננו ציוד לשני האזורים והשאירו זמן למעבר ביניהם. [במדריך המסלול](/guides/colombia-two-week-itinerary/) אפשר לראות דוגמה לחלוקה שאינה מחייבת החלפת יעד בכל יום.
 
 [יש לכם תאריכים קבועים?](/services/#trip-planning) שלחו אותם יחד עם סוגי החוויות שחשובים לכם, ובנו את המסלול סביב האזורים שמתאימים לתקופה.
-
-## מקורות
-
-- [Visit Bogotá — מידע למטייל](https://visitbogota.co/en/traveler-information)
-- [Colombia Travel — אקלים ועונות](https://colombia.travel/es/informacion-practica/clima)
-- [UNGRD — Circular 089 de 2024, באתר הרשמי של בוגוטה](https://bogotajuridica.gov.co/sisjur/normas/Norma1.jsp?dt=S&i=175197)
-- [IDEAM — עונת הגשמים השנייה, אוקטובר 2026](https://ideam.gov.co/sala-de-prensa/noticia/se-consolida-la-segunda-temporada-de-mas-lluvias-en-colombia-en-medio-de-las-condiciones-de-el-nino)
-- [Parques Nacionales — סגירת טיירונה ופתיחה מתוכננת, 16.10.2026](https://www.parquesnacionales.gov.co/sala-prensa/noticias/el-parque-tayrona-cerrara-15-dias-en-octubre-para-conservacion/)
-- [Colombia Travel — קרטחנה](https://colombia.travel/en/cartagena-de-indias)
-- [Colombia Travel — סן אנדרס](https://colombia.travel/en/san-andres-island)
-- [Colombia Travel — לווייתנים בפסיפי](https://colombia.travel/es/blog/ballenas-jorobadas-en-el-pacifico-colombiano)
-- [תיירות מחוז צ׳וקו — צפייה בלווייתנים](https://turismo.choco.gov.co/avistamiento-de-ballenas/)

@@ -1,6 +1,6 @@
 הקושי בבניית מסלול טיול בקולומביה הוא בדרך כלל הבחירה. רוצים לראות [מדיין](/destinations/medellin/), לעלות לתצפית [בגואטפה](/destinations/guatape/), לשתות קפה בחווה, להגיע לקרטחנה, להוסיף ג׳ונגל ואולי גם אי. על המפה הכול נראה אפשרי. בפועל, כל מעבר תופס זמן וגם [מקום בתקציב](/guides/colombia-money-budget/).
 
-לשבועיים ראשונים אנחנו מציעים להתחיל משלושה אזורים: מדיין והסביבה, אזור הקפה ויעד קריבי אחד. זו הצעת תכנון, לא מסלול חובה. אפשר לשנות את הסדר לפי שדות התעופה, התאריכים והפעילויות החשובות לכם.
+לשבועיים ראשונים אני מציע להתחיל משלושה אזורים: מדיין והסביבה, אזור הקפה ויעד קריבי אחד. זו הצעת תכנון, לא מסלול חובה. אפשר לשנות את הסדר לפי שדות התעופה, התאריכים והפעילויות החשובות לכם.
 
 ## מה מעניין בתיירות לקולומביה עכשיו?
 
@@ -84,16 +84,3 @@
 גואטפה מתאימה ליום של עיירה, תצפית ומאגר. אזור הקפה מתאים לשהות של כמה לילות ולשילוב חוות ונוף. הבחירה תלויה בזמן ובעניין שלכם, ולא בהנחה שהאחד מחליף לחלוטין את השני.
 
 [רוצים להתאים את המסלול אליכם?](/services/#trip-planning) שלחו תאריכים, שדות כניסה ויציאה, תקציב וסדר עדיפויות בין טבע, ערים וחופים. משם אפשר לבנות תוכנית שמנצלת היטב את הזמן שלכם בקולומביה.
-
-## מקורות
-
-- [Parques Nacionales — סגירת טיירונה ופתיחה מתוכננת, 16.10.2026](https://www.parquesnacionales.gov.co/sala-prensa/noticias/el-parque-tayrona-cerrara-15-dias-en-octubre-para-conservacion/)
-- [ProColombia — חמש מגמות לתיירות ב־2026, 30.12.2025](https://www.procolombia.co/sala-de-prensa/noticias/cinco-tendencias-que-marcaran-el-turismo-en-colombia-en-2026)
-- [Colombia Travel — גואטפה ופיידרה דל פניול](https://colombia.travel/es/medellin/guatape-y-piedra-del-penol)
-- [Colombia Travel — עמק קוקורה](https://colombia.travel/es/armenia/conoce-el-valle-del-cocora)
-- [Colombia Travel — מינקה](https://colombia.travel/es/encanto/minca-colombia-capital-ecologica-del-pais)
-- [Colombia Travel — קרטחנה](https://colombia.travel/en/cartagena-de-indias)
-- [Colombia Travel — סן אנדרס](https://colombia.travel/en/san-andres-island)
-- [Colombia Travel — לווייתנים בפסיפי](https://colombia.travel/es/blog/ballenas-jorobadas-en-el-pacifico-colombiano)
-- [תיירות מחוז צ׳וקו — צפייה בלווייתנים](https://turismo.choco.gov.co/avistamiento-de-ballenas/)
-- [Colombia Travel — הקורדילרה המערבית](https://colombia.travel/es/la-cordillera-occidental-colombiana)
