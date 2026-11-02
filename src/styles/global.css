@@ -254,3 +254,6 @@ button { font: inherit; }
   .tour-swipe > .tour-card { flex: 0 0 80%; scroll-snap-align: start; }
   .tour-swipe > .tour-card[hidden] { display: none; }
 }
+
+/* Page headers: a soft blend of the flag colours (yellow, blue, red), not solid yellow. */
+.page-top { background: linear-gradient(250deg, #FFEFA6 0%, #FFF6D1 38%, #E2EBFB 70%, #FBE0E3 100%); }
