@@ -57,3 +57,10 @@ npm run dev
 - ביקורות אמיתיות (`src/pages/about.astro`).
 - תוכן המדריכים ותיאורי היעדים (מסומנים בסוגריים מרובעים).
 - לוגו, אם יש.
+
+## Hosting on Railway
+
+`server.mjs` serves `dist/` and emails every form submission (POST `/`) through Resend.
+Railway builds with `npm run build` and starts with `node server.mjs` (see `railway.json`).
+Set these variables on the Railway service: `RESEND_API_KEY` (required), `LEAD_EMAIL` (default yonimelmel@gmail.com), `MAIL_FROM` (optional).
+The same forms keep working on Netlify (Netlify Forms) because both receive POST `/`.
