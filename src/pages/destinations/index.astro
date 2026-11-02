@@ -18,7 +18,12 @@ const count = (slug: string) => {
   </section>
   <section class="wrap section">
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px">
-      {destinations.map((d) => d.comingSoon ? (
+      {destinations.map((d) => d.comingSoon && d.link ? (
+        <a href={d.link} class="dest-card card" style="flex:none;width:auto">
+          <img class="zoom" src={img(d.image)} alt={d.name} loading="lazy" />
+          <div class="cap"><strong>{d.name}</strong><span>{d.linkLabel}</span></div>
+        </a>
+      ) : d.comingSoon ? (
         <div class="dest-card" style={`background:${d.color};flex:none;width:auto`}><div class="cap"><strong>{d.name}</strong><span>בקרוב</span></div></div>
       ) : (
         <a href={`/destinations/${d.slug}/`} class="dest-card card" style="flex:none;width:auto">

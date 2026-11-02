@@ -33,6 +33,17 @@ const ld = services.map((s) => ({
           <h2 style="font-size:clamp(28px,4vw,36px)">{s.title}</h2>
           <p style="font-size:18px;line-height:1.7;color:var(--text)">{s.intro}</p>
           <ul class="svc-points">{s.points.map((p) => <li>{p}</li>)}</ul>
+          {s.routes && (
+            <div class="routes">
+              <strong>מסלולים פופולריים</strong>
+              {s.routes.map((r) => (
+                <button type="button" class="route card" data-route-from={r.from} data-route-to={r.to} data-form={s.id}>
+                  <img src={img(r.image)} alt="" loading="lazy" />
+                  <span><strong>{r.from} ← {r.to}</strong><small>{r.note}</small><em>להזמנה ←</em></span>
+                </button>
+              ))}
+            </div>
+          )}
           <img src={img(s.image)} alt="" loading={i === 0 ? 'eager' : 'lazy'} />
         </div>
         <ServiceForm id={s.id} title={s.formTitle} fields={s.fields} />
@@ -49,8 +60,27 @@ const ld = services.map((s) => ({
   .svc-points { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; font-size: 17px; }
   .svc-points li { display: flex; gap: 10px; align-items: center; }
   .svc-points li::before { content: '✓'; flex: 0 0 24px; height: 24px; border-radius: 50%; background: #D9F7EF; color: #0F7A55; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
+  .routes { display: flex; flex-direction: column; gap: 10px; }
+  .route { display: flex; gap: 14px; align-items: center; text-align: right; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 10px; cursor: pointer; font: inherit; color: inherit; }
+  .route img { width: 96px; height: 96px; object-fit: cover; border-radius: 12px; flex: 0 0 auto; margin: 0; }
+  .route span { display: flex; flex-direction: column; gap: 4px; }
+  .route strong { font-size: 18px; }
+  .route small { color: var(--muted); font-size: 15px; }
+  .route em { font-style: normal; color: var(--link); font-weight: 600; }
   @media (max-width: 900px) {
     .svc-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
     .svc-text img { height: 200px; }
   }
 </style>
+
+<script>
+  // Popular route buttons prefill the transfer form.
+  document.querySelectorAll<HTMLButtonElement>('[data-route-from]').forEach((b) => b.addEventListener('click', () => {
+    const form = document.querySelector<HTMLFormElement>(`form[name="${b.dataset.form}"]`)!;
+    (form.elements.namedItem('from') as HTMLInputElement).value = b.dataset.routeFrom!;
+    (form.elements.namedItem('to') as HTMLInputElement).value = b.dataset.routeTo!;
+    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    form.querySelector<HTMLInputElement>('[name=name]')!.focus({ preventScroll: true });
+  }));
+</script>
+

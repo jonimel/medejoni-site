@@ -69,7 +69,12 @@ const moments = ['wakeboard', 'chivain', 'heliview', 'watermelon', 'umbrellas2',
     <h2 class="section-title">יעדים בקולומביה</h2>
     <Carousel label="יעדים">
       {destinations.map((d) => (
-        d.comingSoon ? (
+        d.comingSoon && d.link ? (
+          <a href={d.link} class="dest-card card">
+            <img class="zoom" src={img(d.image)} alt={d.name} loading="lazy" />
+            <div class="cap"><strong>{d.name}</strong><span>{d.linkLabel}</span></div>
+          </a>
+        ) : d.comingSoon ? (
           <div class="dest-card" style={`background:${d.color}`}>
             <div class="cap"><strong>{d.name}</strong><span>בקרוב</span></div>
           </div>

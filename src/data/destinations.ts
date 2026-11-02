@@ -7,6 +7,9 @@ export interface Destination {
   intro: string;
   /** Destinations without tours yet show as "בקרוב" and get no page. */
   comingSoon?: boolean;
+  /** For destinations without a page yet: where the card links, and its caption. */
+  link?: string;
+  linkLabel?: string;
   color?: string;
   bestTime?: string;
   highlights?: { title: string; text: string }[];
@@ -59,6 +62,7 @@ export const destinations: Destination[] = [
     hero: 'paraglide',
     intro: 'טבע, נופים, חוות ואטרקציות אדרנלין, במרחק נסיעה קצרה מהעיר.',
   },
+  { slug: 'salento', name: 'סלנטו', latin: 'Salento', image: 'salento2', hero: 'salento', intro: '', comingSoon: true, link: '/services/#transfers', linkLabel: "מעבר ממדג'ין" },
   { slug: 'cartagena', name: 'קרטחנה', latin: 'Cartagena', image: '', hero: '', intro: '', comingSoon: true, color: '#B5651D' },
   { slug: 'santa-marta', name: 'סנטה מרתה', latin: 'Santa Marta', image: '', hero: '', intro: '', comingSoon: true, color: '#2F7A78' },
 ];

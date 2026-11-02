@@ -21,6 +21,7 @@ export interface Service {
   icon: string;
   blob: string;
   formTitle: string;
+  routes?: { from: string; to: string; image: string; note: string }[];
   fields: FormField[];
 }
 
@@ -45,14 +46,15 @@ export const services: Service[] = [
   {
     id: 'transfers',
     title: 'מעברים בין ערים',
-    short: "נסיעה פרטית בין מדג'ין, גואטפה, חרדין, ערי אזור הקפה ועוד.",
+    short: "נסיעה פרטית בין ערים: מדג'ין, סלנטו ואזור הקפה, גואטפה, חרדין ועוד.",
     intro:
       'עוברים עיר? נסיעה פרטית מדלת לדלת, עם נהג מקומי שמכיר את הדרך. אפשר לעצור בדרך לנוף, לאוכל או לאטרקציה.',
     points: ['מדלת לדלת, מהמלון למלון', 'עצירות בדרך לפי בקשה', 'מחיר סגור מראש', 'תיאום מלא בעברית'],
-    image: 'hills',
+    image: 'salento',
     icon: '⇄',
     blob: '#D9F7EF',
     formTitle: 'הזמנת מעבר בין ערים',
+    routes: [{ from: "מדג'ין", to: 'סלנטו', image: 'salento2', note: 'עמק קוקורה ודקלי השעווה, כ־6–7 שעות נסיעה' }],
     fields: [
       { name: 'from', label: 'מאיפה יוצאים?', type: 'text', placeholder: "למשל: מדג'ין" },
       { name: 'to', label: 'לאן נוסעים?', type: 'text', placeholder: 'למשל: גואטפה' },
