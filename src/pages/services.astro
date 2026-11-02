@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { services } from '../data/services';
+import { img, waLink } from '../data/site';
+
+const ld = services.map((s) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: s.title,
+  description: s.intro,
+  areaServed: 'Colombia',
+  provider: { '@type': 'TravelAgency', name: 'Medejoni' },
+}));
+---
+<Base title="הסעות משדה התעופה, מעברים וטיסות בקולומביה" description="הסעה משדה התעופה של מדג'ין למלון, מעברים פרטיים בין ערים וסגירת טיסות פנים בקולומביה, בעברית עם יונתן מילמן." image={img('valley')} nav="services" jsonLd={ld}>
+  <section style="background:var(--yellow)">
+    <div class="wrap" style="padding-top:40px;padding-bottom:40px">
+      <nav class="crumbs" aria-label="פירורי לחם" style="padding-top:0;color:var(--ink)"><a href="/" style="color:var(--ink)">דף הבית</a> › שירותים</nav>
+      <h1 style="font-size:clamp(34px,5vw,52px);font-weight:800">שירותים נוספים</h1>
+      <p style="font-size:19px;margin-top:10px">לא רק טיולים: מהנחיתה ועד הטיסה הבאה, אנחנו דואגים לכם.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:20px">
+        {services.map((s) => <a href={`#${s.id}`} class="chip" style="display:inline-flex;align-items:center;text-decoration:none">{s.title}</a>)}
+      </div>
+    </div>
+  </section>
+
+  {services.map((s, i) => (
+    <section id={s.id} class="svc" style={i % 2 ? 'background:var(--sky)' : ''}>
+      <div class="wrap section svc-grid reveal">
+        <img src={img(s.image)} alt="" loading={i === 0 ? 'eager' : 'lazy'} />
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <span class="blob" aria-hidden="true" style={`background:${s.blob}`}>{s.icon}</span>
+          <h2 style="font-size:clamp(28px,4vw,36px)">{s.title}</h2>
+          <p style="font-size:18px;line-height:1.7;color:var(--text)">{s.intro}</p>
+          <ul class="svc-points">{s.points.map((p) => <li>{p}</li>)}</ul>
+          <a href={waLink(s.waText)} class="btn btn-yellow" style="align-self:flex-start" target="_blank" rel="noopener"><Icon name="whatsapp" size={18} />לקבלת הצעת מחיר</a>
+        </div>
+      </div>
+    </section>
+  ))}
+</Base>
+
+<style>
+  .svc { scroll-margin-top: 70px; }
+  .svc-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+  .svc-grid img { width: 100%; height: 380px; object-fit: cover; border-radius: 24px; }
+  .svc:nth-of-type(odd) .svc-grid img { order: 2; }
+  .svc-points { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; font-size: 17px; }
+  .svc-points li { display: flex; gap: 10px; align-items: center; }
+  .svc-points li::before { content: '✓'; flex: 0 0 24px; height: 24px; border-radius: 50%; background: #D9F7EF; color: #0F7A55; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
+  @media (max-width: 900px) {
+    .svc-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .svc-grid img { height: 240px; order: 0 !important; }
+  }
+</style>

@@ -6,6 +6,7 @@ import Icon from '../components/Icon.astro';
 import { tours } from '../data/tours';
 import { destinations } from '../data/destinations';
 import { guides } from '../data/guides';
+import { services } from '../data/services';
 import { img, waLink } from '../data/site';
 
 const slides = [
@@ -107,6 +108,21 @@ const moments = ['chivain', 'watermelon', 'lake', 'cave', 'fishing', 'meddusk', 
       {tours.map((t) => <TourCard tour={t} />)}
     </div>
     <div style="text-align:center;margin-top:36px"><a href="/tours/" class="btn btn-outline">לכל הטיולים</a></div>
+  </section>
+
+  <section class="wrap reveal" style="padding-bottom:72px">
+    <h2 class="section-title" style="margin-bottom:8px">מעבר לטיולים</h2>
+    <p style="margin:0 0 32px;text-align:center;font-size:18px;color:#4B5563">מהנחיתה ועד הטיסה הבאה, אנחנו דואגים לכל הדרך.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px">
+      {services.map((s) => (
+        <a href={`/services/#${s.id}`} class="card" style="text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:12px;background:#fff">
+          <span class="blob" aria-hidden="true" style={`background:${s.blob}`}>{s.icon}</span>
+          <strong style="font-size:21px">{s.title}</strong>
+          <span style="font-size:16px;line-height:1.6;color:#4B5563">{s.short}</span>
+          <span style="margin-top:auto;color:var(--link);font-weight:600">לפרטים ←</span>
+        </a>
+      ))}
+    </div>
   </section>
 
   <section style="background:var(--sky)" class="reveal">

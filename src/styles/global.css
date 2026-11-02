@@ -145,7 +145,7 @@ button { font: inherit; }
 .carousel .tour-card { flex: 0 0 290px; }
 
 .why-card { flex: 0 0 380px; background: var(--cream); border-radius: var(--radius); padding: 26px 24px; display: flex; gap: 18px; align-items: flex-start; }
-.blob { flex: 0 0 56px; height: 56px; border-radius: 46% 54% 42% 58% / 52% 44% 56% 48%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; }
+.blob { flex: 0 0 56px; width: 56px; height: 56px; align-self: flex-start; border-radius: 46% 54% 42% 58% / 52% 44% 56% 48%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; }
 
 /* Tabs / chips */
 .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 32px; }
@@ -206,7 +206,7 @@ button { font: inherit; }
 }
 @media (max-width: 560px) {
   .wrap { padding: 0 16px; }
-  .logo-sub { display: none; }
+
   .search label { padding: 0 10px; }
   .search input { font-size: 16px; }
 }

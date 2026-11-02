@@ -2,7 +2,7 @@
 
 export const site = {
   name: 'Medejoni',
-  tagline: 'טיולים בקולומביה עם יונתן מילמן',
+  tagline: 'חוויה אותנטית בקולומביה',
   owner: 'יונתן מילמן',
   // TODO: Jonathan's WhatsApp number in international format, digits only (e.g. 573001234567).
   whatsapp: '',

@@ -4,13 +4,14 @@ import Icon from '../components/Icon.astro';
 import { site, waLink } from '../data/site';
 import { tours } from '../data/tours';
 import { guides } from '../data/guides';
+import { services } from '../data/services';
 
 interface Props {
   title: string;
   description: string;
   image?: string;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
-  nav?: 'tours' | 'destinations' | 'guides' | 'about';
+  nav?: 'tours' | 'destinations' | 'services' | 'guides' | 'about';
   waText?: string;
   noindex?: boolean;
 }
@@ -22,6 +23,7 @@ const wa = waLink(waText);
 const navItems = [
   { key: 'tours', href: '/tours/', label: 'טיולים' },
   { key: 'destinations', href: '/destinations/', label: 'יעדים' },
+  { key: 'services', href: '/services/', label: 'הסעות וטיסות' },
   { key: 'guides', href: '/guides/', label: 'מדריכים' },
   { key: 'about', href: '/about/', label: 'מי אני' },
 ];
@@ -97,6 +99,10 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
         <div class="col">
           <strong>מדריכים</strong>
           {guides.map((g) => <a href={`/guides/${g.slug}/`}>{g.title}</a>)}
+        </div>
+        <div class="col">
+          <strong>שירותים</strong>
+          {services.map((s) => <a href={`/services/#${s.id}`}>{s.title}</a>)}
         </div>
         <div class="col">
           <strong>מידע</strong>
