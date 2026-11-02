@@ -72,8 +72,8 @@ button { font: inherit; }
 .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 12px; padding-bottom: 12px; }
 .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
 .logo-mark { width: 40px; height: 40px; border-radius: 10px; background: var(--yellow); color: var(--blue); font-weight: 800; font-size: 22px; display: flex; align-items: center; justify-content: center; }
-.logo-text { display: flex; flex-direction: column; line-height: 1.1; }
-.logo-name { font-size: 24px; font-weight: 800; direction: ltr; text-align: right; display: inline-flex; align-items: center; gap: 8px; }
+.logo-text { display: flex; flex-direction: column; align-items: center; text-align: center; line-height: 1.1; }
+.logo-name { font-size: 24px; font-weight: 800; direction: ltr; text-align: center; justify-content: center; display: inline-flex; align-items: center; gap: 8px; }
 .co-flag { border-radius: 3px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25); transform-origin: right center; animation: flag-wave 3s ease-in-out infinite; }
 @keyframes flag-wave { 0%, 100% { transform: skewY(0deg); } 50% { transform: skewY(-4deg) scaleX(0.96); } }
 .flag-thin { height: 5px; }
