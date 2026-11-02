@@ -10,6 +10,9 @@ const steps = [
 // Real reviews only (confirmed by Jonathan). Add new ones to this list.
 const reviews = [
   { text: 'הגענו לקולומביה עם הרבה אי וודאות, דיברנו עם יונתן והכל היה כל כך קל. הוא סידר לנו טיול לגואטפה, שטנו באגם ואכלנו במקום מקומי שלא היינו מוצאים לבד. הרגשנו כמו עם חבר שגר פה.', who: 'מיכל, 23 · טיול לגואטפה', stars: 5 },
+  { text: 'רצינו יום שייתן לנו להכיר את קולומביה מעבר למקומות הרגילים, וזה בדיוק מה שקיבלנו. אוכל מקומי, נופים וסיפורים קטנים שעזרו לנו להבין את החיים פה. יונתן היה קשוב לקצב שלנו ויצר אווירה ממש נעימה. חזרנו עם תחושה שהכרנו עוד צד של קולומביה.', who: 'מאור, 22', stars: 5 },
+  { text: 'בעלי ואני הגענו ליונתן עם רשימה ארוכה של מקומות שרצינו לראות ובלי מושג איך לחבר ביניהם. הוא עזר לנו לבנות מסלול שמתאים לזמן, לתקציב ולסגנון שלנו, וגם אמר בכנות על מה כדאי לוותר. במהלך הטיול הבנו כמה התכנון הזה עזר — המעברים היו הגיוניים, היה זמן לנוח ולא הרגשנו שאנחנו כל היום עם המזוודות. חסך לנו המון התלבטויות.', who: 'אלה, 38 · תכנון מסלול', stars: 5 },
+  { text: 'אני וכמה חברים סגרנו עם יונתן יום של רכיבה על סוסים ופיינטבול והיה פשוט כיף! התחלנו ברכיבה מול נופים מדהימים, ואחר כך פיינטבול. יונתן דאג לארגון ולאווירה, ואנחנו רק היינו צריכים להגיע וליהנות. יום מלא צחוקים וחוויות שאנחנו עדיין מדברים עליו!', who: 'שלומית, 24 · סוסים ופיינטבול', stars: 5 },
 ];
 ---
 <Base title="מי אני – יונתן מילמן, ישראלי במדג'ין" description="היי, אני יונתן מילמן, ישראלי שגר במדג'ין. אני מראה לכם את קולומביה האותנטית, כמו שהמקומיים חיים אותה, ומלווה אתכם אישית לאורך כל הטיול." image={img('yonatan')} nav="about">
@@ -78,7 +81,7 @@ const reviews = [
   .rv-track { display: grid; width: 100%; overflow: hidden; }
   .rv { grid-area: 1 / 1; margin: 0; opacity: 0; transform: translateX(-20px); transition: opacity 500ms ease, transform 500ms ease; }
   .rv.is-active { opacity: 1; transform: none; }
-  .rv blockquote { margin: 0; font-size: 24px; line-height: 1.6; font-weight: 500; }
+  .rv blockquote { margin: 0; font-size: 21px; line-height: 1.6; font-weight: 500; }
   .stars { color: #F5B301; font-size: 24px; letter-spacing: 4px; margin-bottom: 10px; }
   .rv figcaption { margin-top: 12px; color: #4B5563; }
   .rv-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid #D1D5DB; background: #fff; cursor: pointer; font-size: 20px; }
