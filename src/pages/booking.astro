@@ -301,6 +301,8 @@ const data = JSON.stringify(tours.map((t) => ({
         body: new URLSearchParams(new FormData(form) as any).toString(),
       });
       if (!res.ok) throw new Error(String(res.status));
+      // Google Analytics: count the booking request (only when analytics is on).
+      (window as any).gtag?.('event', 'generate_lead', { form_name: 'booking' });
       steps.forEach((s) => (s.hidden = true));
       inds.forEach((el) => { el.classList.remove('is-current'); el.classList.add('is-done'); });
       const done = form.querySelector<HTMLElement>('[data-done]')!;

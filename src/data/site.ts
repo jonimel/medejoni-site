@@ -11,6 +11,10 @@ export const site = {
   email: 'yonimelmel@gmail.com',
   currency: 'COP',
   cancelHours: 12,
+  // Google Analytics 4 "Measurement ID" (looks like G-XXXXXXXXXX). Empty = no analytics.
+  gaId: '',
+  // Google Search Console HTML-tag verification code (only if not verifying through DNS).
+  gscVerification: '',
 };
 
 /** Builds a wa.me link with a prefilled Hebrew message. */

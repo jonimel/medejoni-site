@@ -5,6 +5,8 @@ import { site, waLink } from '../data/site';
 import { tours } from '../data/tours';
 import { guides } from '../data/guides';
 import { services } from '../data/services';
+import { imageSize } from '../lib/image-size.mjs';
+import { join } from 'node:path';
 
 interface Props {
   title: string;
@@ -14,11 +16,18 @@ interface Props {
   nav?: 'home' | 'tours' | 'destinations' | 'services' | 'guides' | 'about';
   waText?: string;
   noindex?: boolean;
+  /** 'article' for blog posts, 'website' for everything else (Open Graph). */
+  ogType?: 'website' | 'article';
+  /** Short description of the share image (og:image:alt). */
+  imageAlt?: string;
 }
-const { title, description, image = '/images/peniol.jpg', jsonLd, nav, waText, noindex } = Astro.props;
+const { title, description, image = '/images/peniol.jpg', jsonLd, nav, waText, noindex, ogType = 'website', imageAlt } = Astro.props;
 const fullTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL(image.replace(/\.webp$/, '.jpg'), Astro.site);
+const ogPath = image.replace(/\.webp$/, '.jpg');
+const ogImage = new URL(ogPath, Astro.site);
+const ogSize = imageSize(join(process.cwd(), 'public', ogPath));
+const siteUrl = new URL('/', Astro.site).toString();
 const wa = waLink(waText);
 const navItems = [
   { key: 'home', href: '/', label: 'דף הבית' },
@@ -28,14 +37,23 @@ const navItems = [
   { key: 'guides', href: '/guides/', label: 'מאמרים' },
   { key: 'about', href: '/about/', label: 'מי אני' },
 ];
+// The business, once per page. Other schema (tours, articles) points to it by @id.
 const orgLd = {
   '@context': 'https://schema.org',
   '@type': 'TravelAgency',
+  '@id': `${siteUrl}#org`,
   name: site.name,
-  url: Astro.site?.toString(),
-  founder: { '@type': 'Person', name: 'Yonatan Milman' },
-  areaServed: 'Colombia',
-  inLanguage: 'he',
+  alternateName: 'מדג׳וני',
+  slogan: site.tagline,
+  url: siteUrl,
+  image: new URL('/images/yonatan.jpg', Astro.site).toString(),
+  email: site.email,
+  telephone: site.whatsapp ? `+${site.whatsapp}` : undefined,
+  founder: { '@type': 'Person', '@id': `${siteUrl}#yonatan`, name: 'Yonatan Milman', alternateName: site.owner, url: new URL('/about/', Astro.site).toString() },
+  address: { '@type': 'PostalAddress', addressLocality: 'Medellín', addressRegion: 'Antioquia', addressCountry: 'CO' },
+  areaServed: { '@type': 'Country', name: 'Colombia' },
+  currenciesAccepted: 'COP',
+  knowsLanguage: ['he', 'es', 'en'],
 };
 const footerTours = tours.filter((t) => t.featured).slice(0, 4);
 ---
@@ -46,16 +64,24 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{fullTitle}</title>
   <meta name="description" content={description} />
-  <link rel="canonical" href={canonical} />
-  {noindex && <meta name="robots" content="noindex" />}
-  <meta property="og:type" content="website" />
+  {noindex ? <meta name="robots" content="noindex, follow" /> : <link rel="canonical" href={canonical} />}
+  {!noindex && <link rel="alternate" hreflang="he" href={canonical} />}
+  {!noindex && <link rel="alternate" hreflang="x-default" href={canonical} />}
+  {site.gscVerification && <meta name="google-site-verification" content={site.gscVerification} />}
+  <meta property="og:type" content={ogType} />
   <meta property="og:locale" content="he_IL" />
   <meta property="og:site_name" content={site.name} />
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
   <meta property="og:image" content={ogImage} />
+  {ogSize && <meta property="og:image:width" content={String(ogSize.width)} />}
+  {ogSize && <meta property="og:image:height" content={String(ogSize.height)} />}
+  <meta property="og:image:alt" content={imageAlt ?? fullTitle} />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={fullTitle} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
   <meta name="theme-color" content="#FCD116" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="sitemap" href="/sitemap-index.xml" />
@@ -63,6 +89,17 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd ? [orgLd].concat(jsonLd as any) : orgLd)} />
+  {site.gaId && (
+    <>
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${site.gaId}`}></script>
+      <script is:inline define:vars={{ gaId: site.gaId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', gaId);
+      </script>
+    </>
+  )}
 </head>
 <body>
   <a href="#main" class="sr-only">דלג לתוכן</a>
@@ -159,6 +196,8 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
             body: new URLSearchParams(new FormData(form) as any).toString(),
           });
           if (!res.ok) throw new Error(String(res.status));
+          // Google Analytics: count the lead (only when analytics is on).
+          (window as any).gtag?.('event', 'generate_lead', { form_name: form.getAttribute('name') || 'lead' });
           form.reset();
           status.classList.add('ok');
           status.textContent = 'תודה! קיבלנו את הפרטים, ויונתן יחזור אליכם בהקדם.';
