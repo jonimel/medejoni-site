@@ -81,7 +81,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
       <button class="menu-btn" type="button" aria-label="תפריט" aria-expanded="false" aria-controls="mobile-nav" data-menu-btn><Icon name="menu" size={26} /></button>
     </div>
     <nav id="mobile-nav" class="mobile-nav" aria-label="תפריט נייד">
-      {[...navItems.filter((n) => n.key === 'about'), ...navItems.filter((n) => n.key !== 'about')].map((n) => <a href={n.href}>{n.label}</a>)}
+      {[...navItems.filter((n) => n.key === 'home' || n.key === 'about'), ...navItems.filter((n) => n.key !== 'home' && n.key !== 'about')].map((n) => <a href={n.href}>{n.label}</a>)}
     </nav>
     <div class="flag flag-thin" aria-hidden="true"><span></span><span></span><span></span></div>
   </header>
