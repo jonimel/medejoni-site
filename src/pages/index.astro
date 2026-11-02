@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import TourCard from '../components/TourCard.astro';
 import Carousel from '../components/Carousel.astro';
 import Icon from '../components/Icon.astro';
+import LeadForm from '../components/LeadForm.astro';
 import { tours } from '../data/tours';
 import { destinations } from '../data/destinations';
 import { guides } from '../data/guides';
@@ -195,6 +196,7 @@ const moments = ['chivain', 'watermelon', 'lake', 'cave', 'fishing', 'meddusk', 
       </div>
     </div>
   </section>
+  <LeadForm source="home" />
 </Base>
 
 <script>

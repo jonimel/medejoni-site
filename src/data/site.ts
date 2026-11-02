@@ -8,7 +8,7 @@ export const site = {
   whatsapp: '',
   instagram: 'https://www.instagram.com/',
   tiktok: 'https://www.tiktok.com/',
-  email: '',
+  email: 'yonimelmel@gmail.com',
   currency: 'COP',
   cancelHours: 12,
 };

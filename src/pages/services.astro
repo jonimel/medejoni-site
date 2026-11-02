@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
+import LeadForm from '../components/LeadForm.astro';
 import { services } from '../data/services';
 import { img, waLink } from '../data/site';
 
@@ -39,6 +40,7 @@ const ld = services.map((s) => ({
       </div>
     </section>
   ))}
+  <LeadForm source="services" title="צריכים הסעה או טיסה?" sub="השאירו פרטים ותקבלו הצעת מחיר בעברית." />
 </Base>
 
 <style>

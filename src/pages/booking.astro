@@ -21,7 +21,11 @@ const data = JSON.stringify(tours.map((t) => ({
     </ol>
 
     <div class="b-layout">
-      <form class="b-form" novalidate data-form>
+      <form class="b-form" name="booking" method="POST" data-netlify="true" netlify-honeypot="company" novalidate data-form>
+        <input type="hidden" name="form-name" value="booking" />
+        <input type="hidden" name="addons" data-h-addons />
+        <input type="hidden" name="total" data-h-total />
+        <p hidden><label>Company <input name="company" /></label></p>
         <fieldset data-step="1">
           <legend>הטיול שבחרתם</legend>
           <label class="f">טיול
@@ -262,6 +266,11 @@ const data = JSON.stringify(tours.map((t) => ({
       fd.get('hotel') ? `איסוף מ: ${fd.get('hotel')}` : '',
       fd.get('notes') ? `הערות: ${fd.get('notes')}` : '',
     ].filter(Boolean).join('\n');
+    // Save the lead (Netlify Forms emails it), then open WhatsApp.
+    form.querySelector<HTMLInputElement>('[data-h-addons]')!.value = extras.map((x) => x.name).join(', ');
+    form.querySelector<HTMLInputElement>('[data-h-total]')!.value = fmt(total);
+    const body = new URLSearchParams(new FormData(form) as any).toString();
+    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body, keepalive: true }).catch(() => {});
     const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
     window.open(url, '_blank', 'noopener');
   });
