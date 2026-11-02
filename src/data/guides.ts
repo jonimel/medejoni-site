@@ -11,6 +11,8 @@ export interface Guide {
   seoTitle?: string;
   /** Full article body lives in src/articles/<slug>.md instead of sections. */
   markdown?: boolean;
+  /** Tours this guide talks about (shown as cards at the end, and links the guide from those tours/destinations). */
+  tours?: string[];
   sections: { id: string; title: string; paragraphs: string[]; image?: string; tip?: string; tours?: string[] }[];
 }
 
@@ -51,31 +53,26 @@ export const guides: Guide[] = [
   {
     slug: 'guatape-group-or-private',
     title: 'טיול לגואטפה: קבוצתי או פרטי, ומה לא לפספס',
+    seoTitle: "טיול לגואטפה ממדג'ין: איך מגיעים ומה עושים",
     sub: 'מה ההבדל, כמה זה עולה ומה כדאי לכם',
     image: 'lake',
     tag: 'מדריך יעד',
-    description: 'מדריך לטיול לגואטפה ממדג׳ין: איך מגיעים, קבוצתי או פרטי, סלע אל פניול, הכפר הצבעוני והאטרקציות על האגם.',
-    sections: [
-      { id: 'getting-there', title: 'איך מגיעים לגואטפה', paragraphs: ["[פסקה: המרחק ממדג'ין, האפשרויות להגיע ומה הכי נוח.]", '[פסקה נוספת.]'], tip: '[טיפ מקומי קצר]' },
-      { id: 'group-or-private', title: 'קבוצתי או פרטי?', paragraphs: ['[השוואה קצרה בין שני סוגי הטיולים.]'], tours: ['guatape-group', 'guatape-private'] },
-      { id: 'el-penol', title: 'סלע אל פניול', paragraphs: ['[פסקה על הסלע, המדרגות והנוף.]'], image: 'peniol' },
-      { id: 'village', title: 'הכפר הצבעוני', paragraphs: ['[פסקה על הכפר.]'], image: 'umbrellas' },
-      { id: 'lake', title: 'אטרקציות על האגם', paragraphs: ['[פסקה על אופנועי ים, ווייקבורד, סקי מים ושייט.]'], image: 'wakeboard' },
-    ],
+    description: "טיול לגואטפה (גוואטפה) ממדג'ין: איך מגיעים, טיול קבוצתי או פרטי, העלייה לסלע אל פניול, הכפר הצבעוני והאטרקציות על האגם.",
+    markdown: true,
+    tours: ['guatape-group', 'guatape-private'],
+    sections: [],
   },
   {
     slug: 'things-to-do-in-medellin',
     title: "מה עושים במדג'ין: המדריך המלא",
+    seoTitle: "מה עושים במדג'ין: אטרקציות, שכונות וטיפים",
     sub: 'שכונות, תצפיות, כדורגל וחיי לילה',
     image: 'meddusk',
     tag: 'מדריך עיר',
-    description: "מה עושים במדג'ין: השכונות, התצפיות, הכדורגל וחיי הלילה, עם טיפים של ישראלי שגר בעיר.",
-    sections: [
-      { id: 'neighborhoods', title: 'שכונות שחייבים לראות', paragraphs: ['[פסקה.]'], image: 'valley' },
-      { id: 'views', title: 'תצפיות על העיר', paragraphs: ['[פסקה.]'], tours: ['medellin-viewpoints-tour'] },
-      { id: 'football', title: 'משחק כדורגל', paragraphs: ['[פסקה.]'], tours: ['atletico-nacional-match'] },
-      { id: 'nightlife', title: 'חיי לילה', paragraphs: ['[פסקה.]'], tours: ['chiva-rumbera'] },
-    ],
+    description: "מה עושים במדג'ין? קומונה 13, אל פובלדו ולאורלס, סיור אסקובר, תצפיות, משחק של נסיונל וחיי לילה, עם טיפים של ישראלי שגר בעיר.",
+    markdown: true,
+    tours: ['comuna-13-tour', 'pablo-escobar-tour', 'medellin-viewpoints-tour', 'atletico-nacional-match', 'chiva-rumbera'],
+    sections: [],
   },
   {
     slug: 'nature-near-medellin',
@@ -83,11 +80,43 @@ export const guides: Guide[] = [
     sub: 'הטבע הכי יפה במרחק נסיעה מהעיר',
     image: 'cave',
     tag: 'טבע',
-    description: "הטבע הכי יפה ליד מדג'ין: חרדין, מפלים, מערות ורכיבה על סוסים.",
-    sections: [
-      { id: 'jardin', title: 'חרדין', paragraphs: ['[פסקה.]'], image: 'jardin', tours: ['jardin-day-trip'] },
-      { id: 'antioquia', title: 'כפרי אנטיוקיה', paragraphs: ['[פסקה.]'], tours: ['colombian-for-a-day'] },
-    ],
+    description: "טבע ליד מדג'ין: חרדין עם מערה ומפל, רכיבה על סוסים, כפרי אנטיוקיה, מצנח רחיפה וגואטפה. איך בוחרים את טיול היום שמתאים לכם.",
+    markdown: true,
+    tours: ['jardin-day-trip', 'colombian-for-a-day', 'guatape-private'],
+    sections: [],
+  },
+  {
+    slug: 'colombia-safety-israelis',
+    title: 'האם בטוח לטייל בקולומביה? המדריך לישראלים',
+    seoTitle: 'האם בטוח בקולומביה? טיפים לישראלים',
+    sub: 'מה באמת צריך לדעת, מישראלי שגר במדג׳ין',
+    image: 'medday',
+    tag: 'תכנון',
+    description: "האם בטוח לטייל בקולומביה? מה לבדוק לפני הטיסה, הכלל no dar papaya, מוניות, בילויים בלילה ואיפה לישון, מישראלי שגר במדג'ין.",
+    markdown: true,
+    sections: [],
+  },
+  {
+    slug: 'medellin-airport-transfer',
+    title: "משדה התעופה למדג'ין: הסעה, מונית או אוטובוס?",
+    seoTitle: "משדה התעופה ריונגרו למדג'ין: הסעה או מונית",
+    sub: 'שדה התעופה חוסה מריה קורדובה (MDE) בריונגרו',
+    image: 'van',
+    tag: 'תכנון',
+    description: "איך מגיעים משדה התעופה של מדג'ין (MDE, ריונגרו) למלון: הסעה פרטית, מונית מהעמדה הרשמית, אוטובוס או אפליקציה, וטיפים לנחיתה.",
+    markdown: true,
+    sections: [],
+  },
+  {
+    slug: 'where-to-stay-medellin',
+    title: "איפה לישון במדג'ין: אל פובלדו, לאורלס או אנביגאדו?",
+    seoTitle: "איפה לישון במדג'ין: פובלדו או לאורלס?",
+    sub: 'השכונות הכי טובות לפי סוג המטייל',
+    image: 'mednight',
+    tag: 'מדריך עיר',
+    description: "איפה לישון במדג'ין? השוואה בין אל פובלדו, לאורלס ואנביגאדו: למי מתאימה כל שכונה, רעש, מחירים וטיפים להזמנת מלון.",
+    markdown: true,
+    sections: [],
   },
 ];
 

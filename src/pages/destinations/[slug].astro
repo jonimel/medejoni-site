@@ -15,7 +15,8 @@ interface Props { dest: Destination }
 const { dest } = Astro.props;
 const list = tours.filter((t) => t.destination === dest.slug);
 const more = tours.filter((t) => t.destination !== dest.slug);
-const related = guides.filter((g) => g.sections.some((s) => s.tours?.some((x) => list.find((t) => t.slug === x))));
+const inList = (x: string) => list.some((t) => t.slug === x);
+const related = guides.filter((g) => g.tours?.some(inList) || g.sections.some((s) => s.tours?.some(inList)));
 const others = destinations.filter((d) => !d.comingSoon && d.slug !== dest.slug);
 const seo = destinationSeo[dest.slug];
 const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
