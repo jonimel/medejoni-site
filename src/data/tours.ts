@@ -31,6 +31,8 @@ export interface Tour {
   minPeople: number;
   addOns: AddOn[];
   addOnsNote?: string;
+  /** Only one add-on can be picked. */
+  singleAddOn?: boolean;
   pickup: string;
   bookAheadHours: number;
   duration: string;
@@ -245,20 +247,21 @@ export const tours: Tour[] = [
     kind: 'private',
     destination: 'jardin',
     place: 'חרדין, אנטיוקיה',
-    short: 'ג׳יפים, מערה או רכיבה על סוסים, באחד הכפרים היפים באנטיוקיה.',
-    intro: 'יום באחד הכפרים היפים באנטיוקיה, עם אטרקציה לבחירה: טיול ג׳יפים, סיור במערה או רכיבה על סוסים.',
+    short: 'ג׳יפים ומערה, או רכיבה על סוסים, באחד הכפרים היפים באנטיוקיה.',
+    intro: 'יום באחד הכפרים היפים באנטיוקיה, עם אטרקציה אחת לבחירה: טיול ג׳יפים וסיור במערה, או רכיבה על סוסים.',
     includes: ['הסעה', 'מדריך צמוד'],
-    excludes: ['אטרקציות (139,000 COP כל אחת)'],
+    excludes: [],
     tiers: [
       { min: 4, price: 309000, label: '4–5 משתתפים' },
       { min: 6, price: 279000, label: '6 משתתפים ומעלה' },
     ],
     minPeople: 4,
     addOns: [
-      { id: 'jeep', name: 'טיול ג׳יפים', price: 139000 },
-      { id: 'cave', name: 'סיור במערה', price: 139000 },
-      { id: 'horses', name: 'רכיבה על סוסים', price: 139000 },
+      { id: 'jeep-cave', name: 'טיול ג׳יפים + סיור במערה', price: 119000 },
+      { id: 'horses', name: 'רכיבה על סוסים', price: 119000 },
     ],
+    singleAddOn: true,
+    addOnsNote: 'אפשר לבחור אטרקציה אחת.',
     pickup: pickupHotel,
     bookAheadHours: 48,
     duration: 'יום מלא',

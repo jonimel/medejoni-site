@@ -7,7 +7,7 @@ import { site } from '../data/site';
 // Minimal tour data for the client-side booking flow.
 const data = JSON.stringify(tours.map((t) => ({
   slug: t.slug, title: t.title, image: `/images/${t.images[0]}.webp`, tiers: t.tiers, min: t.minPeople,
-  addOns: t.addOns, pickup: t.pickup, ahead: t.bookAheadHours,
+  addOns: t.addOns, single: !!t.singleAddOn, pickup: t.pickup, ahead: t.bookAheadHours,
 })));
 ---
 <Base title="הזמנת טיול" description="השלמת הזמנה לטיול בקולומביה עם Medejoni." noindex>
@@ -150,7 +150,7 @@ const data = JSON.stringify(tours.map((t) => ({
 <script>
   type Tier = { min: number; price: number };
   type AddOn = { id: string; name: string; price?: number };
-  type T = { slug: string; title: string; image: string; tiers: Tier[]; min: number; addOns: AddOn[]; pickup: string; ahead: number };
+  type T = { slug: string; title: string; image: string; tiers: Tier[]; min: number; addOns: AddOn[]; single?: boolean; pickup: string; ahead: number };
 
   const root = document.querySelector<HTMLElement>('[data-booking-root]')!;
   const tours = JSON.parse(root.dataset.tours!) as T[];
@@ -185,12 +185,15 @@ const data = JSON.stringify(tours.map((t) => ({
     if (t.addOns.length) {
       const fs = document.createElement('div');
       fs.className = 'addon-list';
-      fs.innerHTML = '<strong>תוספות</strong>';
+      fs.innerHTML = t.single ? '<strong>תוספות (אחת לבחירה)</strong>' : '<strong>תוספות</strong>';
       t.addOns.forEach((a) => {
         const l = document.createElement('label');
         const cb = document.createElement('input');
         cb.type = 'checkbox'; cb.value = a.id; cb.checked = selectedAddons.has(a.id);
-        cb.addEventListener('change', () => { cb.checked ? selectedAddons.add(a.id) : selectedAddons.delete(a.id); render(); });
+        cb.addEventListener('change', () => {
+          if (cb.checked && t.single) { selectedAddons.clear(); fs.querySelectorAll<HTMLInputElement>('input').forEach((o) => { if (o !== cb) o.checked = false; }); }
+          cb.checked ? selectedAddons.add(a.id) : selectedAddons.delete(a.id); render();
+        });
         l.append(cb, ` ${a.name} `);
         const s = document.createElement('span');
         s.style.cssText = 'margin-inline-start:auto;color:var(--muted);font-size:14px';

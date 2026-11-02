@@ -47,6 +47,7 @@ const booking = JSON.stringify({
   tiers: tour.tiers,
   min: tour.minPeople,
   addOns: tour.addOns,
+  single: !!tour.singleAddOn,
   aheadHours: tour.bookAheadHours,
 });
 ---
@@ -255,7 +256,7 @@ const booking = JSON.stringify({
   type AddOn = { id: string; name: string; price?: number };
   const box = document.querySelector<HTMLElement>('[data-booking]');
   if (box) {
-    const cfg = JSON.parse(box.dataset.booking!) as { slug: string; tiers: Tier[]; min: number; addOns: AddOn[]; aheadHours: number };
+    const cfg = JSON.parse(box.dataset.booking!) as { slug: string; tiers: Tier[]; min: number; addOns: AddOn[]; aheadHours: number; single?: boolean };
     const out = box.querySelector<HTMLOutputElement>('[data-people]')!;
     const dec = box.querySelector<HTMLButtonElement>('[data-dec]')!;
     const inc = box.querySelector<HTMLButtonElement>('[data-inc]')!;
@@ -279,7 +280,10 @@ const booking = JSON.stringify({
     };
     dec.addEventListener('click', () => { people = Math.max(cfg.min, people - 1); render(); });
     inc.addEventListener('click', () => { people = Math.min(20, people + 1); render(); });
-    addons.forEach((a) => a.addEventListener('change', render));
+    addons.forEach((a) => a.addEventListener('change', () => {
+      if (cfg.single && a.checked) addons.forEach((o) => { if (o !== a) o.checked = false; });
+      render();
+    }));
     box.querySelector('[data-book]')!.addEventListener('click', () => {
       if (!date.value || date.value < date.min) { date.focus(); date.reportValidity(); return; }
       const p = new URLSearchParams({ tour: cfg.slug, date: date.value, people: String(people) });
