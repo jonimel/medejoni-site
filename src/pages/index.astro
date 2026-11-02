@@ -67,7 +67,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
 
   <section class="section wrap reveal" style="padding-bottom:40px">
     <h2 class="section-title">יעדים בקולומביה</h2>
-    <Carousel label="יעדים">
+    <Carousel label="יעדים" auto>
       {destinations.map((d) => (
         d.comingSoon && d.link ? (
           <a href={d.link} class="dest-card card">

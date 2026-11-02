@@ -201,6 +201,30 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
       track.addEventListener('scroll', update, { passive: true });
       window.addEventListener('resize', update);
       update();
+
+      // Auto-advance (opt-in): every 4s, loops back to the start, pauses while the
+      // visitor hovers, touches or focuses it, or when it is off screen.
+      if (root.hasAttribute('data-auto') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        let paused = false;
+        let visible = false;
+        let resumeAt = 0;
+        const hold = (ms: number) => { resumeAt = Date.now() + ms; };
+        root.addEventListener('mouseenter', () => (paused = true));
+        root.addEventListener('mouseleave', () => (paused = false));
+        root.addEventListener('focusin', () => (paused = true));
+        root.addEventListener('focusout', () => (paused = false));
+        track.addEventListener('touchstart', () => hold(8000), { passive: true });
+        prev?.addEventListener('click', () => hold(8000));
+        next?.addEventListener('click', () => hold(8000));
+        new IntersectionObserver(([e]) => (visible = e.isIntersecting), { threshold: 0.4 }).observe(root);
+        setInterval(() => {
+          if (paused || !visible || document.hidden || Date.now() < resumeAt) return;
+          const max = track.scrollWidth - track.clientWidth;
+          if (max < 4) return;
+          if (Math.abs(track.scrollLeft) >= max - 4) track.scrollTo({ left: 0 });
+          else track.scrollBy({ left: -step() });
+        }, 4000);
+      }
     });
   </script>
 </body>
