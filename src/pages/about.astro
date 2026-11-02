@@ -3,9 +3,9 @@ import Base from '../layouts/Base.astro';
 import { img, waLink } from '../data/site';
 
 const steps = [
-  { title: 'חוויות אותנטיות', text: 'המקומות שאני באמת אוהב, לא רק מה שמופיע בכל מדריך.' },
-  { title: 'שירות אישי', text: 'אני מלווה אתכם לאורך כל הדרך, בעברית ובוואטסאפ.' },
-  { title: 'מחירים הוגנים', text: 'אני עובד עם מדריכים מקצועיים ושותפים מקומיים שאני מכיר.' },
+  { title: 'קולומביה אותנטית', text: 'המקומות, האנשים והטעמים שאני חי כאן כל יום, לא מה שמופיע בכל מדריך.' },
+  { title: 'הכל דרכי', text: 'אני בונה איתכם את הטיול, בוחר מי ילווה אתכם ונשאר זמין לאורך כל הדרך.' },
+  { title: 'מחירים הוגנים', text: 'מחירים של מקומי, בלי תיווך של סוכנות.' },
 ];
 // TODO: replace with real reviews from travelers.
 const reviews = [
@@ -14,13 +14,13 @@ const reviews = [
   { text: '[ביקורת שלישית]', who: '[שם] · [טיול]' },
 ];
 ---
-<Base title="מי אני – יונתן מילמן, ישראלי במדג'ין" description="היי, אני יונתן מילמן, ישראלי שגר במדג'ין. אני מארגן טיולים פרטיים וקבוצתיים בקולומביה בעברית, עם מדריכים מקומיים ושירות אישי." image={img('yonatan')} nav="about">
+<Base title="מי אני – יונתן מילמן, ישראלי במדג'ין" description="היי, אני יונתן מילמן, ישראלי שגר במדג'ין. אני מראה לכם את קולומביה האותנטית, כמו שהמקומיים חיים אותה, ומלווה אתכם אישית לאורך כל הטיול." image={img('yonatan')} nav="about">
   <section style="background:var(--yellow)">
     <div class="wrap a-hero">
       <div style="display:flex;flex-direction:column;gap:18px">
         <span class="pill pill-blue" style="align-self:flex-start">מי אני</span>
         <h1 style="font-size:clamp(40px,6vw,56px);line-height:1.1;font-weight:800">היי, אני יונתן.<br />ישראלי שגר במדג'ין.</h1>
-        <p style="font-size:20px;line-height:1.7;max-width:560px">אני מכיר את העיר, את התרבות המקומית ואת האטרקציות הכי טובות באזור, ורוצה שתכירו את קולומביה בצורה הכי טובה שיש.</p>
+        <p style="font-size:20px;line-height:1.7;max-width:560px">קולומביה היא הבית שלי. אני רוצה שתחוו אותה כמו שאני חי אותה: מקומית, אמיתית, עם האנשים והמקומות שאני מכיר. ואני איתכם לאורך כל הדרך.</p>
         <a href={waLink()} class="btn btn-dark" style="align-self:flex-start" target="_blank" rel="noopener">דברו איתי בוואטסאפ</a>
       </div>
       <div class="mosaic">

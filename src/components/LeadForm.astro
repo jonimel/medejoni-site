@@ -2,7 +2,7 @@
 // "Leave your details" form. Submissions go to Netlify Forms (form name "lead"),
 // which emails each lead. Submit handling lives in Base.astro.
 interface Props { title?: string; sub?: string; source: string }
-const { title = 'השאירו פרטים, ויונתן יחזור אליכם', sub = 'שאלה על טיול, הסעה או טיסה? תשובה בעברית, בדרך כלל באותו יום.', source } = Astro.props;
+const { title = 'השאירו פרטים, ויונתן יחזור אליכם', sub = 'שאלה על טיול, הסעה או טיסה? אני עונה אישית, בדרך כלל באותו יום.', source } = Astro.props;
 const options = ['טיול', 'הסעה משדה התעופה', 'מעבר בין ערים', 'סגירת טיסות', 'תכנון טיול שלם', 'אחר'];
 ---
 <section class="lead-wrap" id="contact">

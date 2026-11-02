@@ -17,7 +17,7 @@ const more = tours.filter((t) => t.destination !== dest.slug);
 const related = guides.filter((g) => g.sections.some((s) => s.tours?.some((x) => list.find((t) => t.slug === x))));
 const others = destinations.filter((d) => !d.comingSoon && d.slug !== dest.slug);
 ---
-<Base title={`טיולים ב${dest.name} (${dest.latin}) בעברית`} description={`${dest.intro} טיולים פרטיים וקבוצתיים ב${dest.name} עם יונתן מילמן.`} image={img(dest.hero)} nav="destinations">
+<Base title={`טיולים ב${dest.name} (${dest.latin}) עם יונתן`} description={`${dest.intro} חוויה מקומית ואותנטית ב${dest.name} עם יונתן מילמן.`} image={img(dest.hero)} nav="destinations">
   <section class="d-hero">
     <img src={img(dest.hero)} alt={dest.name} />
     <div class="wrap d-hero-body">

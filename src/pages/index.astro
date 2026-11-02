@@ -11,15 +11,15 @@ import { services } from '../data/services';
 import { img, thumb, waLink } from '../data/site';
 
 const slides = [
-  { kicker: 'טיולים בעברית בקולומביה', title: 'גלו את קולומביה', sub: "טיולים פרטיים וקבוצתיים, עם יונתן שגר במדג'ין", img: 'peniol' },
+  { kicker: 'קולומביה, כמו שהמקומיים חיים אותה', title: 'קולומביה אותנטית, עם יונתן', sub: "לא עוד טיול של תיירים. המקומות, האנשים והטעמים שאני חי כאן כל יום", img: 'peniol' },
   { kicker: "מדג'ין בלילה", title: 'העיר נדלקת בערב', sub: 'סיור מצפים, צ׳יבה רומברה, ואורות העמק מלמעלה', img: 'mednight' },
   { kicker: 'חוויה של פעם בחיים', title: 'משחק של אתלטיקו נסיונל', sub: 'כרטיס, הסעה, מדריך, והבירה הראשונה עלינו', img: 'fireworks' },
 ];
 const why = [
-  { icon: 'ע', blob: '#FDE2EC', title: 'שירות אישי בעברית', text: "יונתן גר במדג'ין ומלווה אתכם לאורך כל הדרך." },
+  { icon: 'י', blob: '#FDE2EC', title: 'יונתן איתכם', text: "אני גר במדג'ין, בונה איתכם את הטיול ונשאר זמין לאורך כל הדרך." },
   { icon: '↺', blob: '#D9F7EF', title: 'ביטול גמיש', text: 'אפשר לבטל עד 12 שעות לפני תחילת הטיול.' },
   { icon: '⌂', blob: '#DCE7FF', title: 'איסוף מהמלון', text: 'בכל הטיולים, חוץ מהקבוצתי לגואטפה.' },
-  { icon: '★', blob: '#FFF3B0', title: 'מדריכים מקצועיים', text: 'עובדים רק עם מדריכים ושותפים מקומיים שאנחנו מכירים.' },
+  { icon: '★', blob: '#FFF3B0', title: 'מקומי באמת', text: 'רק אנשים ומקומות שאני מכיר אישית, לא מה שמופיע בכל מדריך.' },
   { icon: '$', blob: '#FFE1E1', title: 'מחירים הוגנים', text: 'כל המחירים לאדם, ובפרטי המחיר יורד ככל שאתם יותר.' },
 ];
 const countFor = (slug: string) => {
@@ -35,8 +35,8 @@ const cats = [
 const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview', 'ctg-street', 'watermelon', 'umbrellas2', 'cave', 'horseride', 'ctg-fort', 'meddusk', 'wakeboard2', 'horses', 'cow'];
 ---
 <Base
-  title="Medejoni | טיולים בקולומביה בעברית – מדג'ין, גואטפה ועוד"
-  description="טיולים פרטיים וקבוצתיים בקולומביה בעברית, עם יונתן מילמן שגר במדג'ין: גואטפה, סיור אסקובר, משחק של נסיונל, חרדין ועוד. איסוף מהמלון וביטול גמיש."
+  title="Medejoni | קולומביה אותנטית עם יונתן – מדג'ין, גואטפה ועוד"
+  description="לחוות את קולומביה כמו מקומי, עם יונתן מילמן שגר במדג'ין: גואטפה, סיור אסקובר, משחק של נסיונל, חרדין ועוד. איסוף מהמלון וביטול גמיש."
 >
   <section class="hero" aria-label="סליידר ראשי" data-hero>
     {slides.map((s, i) => (
@@ -90,7 +90,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
 
   <section class="section reveal" style="padding-top:40px;padding-bottom:56px">
     <div class="wrap">
-      <h2 class="section-title">למה להזמין דרכנו?</h2>
+      <h2 class="section-title">למה לטייל איתי?</h2>
       <Carousel label="למה אנחנו">
         {why.map((w) => (
           <div class="why-card">
@@ -118,7 +118,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
 
   <section class="wrap reveal" style="padding-bottom:72px">
     <h2 class="section-title" style="margin-bottom:8px">מעבר לטיולים</h2>
-    <p style="margin:0 0 32px;text-align:center;font-size:18px;color:#4B5563">מהנחיתה ועד הטיסה הבאה, אנחנו דואגים לכל הדרך.</p>
+    <p style="margin:0 0 32px;text-align:center;font-size:18px;color:#4B5563">מהנחיתה ועד הטיסה הבאה, אני דואג לכם לכל הדרך.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px">
       {services.map((s) => (
         <a href={`/services/#${s.id}`} class="card" style="text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;gap:12px;background:#fff;padding-bottom:22px;position:relative">
@@ -143,7 +143,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
           <h3 style="font-size:24px;color:var(--blue);margin-bottom:12px">טיולים קבוצתיים</h3>
           <ul style="margin:0;padding-inline-start:20px;font-size:17px;line-height:1.9;color:var(--text)">
             <li>יוצאים כל יום בשעות קבועות</li>
-            <li>מופעלים על ידי חברה מקומית, ואנחנו דואגים לרישום ולשריון המקומות</li>
+            <li>אני דואג לרישום ולשריון המקומות, ונשאר זמין לכל שאלה</li>
             <li>מזמינים לפחות 36 שעות מראש</li>
           </ul>
         </div>
@@ -167,8 +167,8 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
       </div>
       <div style="flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:14px">
         <h2 style="font-size:36px">היי, אני יונתן מילמן</h2>
-        <p style="font-size:18px;line-height:1.7;color:var(--text)">אני ישראלי שגר במדג'ין, ומכיר את העיר, את התרבות המקומית ואת האטרקציות הכי טובות באזור. המטרה שלי היא לתת לכם חוויות אותנטיות, שירות אישי ומחירים הוגנים, כדי שתכירו את קולומביה בצורה הכי טובה שיש.</p>
-        <p style="font-size:18px;line-height:1.7;color:var(--text)">אני עובד עם מדריכים מקצועיים ושותפים מקומיים, ומלווה אתכם לאורך כל הדרך.</p>
+        <p style="font-size:18px;line-height:1.7;color:var(--text)">אני ישראלי שגר במדג'ין, וקולומביה היא הבית שלי. אני לא מוכר חבילות, אני מכיר אתכם לקולומביה שאני חי: השכונות, האנשים, האוכל והמקומות שתיירים בדרך כלל לא מגיעים אליהם.</p>
+        <p style="font-size:18px;line-height:1.7;color:var(--text)">כל טיול עובר דרכי: אני בונה אותו איתכם, בוחר את האנשים שילוו אתכם, ונשאר איתכם לאורך כל הדרך.</p>
         <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px">
           <a href={waLink()} class="btn btn-yellow" target="_blank" rel="noopener">דברו איתי בוואטסאפ</a>
           <a href="/about/" class="btn btn-outline">עוד עליי</a>
