@@ -68,6 +68,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
   <header class="site-header">
     <div class="wrap">
       <a href="/" class="logo" aria-label="Medejoni, לדף הבית">
+        <svg class="co-flag" viewBox="0 0 30 20" width="54" height="36" role="img" aria-label="דגל קולומביה"><rect width="30" height="10" fill="#FCD116"/><rect y="10" width="30" height="5" fill="#003893"/><rect y="15" width="30" height="5" fill="#CE1126"/></svg>
         <span class="logo-mark">M</span>
         <span class="logo-text">
           <span class="logo-name">Medejoni</span>
@@ -77,10 +78,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
       <nav class="main-nav" aria-label="ניווט ראשי">
         {navItems.map((n) => <a href={n.href} aria-current={nav === n.key ? 'page' : undefined}>{n.label}</a>)}
       </nav>
-      <span class="header-end">
-        <svg class="co-flag" viewBox="0 0 30 20" width="54" height="36" role="img" aria-label="דגל קולומביה"><rect width="30" height="10" fill="#FCD116"/><rect y="10" width="30" height="5" fill="#003893"/><rect y="15" width="30" height="5" fill="#CE1126"/></svg>
       <button class="menu-btn" type="button" aria-label="תפריט" aria-expanded="false" aria-controls="mobile-nav" data-menu-btn><Icon name="menu" size={26} /></button>
-      </span>
     </div>
     <nav id="mobile-nav" class="mobile-nav" aria-label="תפריט נייד">
       {navItems.map((n) => <a href={n.href}>{n.label}</a>)}
