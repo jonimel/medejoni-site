@@ -21,6 +21,7 @@ const reviews = [
         <span class="pill pill-blue" style="align-self:flex-start">מי אני</span>
         <h1 style="font-size:clamp(40px,6vw,56px);line-height:1.1;font-weight:800">היי, אני יונתן.<br />ישראלי שגר במדג'ין.</h1>
         <p style="font-size:20px;line-height:1.7;max-width:560px">קולומביה היא הבית שלי. אני רוצה שתחוו אותה כמו שאני חי אותה: מקומית, אמיתית, עם האנשים והמקומות שאני מכיר. ואני איתכם לאורך כל הדרך.</p>
+        <p style="font-size:18px;line-height:1.7;max-width:560px">גם אם אתם מוצ'ילרים אחרי צבא, במסיבת רווקים או פנסיונרים שיוצאים לחוות, אני אתכנן בשבילכם חוויה נעימה שמתאימה בדיוק לכם.</p>
         <a href={waLink()} class="btn btn-dark" style="align-self:flex-start" target="_blank" rel="noopener">דברו איתי בוואטסאפ</a>
       </div>
       <div class="mosaic">
@@ -74,7 +75,7 @@ const reviews = [
 <style>
   .a-hero { padding-top: 64px; padding-bottom: 64px; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 48px; align-items: center; }
   .mosaic { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 200px 200px; gap: 12px; }
-  .mosaic img { width: 100%; height: 100%; object-fit: cover; border-radius: 22px; }
+  .mosaic img { width: 100%; height: 100%; object-fit: cover; border-radius: 22px; border: 5px solid #fff; box-shadow: 0 6px 18px rgba(20, 27, 45, 0.12); }
   .rv-track { display: grid; width: 100%; overflow: hidden; }
   .rv { grid-area: 1 / 1; margin: 0; opacity: 0; transform: translateX(-20px); transition: opacity 500ms ease, transform 500ms ease; }
   .rv.is-active { opacity: 1; transform: none; }
@@ -84,7 +85,7 @@ const reviews = [
   .rv-dot { height: 8px; width: 8px; border-radius: 999px; background: #C7D2E8; transition: all 300ms ease; }
   .rv-dot.is-active { width: 24px; background: var(--blue); }
   .photo-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 200px; gap: 12px; }
-  .photo-grid img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
+  .photo-grid img { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; border: 5px solid #fff; box-shadow: 0 6px 18px rgba(20, 27, 45, 0.12); }
   @media (max-width: 900px) {
     .a-hero { grid-template-columns: minmax(0, 1fr); }
     .photo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 160px; }

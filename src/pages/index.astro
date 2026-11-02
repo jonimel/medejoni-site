@@ -16,11 +16,10 @@ const slides = [
   { kicker: 'חוויה של פעם בחיים', title: 'משחק של אתלטיקו נסיונל', sub: 'כרטיס, הסעה, מדריך, והבירה הראשונה עלינו', img: 'fireworks' },
 ];
 const why = [
-  { icon: 'י', blob: '#FDE2EC', title: 'יונתן איתכם', text: "אני גר במדג'ין, בונה איתכם את הטיול ונשאר זמין לאורך כל הדרך." },
-  { icon: '↺', blob: '#D9F7EF', title: 'ביטול גמיש', text: 'אפשר לבטל עד 12 שעות לפני תחילת הטיול.' },
-  { icon: '⌂', blob: '#DCE7FF', title: 'איסוף מהמלון', text: 'בכל הטיולים, חוץ מהקבוצתי לגואטפה.' },
-  { icon: '★', blob: '#FFF3B0', title: 'מקומי באמת', text: 'רק אנשים ומקומות שאני מכיר אישית, לא מה שמופיע בכל מדריך.' },
-  { icon: '$', blob: '#FFE1E1', title: 'מחירים הוגנים', text: 'כל המחירים לאדם, ובפרטי המחיר יורד ככל שאתם יותר.' },
+  { icon: 'י', blob: '#FDE2EC', title: 'ליווי אישי וזמינות', text: "גר במדג'ין, קולומביה, וזמין לתת שירות לאורך כל הדרך." },
+  { icon: '$', blob: '#FFE1E1', title: 'מחירים מקומיים – לכל כיס', text: 'מחירים של מקומי, בלי תיווך של סוכנות. בטיולים פרטיים המחיר לאדם יורד ככל שאתם יותר.' },
+  { icon: '★', blob: '#FFF3B0', title: 'אותנטיות', text: 'חוויות מקומיות ואותנטיות, לא מה שכולם עושים.' },
+  { icon: '✓', blob: '#D9F7EF', title: 'ניסיון', text: 'מעל שנתיים של ניסיון והיכרות עם העיר.' },
 ];
 const countFor = (slug: string) => {
   const n = tours.filter((t) => t.destination === slug).length;
@@ -30,6 +29,7 @@ const cats = [
   ['all', 'הכל'],
   ['private', 'טיולים פרטיים'],
   ['group', 'טיולים קבוצתיים'],
+  ['couples', 'טיולים לזוגות'],
   ['evening', 'חוויות ערב'],
 ];
 const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview', 'ctg-street', 'watermelon', 'umbrellas2', 'cave', 'horseride', 'ctg-fort', 'meddusk', 'wakeboard2', 'horses', 'cow'];
@@ -66,7 +66,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
   <div class="flag" aria-hidden="true"><span></span><span></span><span></span></div>
 
   <section class="section wrap reveal" style="padding-bottom:40px">
-    <h2 class="section-title">יעדים בקולומביה</h2>
+    <h2 class="section-title">היעדים שלנו</h2>
     <Carousel label="יעדים" auto>
       {destinations.map((d) => (
         d.comingSoon && d.link ? (
@@ -110,6 +110,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
     <div class="chips" role="group" aria-label="סינון לפי סוג טיול">
       {cats.map(([k, label], i) => <button type="button" class="chip" aria-pressed={i === 0 ? 'true' : 'false'} data-cat={k}>{label}</button>)}
     </div>
+    <p class="couples-note" data-couples-note hidden>זמן לשניים, בלי לחץ ובלי קבוצה: נופים, שקיעות, חופים צלולים וחוויות שבונים סביבכם. אני מתאים לכם את הקצב, ודואג לכל השאר.</p>
     <div class="tour-grid tour-swipe">
       {tours.map((t) => <TourCard tour={t} />)}
     </div>
@@ -117,7 +118,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
   </section>
 
   <section class="wrap reveal" style="padding-bottom:72px">
-    <h2 class="section-title" style="margin-bottom:8px">מעבר לטיולים</h2>
+    <h2 class="section-title" style="margin-bottom:8px">השירותים שלנו</h2>
     <p style="margin:0 0 32px;text-align:center;font-size:18px;color:#4B5563">מהנחיתה ועד הטיסה הבאה, אני דואג לכם לכל הדרך.</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px">
       {services.map((s) => (
@@ -137,7 +138,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
   <section style="background:var(--sky)" class="reveal">
     <div class="wrap section">
       <h2 class="section-title" style="margin-bottom:8px">קבוצתי או פרטי?</h2>
-      <p style="margin:0 0 32px;text-align:center;font-size:18px;color:#4B5563">בכל הטיולים יש איסוף מהמלון, חוץ מהטיול הקבוצתי לגואטפה שיוצא מפארק אל פובלדו.</p>
+      <p style="margin:0 0 32px;text-align:center;font-size:18px;color:#4B5563">אפשר לטייל לבד, או להצטרף לקבוצה קיימת – בהתאם לסוג המטיילים שאתם!</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px">
         <div style="background:#fff;border-radius:20px;padding:28px;border-top:6px solid var(--blue)">
           <h3 style="font-size:24px;color:var(--blue);margin-bottom:12px">טיולים קבוצתיים</h3>
@@ -167,7 +168,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
       </div>
       <div style="flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:14px">
         <h2 style="font-size:36px">היי, אני יונתן מילמן</h2>
-        <p style="font-size:18px;line-height:1.7;color:var(--text)">אני ישראלי שגר במדג'ין, וקולומביה היא הבית שלי. אני לא מוכר חבילות, אני מכיר אתכם לקולומביה שאני חי: השכונות, האנשים, האוכל והמקומות שתיירים בדרך כלל לא מגיעים אליהם.</p>
+        <p style="font-size:18px;line-height:1.7;color:var(--text)">אני גר במדג'ין כבר שנתיים, וקולומביה היא הבית השני שלי. אני מכיר לכם את קולומביה שאני חי: השכונות, האנשים, האוכל והמקומות שתיירים בדרך כלל לא מגיעים אליהם.</p>
         <p style="font-size:18px;line-height:1.7;color:var(--text)">כל טיול עובר דרכי: אני בונה אותו איתכם, בוחר את האנשים שילוו אתכם, ונשאר איתכם לאורך כל הדרך.</p>
         <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px">
           <a href={waLink()} class="btn btn-yellow" target="_blank" rel="noopener">דברו איתי בוואטסאפ</a>
@@ -244,7 +245,10 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
     const cards = [...root.querySelectorAll<HTMLElement>('.tour-card')];
     chips.forEach((c) => c.addEventListener('click', () => {
       chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
-      cards.forEach((card) => { card.hidden = c.dataset.cat !== 'all' && card.dataset.kind !== c.dataset.cat; });
+      const cat = c.dataset.cat;
+      cards.forEach((card) => { card.hidden = cat === 'couples' ? !card.hasAttribute('data-couples') : cat !== 'all' && card.dataset.kind !== cat; });
+      const note = root.querySelector<HTMLElement>('[data-couples-note]');
+      if (note) note.hidden = cat !== 'couples';
       root.querySelector('.tour-swipe')?.scrollTo({ left: 0 });
     }));
   });

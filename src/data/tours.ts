@@ -38,6 +38,8 @@ export interface Tour {
   images: string[];
   faq: { q: string; a: string }[];
   featured?: boolean;
+  /** Shown under the "טיולים לזוגות" filter on the home page. */
+  couples?: boolean;
 }
 
 export const kindLabel: Record<TourKind, string> = {
@@ -82,6 +84,7 @@ export const tours: Tour[] = [
   },
   {
     slug: 'guatape-private',
+    couples: true,
     title: 'גואטפה – טיול פרטי',
     kind: 'private',
     destination: 'guatape',
@@ -216,6 +219,7 @@ export const tours: Tour[] = [
   },
   {
     slug: 'medellin-viewpoints-tour',
+    couples: true,
     title: "סיור מצפים במדג'ין",
     kind: 'evening',
     destination: 'medellin',
@@ -236,6 +240,7 @@ export const tours: Tour[] = [
   },
   {
     slug: 'jardin-day-trip',
+    couples: true,
     title: 'יום קסום בחרדין',
     kind: 'private',
     destination: 'jardin',
@@ -285,6 +290,7 @@ export const tours: Tour[] = [
   // Santa Marta boat tours to Tayrona park. Source: partner catalog (Nov 2026), prices +10% per Jonathan.
   {
     slug: 'tayrona-cabo-san-juan',
+    couples: true,
     title: 'טאירונה – קאבו סן חואן',
     kind: 'group',
     destination: 'santa-marta',
@@ -338,6 +344,7 @@ export const tours: Tour[] = [
   },
   {
     slug: 'tayrona-bahia-cinto',
+    couples: true,
     title: 'טאירונה – באיה סינטו',
     kind: 'group',
     destination: 'santa-marta',
@@ -363,6 +370,7 @@ export const tours: Tour[] = [
   },
   {
     slug: 'tayrona-playa-cristal',
+    couples: true,
     title: 'טאירונה – פלאיה קריסטל',
     kind: 'group',
     destination: 'santa-marta',

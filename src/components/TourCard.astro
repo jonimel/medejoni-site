@@ -5,7 +5,7 @@ interface Props { tour: Tour; lazy?: boolean }
 const { tour, lazy = true } = Astro.props;
 const price = fromPrice(tour);
 ---
-<a href={`/tours/${tour.slug}/`} class="tour-card card" data-kind={tour.kind} data-dest={tour.destination} data-price={price} data-title={tour.title}>
+<a href={`/tours/${tour.slug}/`} class="tour-card card" data-kind={tour.kind} data-couples={tour.couples ? '' : undefined} data-dest={tour.destination} data-price={price} data-title={tour.title}>
   <div class="media">
     <img class="zoom" src={thumb(tour.images[0])} alt={tour.title} loading={lazy ? 'lazy' : 'eager'} width="600" height="420" />
     <span class="pill">{kindLabel[tour.kind]}</span>

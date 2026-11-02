@@ -2,10 +2,10 @@
   --yellow: #FCD116;
   --yellow-soft: #FFF1A8;
   --cream: #FFF8E1;
-  --blue: #003893;
-  --blue-dark: #002566;
-  --navy: #0D2A66;
-  --navy-deep: #081C47;
+  --blue: #2852A0;
+  --blue-dark: #1E3F7D;
+  --navy: #2A4277;
+  --navy-deep: #22375F;
   --red: #CE1126;
   --ink: #141B2D;
   --text: #374151;
@@ -157,9 +157,9 @@ button { font: inherit; }
 .chip[aria-pressed='true'], .chip[aria-selected='true'] { background: var(--blue); color: #fff; border-color: var(--blue); }
 
 /* Marquee */
-.marquee { display: flex; gap: 16px; width: max-content; animation: marquee 40s linear infinite; }
+.marquee { display: flex; gap: 16px; width: max-content; animation: marquee 40s linear infinite; padding: 8px 0 14px; }
 .marquee:hover { animation-play-state: paused; }
-.marquee img { width: 240px; height: 300px; object-fit: cover; border-radius: 16px; flex: 0 0 auto; }
+.marquee img { width: 240px; height: 300px; object-fit: cover; border-radius: 18px; flex: 0 0 auto; border: 5px solid #fff; box-shadow: 0 6px 18px rgba(20, 27, 45, 0.12); }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(50%); } }
 
 /* Breadcrumbs */
@@ -167,17 +167,18 @@ button { font: inherit; }
 .crumbs a { color: var(--muted); }
 
 /* Footer */
-.site-footer { color: #fff; }
-.site-footer .top { background: var(--navy); }
+.site-footer { color: var(--ink); }
+.site-footer .top { background: linear-gradient(180deg, #FFFBEC 0%, #F3F6FC 100%); border-top: 1px solid #F1E7C0; }
 .site-footer .cols { padding: 48px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; }
 .site-footer .col { display: flex; flex-direction: column; gap: 14px; }
 .site-footer .col strong { font-size: 20px; }
-.site-footer .col a { color: #fff; text-decoration: none; }
-.site-footer .col a:hover { color: var(--yellow); }
-.site-footer .bottom { background: var(--navy-deep); }
-.site-footer .bottom .wrap { padding-top: 18px; padding-bottom: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; font-size: 14px; color: #D1D5DB; }
+.site-footer .col a { color: var(--text); text-decoration: none; }
+.site-footer .col a:hover { color: var(--blue); }
+.site-footer .col strong { color: var(--ink); }
+.site-footer .bottom { background: #EAF0F9; }
+.site-footer .bottom .wrap { padding-top: 18px; padding-bottom: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; font-size: 14px; color: #4B556B; }
 .site-footer .social { display: flex; gap: 18px; }
-.site-footer .social a { color: #fff; display: inline-flex; }
+.site-footer .social a { color: var(--blue); display: inline-flex; }
 
 /* Floating WhatsApp (mobile) */
 .wa-float {
@@ -242,7 +243,7 @@ button { font: inherit; }
 }
 
 /* Wordmark in soft Colombian flag colors (header only; footer stays white) */
-.site-header .logo-name {
+.site-header .logo-name, .site-footer .logo-name {
   background: linear-gradient(90deg, #D9A400 0%, #D9A400 30%, #1A4A9E 50%, #1A4A9E 68%, #B8202F 88%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
@@ -257,3 +258,4 @@ button { font: inherit; }
 
 /* Page headers: a soft blend of the flag colours (yellow, blue, red), not solid yellow. */
 .page-top { background: linear-gradient(250deg, #FFEFA6 0%, #FFF6D1 38%, #E2EBFB 70%, #FBE0E3 100%); }
+.couples-note { max-width: 640px; margin: -4px auto 24px; text-align: center; font-size: 17px; line-height: 1.6; color: var(--text); background: #FDEEF1; border-radius: 14px; padding: 12px 18px; }
