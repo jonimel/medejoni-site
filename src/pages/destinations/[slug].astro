@@ -1,0 +1,125 @@
+---
+import Base from '../../layouts/Base.astro';
+import TourCard from '../../components/TourCard.astro';
+import Carousel from '../../components/Carousel.astro';
+import { destinations, type Destination } from '../../data/destinations';
+import { tours } from '../../data/tours';
+import { guides } from '../../data/guides';
+import { img, waLink } from '../../data/site';
+
+export function getStaticPaths() {
+  return destinations.filter((d) => !d.comingSoon).map((dest) => ({ params: { slug: dest.slug }, props: { dest } }));
+}
+interface Props { dest: Destination }
+const { dest } = Astro.props;
+const list = tours.filter((t) => t.destination === dest.slug);
+const more = tours.filter((t) => t.destination !== dest.slug);
+const related = guides.filter((g) => g.sections.some((s) => s.tours?.some((x) => list.find((t) => t.slug === x))));
+const others = destinations.filter((d) => !d.comingSoon && d.slug !== dest.slug);
+---
+<Base title={`טיולים ב${dest.name} (${dest.latin}) בעברית`} description={`${dest.intro} טיולים פרטיים וקבוצתיים ב${dest.name} עם יונתן מילמן.`} image={img(dest.hero)} nav="destinations">
+  <section class="d-hero">
+    <img src={img(dest.hero)} alt={dest.name} />
+    <div class="wrap d-hero-body">
+      <nav class="crumbs" aria-label="פירורי לחם" style="color:#fff"><a href="/" style="color:#fff">דף הבית</a> › יעדים › {dest.name}</nav>
+      <span class="pill">{dest.latin}</span>
+      <h1>{dest.name}</h1>
+      <p>{dest.intro}</p>
+    </div>
+  </section>
+  <div class="flag" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <nav class="d-tabs" aria-label="בדף הזה">
+    <div class="wrap">
+      <a href="#tours">טיולים</a>
+      {dest.highlights && <a href="#highlights">מה רואים</a>}
+      {dest.bestTime && <a href="#when">מתי לטוס</a>}
+      {related.length > 0 && <a href="#guides">מדריכים</a>}
+    </div>
+  </nav>
+
+  <section id="tours" class="wrap section">
+    <h2 class="section-title">טיולים ב{dest.name}</h2>
+    <div class="tour-grid">{list.map((t) => <TourCard tour={t} />)}</div>
+  </section>
+
+  {dest.highlights && (
+    <section id="highlights" style="background:var(--cream)">
+      <div class="wrap section">
+        <h2 class="section-title">מה רואים ב{dest.name}</h2>
+        <div class="hl">
+          {dest.highlights.map((h, i) => (
+            <div class="reveal" style={`transition-delay:${i * 80}ms`}>
+              <span class="num">{String(i + 1).padStart(2, '0')}</span>
+              <strong>{h.title}</strong>
+              <span>{h.text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {dest.bestTime && (
+    <section id="when" class="wrap section">
+      <div class="when">
+        <div>
+          <h2 style="font-size:32px;margin-bottom:12px">מתי לטוס ל{dest.name}?</h2>
+          <p style="font-size:18px;line-height:1.7;color:var(--text)">{dest.bestTime}</p>
+          <a href={waLink(`היי יונתן, אני מתכנן טיול ל${dest.name}`)} class="btn btn-blue" style="margin-top:20px" target="_blank" rel="noopener">תכננו איתי את הטיול</a>
+        </div>
+        <img src={img(dest.image)} alt="" loading="lazy" />
+      </div>
+    </section>
+  )}
+
+  {related.length > 0 && (
+    <section id="guides" style="background:var(--sky)">
+      <div class="wrap section">
+        <h2 class="section-title">מדריכים על {dest.name}</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px">
+          {related.map((g) => (
+            <a href={`/guides/${g.slug}/`} class="card" style="display:flex;gap:16px;align-items:center;background:#fff;border-radius:16px;padding:12px;text-decoration:none;color:inherit">
+              <img src={img(g.image)} alt="" loading="lazy" style="width:110px;height:90px;object-fit:cover;border-radius:12px" />
+              <span style="display:flex;flex-direction:column;gap:4px"><strong style="font-size:18px">{g.title}</strong><span style="color:var(--link);font-weight:600">לקריאה ←</span></span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="wrap section">
+    <h2 class="section-title">יעדים נוספים</h2>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-bottom:48px">
+      {others.map((d) => <a href={`/destinations/${d.slug}/`} class="chip" style="display:inline-flex;align-items:center;text-decoration:none">{d.name}</a>)}
+    </div>
+    <h2 class="section-title">עוד טיולים</h2>
+    <Carousel label="עוד טיולים">{more.map((t) => <TourCard tour={t} />)}</Carousel>
+  </section>
+</Base>
+
+<style>
+  .d-hero { position: relative; min-height: 460px; display: flex; align-items: flex-end; color: #fff; overflow: hidden; background: var(--navy); }
+  .d-hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; animation: kenburns 14s ease-out both; }
+  .d-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,20,48,0.8), rgba(8,20,48,0.1) 70%); }
+  .d-hero-body { position: relative; z-index: 1; padding-bottom: 48px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+  .d-hero h1 { font-size: clamp(44px, 7vw, 76px); font-weight: 800; }
+  .d-hero p { font-size: 20px; max-width: 640px; line-height: 1.6; }
+  @keyframes kenburns { from { transform: scale(1.12); } to { transform: scale(1); } }
+  .d-tabs { position: sticky; top: 69px; z-index: 40; background: #fff; border-bottom: 1px solid var(--line); }
+  .d-tabs .wrap { display: flex; gap: 28px; overflow-x: auto; }
+  .d-tabs a { flex: 0 0 auto; min-height: 56px; display: flex; align-items: center; font-weight: 600; color: var(--ink); text-decoration: none; border-bottom: 3px solid transparent; }
+  .d-tabs a:hover { border-bottom-color: var(--yellow); }
+  .hl { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .hl div { background: #fff; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 8px; }
+  .hl .num { font-size: 40px; font-weight: 800; color: var(--yellow); -webkit-text-stroke: 1px var(--ink); }
+  .hl strong { font-size: 20px; }
+  .hl span:last-child { color: var(--muted); }
+  .when { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+  .when img { width: 100%; height: 360px; object-fit: cover; border-radius: 24px; }
+  @media (max-width: 900px) {
+    .when { grid-template-columns: 1fr; }
+    .d-tabs { top: 65px; }
+  }
+</style>

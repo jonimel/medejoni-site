@@ -1,0 +1,167 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import { site, waLink } from '../data/site';
+import { tours } from '../data/tours';
+import { guides } from '../data/guides';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  nav?: 'tours' | 'destinations' | 'guides' | 'about';
+  waText?: string;
+  noindex?: boolean;
+}
+const { title, description, image = '/images/peniol.jpg', jsonLd, nav, waText, noindex } = Astro.props;
+const fullTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+const wa = waLink(waText);
+const navItems = [
+  { key: 'tours', href: '/tours/', label: 'טיולים' },
+  { key: 'destinations', href: '/destinations/', label: 'יעדים' },
+  { key: 'guides', href: '/guides/', label: 'מדריכים' },
+  { key: 'about', href: '/about/', label: 'מי אני' },
+];
+const orgLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TravelAgency',
+  name: site.name,
+  url: Astro.site?.toString(),
+  founder: { '@type': 'Person', name: 'Yonatan Milman' },
+  areaServed: 'Colombia',
+  inLanguage: 'he',
+};
+const footerTours = tours.filter((t) => t.featured).slice(0, 4);
+---
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex" />}
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="he_IL" />
+  <meta property="og:site_name" content={site.name} />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#FCD116" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd ? [orgLd].concat(jsonLd as any) : orgLd)} />
+</head>
+<body class="has-wa-float">
+  <a href="#main" class="sr-only">דלג לתוכן</a>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="/" class="logo" aria-label="Medejoni, לדף הבית">
+        <span class="logo-mark">M</span>
+        <span class="logo-text">
+          <span class="logo-name">Medejoni</span>
+          <span class="logo-sub">{site.tagline}</span>
+        </span>
+      </a>
+      <nav class="main-nav" aria-label="ניווט ראשי">
+        {navItems.map((n) => <a href={n.href} aria-current={nav === n.key ? 'page' : undefined}>{n.label}</a>)}
+      </nav>
+      <a href={wa} class="btn btn-outline btn-pill header-cta" target="_blank" rel="noopener"><Icon name="whatsapp" size={18} />וואטסאפ ליונתן</a>
+      <button class="menu-btn" type="button" aria-label="תפריט" aria-expanded="false" aria-controls="mobile-nav" data-menu-btn><Icon name="menu" size={26} /></button>
+    </div>
+    <nav id="mobile-nav" class="mobile-nav" aria-label="תפריט נייד">
+      {navItems.map((n) => <a href={n.href}>{n.label}</a>)}
+      <a href={wa} target="_blank" rel="noopener">וואטסאפ ליונתן</a>
+    </nav>
+  </header>
+
+  <main id="main"><slot /></main>
+
+  <footer class="site-footer">
+    <div class="top">
+      <div class="wrap cols">
+        <div class="col">
+          <strong>הטיולים שלנו</strong>
+          {footerTours.map((t) => <a href={`/tours/${t.slug}/`}>{t.title}</a>)}
+          <a href="/tours/" style="color: var(--yellow)">לכל הטיולים ←</a>
+        </div>
+        <div class="col">
+          <strong>מדריכים</strong>
+          {guides.map((g) => <a href={`/guides/${g.slug}/`}>{g.title}</a>)}
+        </div>
+        <div class="col">
+          <strong>מידע</strong>
+          <a href="/about/">מי אני</a>
+          <a href="/tours/#faq">שאלות נפוצות</a>
+          <span style="color:#D1D5DB">ביטול עד 12 שעות לפני הטיול</span>
+        </div>
+        <div class="col">
+          <strong>דברו איתי</strong>
+          <span style="color: #D1D5DB; line-height: 1.6">יונתן עונה בוואטסאפ, בעברית.</span>
+          <a href={wa} class="btn btn-yellow btn-pill" style="align-self: flex-start; color: var(--ink)" target="_blank" rel="noopener">וואטסאפ</a>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="wrap">
+        <span class="logo" style="color:#fff"><span class="logo-mark" style="width:34px;height:34px;font-size:18px">M</span><span class="logo-name" style="font-size:20px">Medejoni</span></span>
+        <span>© {new Date().getFullYear()} Medejoni · {site.owner}. כל הזכויות שמורות.</span>
+        <span class="social">
+          <a href={site.instagram} aria-label="אינסטגרם" target="_blank" rel="noopener"><Icon name="instagram" size={24} /></a>
+          <a href={site.tiktok} aria-label="טיקטוק" target="_blank" rel="noopener"><Icon name="tiktok" size={24} /></a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <a href={wa} class="wa-float" target="_blank" rel="noopener" data-wa-float><Icon name="whatsapp" />וואטסאפ ליונתן</a>
+
+  <script>
+    // Mobile menu
+    const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+    const menu = document.getElementById('mobile-nav');
+    btn?.addEventListener('click', () => {
+      const open = menu?.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', String(!!open));
+    });
+
+    // Reveal-on-scroll
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+    // Carousels: arrow buttons scroll the track by one card
+    document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+      const track = root.querySelector<HTMLElement>('.carousel-track')!;
+      const prev = root.querySelector<HTMLButtonElement>('.carousel-btn.prev');
+      const next = root.querySelector<HTMLButtonElement>('.carousel-btn.next');
+      const step = () => {
+        const first = track.firstElementChild as HTMLElement | null;
+        return first ? first.getBoundingClientRect().width + 24 : 300;
+      };
+      // RTL: scrollLeft is 0 at start and negative going forward.
+      const update = () => {
+        const max = track.scrollWidth - track.clientWidth;
+        const pos = Math.abs(track.scrollLeft);
+        if (prev) prev.disabled = pos < 4;
+        if (next) next.disabled = pos > max - 4;
+      };
+      prev?.addEventListener('click', () => track.scrollBy({ left: step() }));
+      next?.addEventListener('click', () => track.scrollBy({ left: -step() }));
+      track.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    });
+  </script>
+</body>
+</html>

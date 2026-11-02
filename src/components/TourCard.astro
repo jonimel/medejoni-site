@@ -1,0 +1,23 @@
+---
+import { type Tour, kindLabel, fromPrice, hasTiers } from '../data/tours';
+import { formatCOP, img } from '../data/site';
+interface Props { tour: Tour; lazy?: boolean }
+const { tour, lazy = true } = Astro.props;
+const price = fromPrice(tour);
+---
+<a href={`/tours/${tour.slug}/`} class="tour-card card" data-kind={tour.kind} data-dest={tour.destination} data-price={price} data-title={tour.title}>
+  <div class="media">
+    <img class="zoom" src={img(tour.images[0])} alt={tour.title} loading={lazy ? 'lazy' : 'eager'} width="600" height="420" />
+    <span class="pill">{kindLabel[tour.kind]}</span>
+  </div>
+  <div class="body">
+    <span class="place">{tour.place}, קולומביה</span>
+    <h3>{tour.title}</h3>
+    <span class="desc">{tour.short}</span>
+    <div class="tags">{tour.tags.map((t) => <span class="tag">{t}</span>)}</div>
+    <div class="foot">
+      <span class="price">{hasTiers(tour) ? 'החל מ־' : ''}<span class="ltr">{formatCOP(price)}</span><small>לאדם</small></span>
+      <span style="font-size:14px;color:var(--muted)">{tour.duration}</span>
+    </div>
+  </div>
+</a>

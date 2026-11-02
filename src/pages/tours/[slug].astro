@@ -1,0 +1,292 @@
+---
+import Base from '../../layouts/Base.astro';
+import TourCard from '../../components/TourCard.astro';
+import Carousel from '../../components/Carousel.astro';
+import Icon from '../../components/Icon.astro';
+import { tours, kindLabel, fromPrice, hasTiers, type Tour } from '../../data/tours';
+import { getDestination } from '../../data/destinations';
+import { formatCOP, img, waLink } from '../../data/site';
+
+export function getStaticPaths() {
+  return tours.map((tour) => ({ params: { slug: tour.slug }, props: { tour } }));
+}
+interface Props { tour: Tour }
+const { tour } = Astro.props;
+const dest = getDestination(tour.destination)!;
+const price = fromPrice(tour);
+const similar = tours.filter((t) => t.slug !== tour.slug).sort((a, b) => Number(b.destination === tour.destination) - Number(a.destination === tour.destination));
+const upsell = tour.slug === 'guatape-group' ? tours.find((t) => t.slug === 'guatape-private') : undefined;
+const ld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'TouristTrip',
+    name: tour.title,
+    description: tour.intro,
+    image: tour.images.map((i) => new URL(img(i), Astro.site).toString()),
+    touristType: 'Israeli travelers',
+    inLanguage: 'he',
+    offers: { '@type': 'Offer', price, priceCurrency: 'COP', availability: 'https://schema.org/InStock' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: tour.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'דף הבית', item: new URL('/', Astro.site).toString() },
+      { '@type': 'ListItem', position: 2, name: 'טיולים', item: new URL('/tours/', Astro.site).toString() },
+      { '@type': 'ListItem', position: 3, name: tour.title },
+    ],
+  },
+];
+const booking = JSON.stringify({
+  slug: tour.slug,
+  tiers: tour.tiers,
+  min: tour.minPeople,
+  addOns: tour.addOns,
+  aheadHours: tour.bookAheadHours,
+});
+---
+<Base title={`${tour.title} – ${tour.place}`} description={`${tour.intro} ${hasTiers(tour) ? 'החל מ־' : ''}${formatCOP(price)} לאדם.`} image={img(tour.images[0])} nav="tours" jsonLd={ld} waText={`היי יונתן, אשמח לפרטים על "${tour.title}"`}>
+  <div class="wrap">
+    <nav class="crumbs" aria-label="פירורי לחם"><a href="/">דף הבית</a> › <a href="/tours/">טיולים</a> › <a href={`/destinations/${dest.slug}/`}>{dest.name}</a> › {tour.title}</nav>
+
+    <div class="gallery" data-gallery>
+      <div class="g-main">
+        {tour.images.map((im, i) => <img src={img(im)} alt={`${tour.title} – תמונה ${i + 1}`} class:list={{ 'is-active': i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />)}
+        <button type="button" class="g-arrow g-prev" aria-label="התמונה הקודמת" data-g-prev><Icon name="chev-r" size={22} /></button>
+        <button type="button" class="g-arrow g-next" aria-label="התמונה הבאה" data-g-next><Icon name="chev-l" size={22} /></button>
+        <span class="g-count ltr" data-g-count>1/{tour.images.length}</span>
+      </div>
+      <div class="g-thumbs">
+        {tour.images.map((im, i) => (
+          <button type="button" aria-label={`תמונה ${i + 1}`} data-g-thumb={i} class:list={{ 'is-active': i === 0 }}><img src={img(im)} alt="" loading="lazy" /></button>
+        ))}
+      </div>
+    </div>
+
+    <div class="tour-layout">
+      <article>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+          <span class="pill">{kindLabel[tour.kind]}</span>
+          <span class="pill pill-soft">{tour.duration}</span>
+        </div>
+        <h1 style="font-size:clamp(30px,4.5vw,44px);font-weight:800">{tour.title}</h1>
+        <p style="display:flex;align-items:center;gap:6px;color:var(--link);margin-top:8px"><Icon name="pin" size={18} />{tour.place}, קולומביה</p>
+
+        <ul class="facts">
+          <li><Icon name="pin" /><span><strong>נקודת יציאה</strong>{tour.pickup}</span></li>
+          <li><Icon name="clock" /><span><strong>להזמין מראש</strong>לפחות {tour.bookAheadHours} שעות</span></li>
+          <li><Icon name="users" /><span><strong>משתתפים</strong>{tour.minPeople > 1 ? `מינימום ${tour.minPeople}` : 'מאדם אחד'}</span></li>
+          <li><Icon name="check" /><span><strong>ביטול</strong>עד 12 שעות לפני</span></li>
+        </ul>
+
+        <a href="#book" class="btn btn-yellow btn-block jump" style="display:none">בחירת תאריך והזמנה</a>
+
+        <h2 class="h2">על הטיול</h2>
+        <p class="lead">{tour.intro}</p>
+
+        <div class="inc">
+          <div>
+            <h3>מה כלול</h3>
+            <ul>{tour.includes.map((x) => <li class="yes">{x}</li>)}</ul>
+          </div>
+          {tour.excludes.length > 0 && (
+            <div>
+              <h3>לא כלול</h3>
+              <ul>{tour.excludes.map((x) => <li class="no">{x}</li>)}</ul>
+            </div>
+          )}
+        </div>
+
+        {hasTiers(tour) && (
+          <>
+            <h2 class="h2">מחירים לפי גודל הקבוצה</h2>
+            <div class="tiers">
+              {tour.tiers.map((t) => <div><span>{t.label}</span><strong class="ltr">{formatCOP(t.price)}</strong><small>לאדם</small></div>)}
+            </div>
+          </>
+        )}
+
+        {upsell && (
+          <a href={`/tours/${upsell.slug}/`} class="upsell card">
+            <img src={img(upsell.images[0])} alt="" loading="lazy" />
+            <div>
+              <strong>רוצים את גואטפה רק לעצמכם?</strong>
+              <span>בטיול הפרטי יש נהג ומדריך צמוד, ואפשר להוסיף אופנועי ים, ווייקבורד וסקי מים.</span>
+              <span style="color:var(--blue);font-weight:700">לטיול הפרטי ←</span>
+            </div>
+          </a>
+        )}
+
+        <h2 class="h2">שאלות נפוצות</h2>
+        <div class="faq">
+          {tour.faq.map((f, i) => <details open={i === 0}><summary>{f.q}</summary><p>{f.a}</p></details>)}
+        </div>
+      </article>
+
+      <aside class="book" id="book" aria-label="הזמנה" data-booking={booking}>
+        <div class="book-card">
+          <div class="price" style="font-size:26px">{hasTiers(tour) ? 'החל מ־' : ''}<span class="ltr">{formatCOP(price)}</span><small>לאדם</small></div>
+          <label class="field">
+            <span>תאריך</span>
+            <input type="date" required data-date />
+          </label>
+          <div class="field">
+            <span id="ppl-label">משתתפים</span>
+            <div class="counter" role="group" aria-labelledby="ppl-label">
+              <button type="button" aria-label="פחות משתתפים" data-dec>−</button>
+              <output data-people aria-live="polite">{Math.max(2, tour.minPeople)}</output>
+              <button type="button" aria-label="יותר משתתפים" data-inc>+</button>
+            </div>
+            {tour.minPeople > 1 && <small style="color:var(--muted)">מינימום {tour.minPeople} משתתפים</small>}
+          </div>
+          {tour.addOns.length > 0 && (
+            <fieldset class="field addons">
+              <legend>תוספות</legend>
+              {tour.addOns.map((a) => (
+                <label><input type="checkbox" value={a.id} data-addon /> {a.name} <span style="margin-inline-start:auto;color:var(--muted);font-size:14px">{a.price ? `+${a.price.toLocaleString('en-US')}` : 'בתיאום'}</span></label>
+              ))}
+              {tour.addOnsNote && <small style="color:var(--muted)">{tour.addOnsNote}</small>}
+            </fieldset>
+          )}
+          <div class="total"><span>סה״כ</span><strong class="ltr" data-total></strong></div>
+          <button type="button" class="btn btn-yellow btn-block" data-book>להזמנה</button>
+          <a href={waLink(`היי יונתן, יש לי שאלה על "${tour.title}"`)} class="btn btn-outline btn-block" target="_blank" rel="noopener"><Icon name="whatsapp" size={18} />שאלה ליונתן</a>
+          <small style="display:block;text-align:center;color:var(--muted)">ביטול חינם עד 12 שעות לפני</small>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <section style="background:var(--sky)">
+    <div class="wrap section">
+      <h2 class="section-title">טיולים נוספים שאולי תאהבו</h2>
+      <Carousel label="טיולים דומים">
+        {similar.map((t) => <TourCard tour={t} />)}
+      </Carousel>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .gallery { display: grid; grid-template-columns: 1fr 260px; gap: 12px; margin-bottom: 36px; }
+  .g-main { position: relative; height: 480px; border-radius: 20px; overflow: hidden; background: var(--navy); }
+  .g-main img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 600ms ease; }
+  .g-main img.is-active { opacity: 1; }
+  .g-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; border: 0; background: rgba(255,255,255,0.92); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+  .g-prev { right: 16px; } .g-next { left: 16px; }
+  .g-count { position: absolute; bottom: 14px; left: 14px; background: rgba(0,0,0,0.6); color: #fff; font-size: 14px; padding: 4px 10px; border-radius: 999px; }
+  .g-thumbs { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; max-height: 480px; }
+  .g-thumbs button { flex: 0 0 150px; border: 3px solid transparent; border-radius: 16px; padding: 0; overflow: hidden; cursor: pointer; background: none; opacity: 0.75; transition: all 200ms ease; }
+  .g-thumbs button.is-active, .g-thumbs button:hover { border-color: var(--yellow); opacity: 1; }
+  .g-thumbs img { width: 100%; height: 100%; object-fit: cover; }
+  .tour-layout { display: grid; grid-template-columns: 1fr 380px; gap: 48px; align-items: start; padding-bottom: 72px; }
+  .facts { list-style: none; padding: 0; margin: 28px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+  .facts li { display: flex; gap: 12px; align-items: flex-start; background: var(--cream); border-radius: 14px; padding: 14px; color: var(--blue); }
+  .facts span { display: flex; flex-direction: column; color: var(--text); font-size: 15px; }
+  .facts strong { color: var(--ink); font-size: 15px; }
+  .h2 { font-size: 28px; font-weight: 700; margin: 40px 0 14px; }
+  .lead { font-size: 19px; line-height: 1.8; color: #1F2937; }
+  .inc { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 28px; }
+  .inc h3 { font-size: 20px; margin-bottom: 10px; }
+  .inc ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 17px; }
+  .inc li { display: flex; gap: 10px; align-items: center; }
+  .inc li::before { flex: 0 0 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
+  .inc li.yes::before { content: '✓'; background: #D9F7EF; color: #0F7A55; }
+  .inc li.no::before { content: '✕'; background: #FFE1E1; color: var(--red); }
+  .tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+  .tiers div { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+  .tiers strong { font-size: 20px; }
+  .tiers small { color: var(--muted); }
+  .upsell { margin-top: 40px; display: flex; gap: 18px; align-items: center; text-decoration: none; color: inherit; background: var(--yellow); border-radius: 18px; padding: 14px; }
+  .upsell img { width: 140px; height: 110px; object-fit: cover; border-radius: 12px; flex: 0 0 auto; }
+  .upsell div { display: flex; flex-direction: column; gap: 6px; font-size: 16px; }
+  .upsell strong { font-size: 20px; }
+  .book { position: sticky; top: 90px; }
+  .book-card { border: 1px solid var(--line); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: 16px; background: #fff; }
+  .field { display: flex; flex-direction: column; gap: 6px; font-weight: 600; border: 0; padding: 0; margin: 0; }
+  .field input[type='date'] { min-height: 48px; border: 1px solid #D1D5DB; border-radius: 12px; padding: 0 12px; font: inherit; font-weight: 400; }
+  .counter { display: flex; align-items: center; justify-content: space-between; border: 1px solid #D1D5DB; border-radius: 12px; padding: 4px; }
+  .counter button { width: 44px; height: 44px; border-radius: 10px; border: 0; background: var(--sky); font-size: 22px; cursor: pointer; color: var(--blue); }
+  .counter button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .counter output { font-size: 20px; font-weight: 700; }
+  .addons legend { font-weight: 600; margin-bottom: 6px; }
+  .addons label { display: flex; align-items: center; gap: 10px; min-height: 40px; font-weight: 400; cursor: pointer; }
+  .addons input { width: 18px; height: 18px; accent-color: var(--blue); }
+  .total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed var(--line); padding-top: 14px; font-size: 17px; }
+  .total strong { font-size: 24px; }
+  @media (max-width: 900px) {
+    .gallery { grid-template-columns: 1fr; }
+    .g-main { height: 300px; }
+    .g-thumbs { flex-direction: row; max-height: none; overflow-x: auto; }
+    .g-thumbs button { flex: 0 0 110px; height: 80px; }
+    .tour-layout { grid-template-columns: 1fr; gap: 24px; }
+    .book { position: static; scroll-margin-top: 80px; }
+    .jump { display: flex !important; }
+    .upsell img { width: 96px; height: 80px; }
+  }
+</style>
+
+<script>
+  // Gallery
+  const g = document.querySelector<HTMLElement>('[data-gallery]');
+  if (g) {
+    const imgs = [...g.querySelectorAll<HTMLImageElement>('.g-main img')];
+    const thumbs = [...g.querySelectorAll<HTMLButtonElement>('[data-g-thumb]')];
+    const count = g.querySelector('[data-g-count]')!;
+    let i = 0;
+    const show = (n: number) => {
+      i = (n + imgs.length) % imgs.length;
+      imgs.forEach((im, k) => im.classList.toggle('is-active', k === i));
+      thumbs.forEach((t, k) => t.classList.toggle('is-active', k === i));
+      count.textContent = `${i + 1}/${imgs.length}`;
+    };
+    g.querySelector('[data-g-prev]')!.addEventListener('click', () => show(i - 1));
+    g.querySelector('[data-g-next]')!.addEventListener('click', () => show(i + 1));
+    thumbs.forEach((t, k) => t.addEventListener('click', () => show(k)));
+  }
+
+  // Booking widget
+  type Tier = { min: number; price: number };
+  type AddOn = { id: string; name: string; price?: number };
+  const box = document.querySelector<HTMLElement>('[data-booking]');
+  if (box) {
+    const cfg = JSON.parse(box.dataset.booking!) as { slug: string; tiers: Tier[]; min: number; addOns: AddOn[]; aheadHours: number };
+    const out = box.querySelector<HTMLOutputElement>('[data-people]')!;
+    const dec = box.querySelector<HTMLButtonElement>('[data-dec]')!;
+    const inc = box.querySelector<HTMLButtonElement>('[data-inc]')!;
+    const total = box.querySelector<HTMLElement>('[data-total]')!;
+    const date = box.querySelector<HTMLInputElement>('[data-date]')!;
+    const addons = [...box.querySelectorAll<HTMLInputElement>('[data-addon]')];
+    let people = Number(out.textContent);
+
+    const earliest = new Date(Date.now() + cfg.aheadHours * 3600 * 1000);
+    const iso = (d: Date) => d.toISOString().slice(0, 10);
+    date.min = iso(earliest);
+    date.value = iso(new Date(earliest.getTime() + 24 * 3600 * 1000));
+
+    const perPerson = (n: number) => [...cfg.tiers].sort((a, b) => b.min - a.min).find((t) => n >= t.min)?.price ?? cfg.tiers[0].price;
+    const render = () => {
+      out.textContent = String(people);
+      dec.disabled = people <= cfg.min;
+      inc.disabled = people >= 20;
+      const extras = addons.filter((a) => a.checked).reduce((s, a) => s + (cfg.addOns.find((x) => x.id === a.value)?.price ?? 0), 0);
+      total.textContent = ((perPerson(people) + extras) * people).toLocaleString('en-US') + ' COP';
+    };
+    dec.addEventListener('click', () => { people = Math.max(cfg.min, people - 1); render(); });
+    inc.addEventListener('click', () => { people = Math.min(20, people + 1); render(); });
+    addons.forEach((a) => a.addEventListener('change', render));
+    box.querySelector('[data-book]')!.addEventListener('click', () => {
+      if (!date.value || date.value < date.min) { date.focus(); date.reportValidity(); return; }
+      const p = new URLSearchParams({ tour: cfg.slug, date: date.value, people: String(people) });
+      const chosen = addons.filter((a) => a.checked).map((a) => a.value);
+      if (chosen.length) p.set('addons', chosen.join(','));
+      location.href = `/booking/?${p}`;
+    });
+    render();
+  }
+</script>

@@ -1,0 +1,31 @@
+---
+import Base from '../../layouts/Base.astro';
+import { destinations } from '../../data/destinations';
+import { tours } from '../../data/tours';
+import { img } from '../../data/site';
+const count = (slug: string) => {
+  const n = tours.filter((t) => t.destination === slug).length;
+  return n === 0 ? 'בקרוב' : n === 1 ? 'טיול אחד' : `${n} טיולים`;
+};
+---
+<Base title="יעדים בקולומביה" description="יעדים לטיול בקולומביה עם Medejoni: מדג'ין, גואטפה, חרדין, כפרי אנטיוקיה, ובקרוב קרטחנה וסנטה מרתה." nav="destinations">
+  <section style="background:var(--yellow)">
+    <div class="wrap" style="padding-top:40px;padding-bottom:40px">
+      <nav class="crumbs" aria-label="פירורי לחם" style="padding-top:0;color:var(--ink)"><a href="/" style="color:var(--ink)">דף הבית</a> › יעדים</nav>
+      <h1 style="font-size:clamp(34px,5vw,52px);font-weight:800">יעדים בקולומביה</h1>
+      <p style="font-size:19px;margin-top:10px">מתחילים במדג'ין, ומגיעים לכל קולומביה.</p>
+    </div>
+  </section>
+  <section class="wrap section">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px">
+      {destinations.map((d) => d.comingSoon ? (
+        <div class="dest-card" style={`background:${d.color};flex:none;width:auto`}><div class="cap"><strong>{d.name}</strong><span>בקרוב</span></div></div>
+      ) : (
+        <a href={`/destinations/${d.slug}/`} class="dest-card card" style="flex:none;width:auto">
+          <img class="zoom" src={img(d.image)} alt={d.name} loading="lazy" />
+          <div class="cap"><strong>{d.name}</strong><span>{count(d.slug)}</span></div>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>

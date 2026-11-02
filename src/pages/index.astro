@@ -1,0 +1,223 @@
+---
+import Base from '../layouts/Base.astro';
+import TourCard from '../components/TourCard.astro';
+import Carousel from '../components/Carousel.astro';
+import Icon from '../components/Icon.astro';
+import { tours } from '../data/tours';
+import { destinations } from '../data/destinations';
+import { guides } from '../data/guides';
+import { img, waLink } from '../data/site';
+
+const slides = [
+  { kicker: 'טיולים בעברית בקולומביה', title: 'גלו את קולומביה', sub: "טיולים פרטיים וקבוצתיים, עם יונתן שגר במדג'ין", img: 'peniol' },
+  { kicker: "מדג'ין בלילה", title: 'העיר נדלקת בערב', sub: 'סיור מצפים, צ׳יבה רומברה, ואורות העמק מלמעלה', img: 'mednight' },
+  { kicker: 'חוויה של פעם בחיים', title: 'משחק של אתלטיקו נסיונל', sub: 'כרטיס, הסעה, מדריך, והבירה הראשונה עלינו', img: 'fireworks' },
+];
+const why = [
+  { icon: 'ע', blob: '#FDE2EC', title: 'שירות אישי בעברית', text: "יונתן גר במדג'ין ומלווה אתכם לאורך כל הדרך." },
+  { icon: '↺', blob: '#D9F7EF', title: 'ביטול גמיש', text: 'אפשר לבטל עד 12 שעות לפני תחילת הטיול.' },
+  { icon: '⌂', blob: '#DCE7FF', title: 'איסוף מהמלון', text: 'בכל הטיולים, חוץ מהקבוצתי לגואטפה.' },
+  { icon: '★', blob: '#FFF3B0', title: 'מדריכים מקצועיים', text: 'עובדים רק עם מדריכים ושותפים מקומיים שאנחנו מכירים.' },
+  { icon: '$', blob: '#FFE1E1', title: 'מחירים הוגנים', text: 'כל המחירים לאדם, ובפרטי המחיר יורד ככל שאתם יותר.' },
+];
+const countFor = (slug: string) => {
+  const n = tours.filter((t) => t.destination === slug).length;
+  return n === 0 ? 'בקרוב' : n === 1 ? 'טיול אחד' : `${n} טיולים`;
+};
+const cats = [
+  ['all', 'הכל'],
+  ['private', 'טיולים פרטיים'],
+  ['group', 'טיולים קבוצתיים'],
+  ['evening', 'חוויות ערב'],
+];
+const moments = ['chivain', 'watermelon', 'lake', 'cave', 'fishing', 'meddusk', 'umbrellas', 'horses', 'cow'];
+---
+<Base
+  title="Medejoni | טיולים בקולומביה בעברית – מדג'ין, גואטפה ועוד"
+  description="טיולים פרטיים וקבוצתיים בקולומביה בעברית, עם יונתן מילמן שגר במדג'ין: גואטפה, סיור אסקובר, משחק של נסיונל, חרדין ועוד. איסוף מהמלון וביטול גמיש."
+>
+  <section class="hero" aria-label="סליידר ראשי" data-hero>
+    {slides.map((s, i) => (
+      <div class:list={['hero-slide', { 'is-active': i === 0 }]} data-kicker={s.kicker} data-title={s.title} data-sub={s.sub}>
+        <img src={img(s.img)} alt="" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+      </div>
+    ))}
+    <div class="hero-body">
+      <div class="hero-text" data-hero-text style="display:flex;flex-direction:column;align-items:center;gap:18px">
+        <span class="pill" style="font-size:14px;padding:6px 14px" data-k>{slides[0].kicker}</span>
+        <h1 data-t>{slides[0].title}</h1>
+        <p data-s>{slides[0].sub}</p>
+      </div>
+      <form class="search" role="search" action="/tours/" method="get">
+        <label>
+          <Icon name="search" />
+          <span class="sr-only">חיפוש טיולים</span>
+          <input type="search" name="q" placeholder="גואטפה, אסקובר, מצפים..." />
+        </label>
+        <button type="submit">חיפוש</button>
+      </form>
+    </div>
+    <div class="dots">
+      {slides.map((_, i) => <button type="button" class:list={['dot', { 'is-active': i === 0 }]} aria-label={`שקופית ${i + 1}`} data-dot={i}></button>)}
+    </div>
+  </section>
+  <div class="flag" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <section class="section wrap reveal" style="padding-bottom:40px">
+    <h2 class="section-title">יעדים בקולומביה</h2>
+    <Carousel label="יעדים">
+      {destinations.map((d) => (
+        d.comingSoon ? (
+          <div class="dest-card" style={`background:${d.color}`}>
+            <div class="cap"><strong>{d.name}</strong><span>בקרוב</span></div>
+          </div>
+        ) : (
+          <a href={`/destinations/${d.slug}/`} class="dest-card card">
+            <img class="zoom" src={img(d.image)} alt={d.name} loading="lazy" />
+            <div class="cap"><strong>{d.name}</strong><span>{countFor(d.slug)}</span></div>
+          </a>
+        )
+      ))}
+    </Carousel>
+  </section>
+
+  <section class="section reveal" style="padding-top:40px;padding-bottom:56px">
+    <div class="wrap">
+      <h2 class="section-title">למה להזמין דרכנו?</h2>
+      <Carousel label="למה אנחנו">
+        {why.map((w) => (
+          <div class="why-card">
+            <span class="blob" aria-hidden="true" style={`background:${w.blob}`}>{w.icon}</span>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <strong style="font-size:20px">{w.title}</strong>
+              <span style="font-size:16px;line-height:1.55;color:#4B5563">{w.text}</span>
+            </div>
+          </div>
+        ))}
+      </Carousel>
+    </div>
+  </section>
+
+  <section class="wrap reveal" style="padding:24px 24px 72px" data-filter-root>
+    <h2 class="section-title" style="margin-bottom:20px">הטיולים שלנו</h2>
+    <div class="chips" role="group" aria-label="סינון לפי סוג טיול">
+      {cats.map(([k, label], i) => <button type="button" class="chip" aria-pressed={i === 0 ? 'true' : 'false'} data-cat={k}>{label}</button>)}
+    </div>
+    <div class="tour-grid">
+      {tours.map((t) => <TourCard tour={t} />)}
+    </div>
+    <div style="text-align:center;margin-top:36px"><a href="/tours/" class="btn btn-outline">לכל הטיולים</a></div>
+  </section>
+
+  <section style="background:var(--sky)" class="reveal">
+    <div class="wrap section">
+      <h2 class="section-title" style="margin-bottom:8px">קבוצתי או פרטי?</h2>
+      <p style="margin:0 0 32px;text-align:center;font-size:18px;color:#4B5563">בכל הטיולים יש איסוף מהמלון, חוץ מהטיול הקבוצתי לגואטפה שיוצא מפארק אל פובלדו.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px">
+        <div style="background:#fff;border-radius:20px;padding:28px;border-top:6px solid var(--blue)">
+          <h3 style="font-size:24px;color:var(--blue);margin-bottom:12px">טיולים קבוצתיים</h3>
+          <ul style="margin:0;padding-inline-start:20px;font-size:17px;line-height:1.9;color:var(--text)">
+            <li>יוצאים כל יום בשעות קבועות</li>
+            <li>מופעלים על ידי חברה מקומית, ואנחנו דואגים לרישום ולשריון המקומות</li>
+            <li>מזמינים לפחות 36 שעות מראש</li>
+          </ul>
+        </div>
+        <div style="background:#fff;border-radius:20px;padding:28px;border-top:6px solid var(--yellow)">
+          <h3 style="font-size:24px;margin-bottom:12px">טיולים פרטיים</h3>
+          <ul style="margin:0;padding-inline-start:20px;font-size:17px;line-height:1.9;color:var(--text)">
+            <li>מותאמים אליכם: מסלול, נהג, מדריך וליווי אישי לאורך כל היום</li>
+            <li>המחיר לאדם יורד ככל שאתם יותר</li>
+            <li>מומלץ להזמין לפחות 48 שעות מראש</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section reveal">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:40px">
+      <div style="flex:0 0 260px;position:relative">
+        <img src={img('yonatan')} alt="יונתן מילמן רוכב על סוס בהרי אנטיוקיה" loading="lazy" style="width:260px;height:300px;object-fit:cover;object-position:40% 55%;border-radius:24px;border:6px solid var(--yellow)" />
+        <span class="pill pill-blue" style="position:absolute;bottom:-14px;left:20px;font-size:14px;padding:6px 12px">גר במדג'ין</span>
+      </div>
+      <div style="flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:14px">
+        <h2 style="font-size:36px">היי, אני יונתן מילמן</h2>
+        <p style="font-size:18px;line-height:1.7;color:var(--text)">אני ישראלי שגר במדג'ין, ומכיר את העיר, את התרבות המקומית ואת האטרקציות הכי טובות באזור. המטרה שלי היא לתת לכם חוויות אותנטיות, שירות אישי ומחירים הוגנים, כדי שתכירו את קולומביה בצורה הכי טובה שיש.</p>
+        <p style="font-size:18px;line-height:1.7;color:var(--text)">אני עובד עם מדריכים מקצועיים ושותפים מקומיים, ומלווה אתכם לאורך כל הדרך.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px">
+          <a href={waLink()} class="btn btn-yellow" target="_blank" rel="noopener">דברו איתי בוואטסאפ</a>
+          <a href="/about/" class="btn btn-outline">עוד עליי</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="רגעים מהשטח" style="padding:8px 0 72px;overflow:hidden">
+    <div class="wrap" style="margin-bottom:24px;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:12px">
+      <h2 style="font-size:32px">רגעים מהשטח</h2>
+      <span style="display:flex;gap:16px;font-weight:600"><a href="https://www.instagram.com/" target="_blank" rel="noopener">אינסטגרם</a><a href="https://www.tiktok.com/" target="_blank" rel="noopener">טיקטוק</a></span>
+    </div>
+    <div class="marquee">
+      {moments.concat(moments).map((m, i) => <img src={img(m)} alt="" loading="lazy" aria-hidden={i >= moments.length ? 'true' : undefined} />)}
+    </div>
+  </section>
+
+  <section style="background:var(--cream)" class="reveal">
+    <div class="wrap section">
+      <h2 class="section-title">מדריכים לפני שטסים</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px">
+        {guides.map((g) => (
+          <a href={`/guides/${g.slug}/`} class="card" style="text-decoration:none;color:inherit;border-radius:16px;overflow:hidden;background:#fff;display:flex;flex-direction:column">
+            <div style="height:210px;overflow:hidden"><img class="zoom" src={img(g.image)} alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover" /></div>
+            <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:8px">
+              <h3 style="font-size:21px;font-weight:600;line-height:1.4">{g.title}</h3>
+              <span style="font-size:15px;color:var(--muted)">{g.sub}</span>
+              <span style="font-size:15px;color:var(--link);font-weight:600">לקריאה ←</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Hero slider: crossfade every 5.5s, pause when tab hidden or on hover.
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  if (hero) {
+    const slides = [...hero.querySelectorAll<HTMLElement>('.hero-slide')];
+    const dots = [...hero.querySelectorAll<HTMLButtonElement>('[data-dot]')];
+    const text = hero.querySelector<HTMLElement>('[data-hero-text]')!;
+    let i = 0;
+    let timer: number | undefined;
+    const show = (n: number) => {
+      i = (n + slides.length) % slides.length;
+      slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
+      dots.forEach((d, k) => d.classList.toggle('is-active', k === i));
+      text.classList.add('is-changing');
+      setTimeout(() => {
+        const s = slides[i].dataset;
+        text.querySelector('[data-k]')!.textContent = s.kicker ?? '';
+        text.querySelector('[data-t]')!.textContent = s.title ?? '';
+        text.querySelector('[data-s]')!.textContent = s.sub ?? '';
+        text.classList.remove('is-changing');
+      }, 300);
+    };
+    const start = () => { stop(); timer = window.setInterval(() => show(i + 1), 5500); };
+    const stop = () => window.clearInterval(timer);
+    dots.forEach((d, k) => d.addEventListener('click', () => { show(k); start(); }));
+    hero.addEventListener('mouseenter', stop);
+    hero.addEventListener('mouseleave', start);
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) start();
+  }
+
+  // Tour category chips
+  document.querySelectorAll<HTMLElement>('[data-filter-root]').forEach((root) => {
+    const chips = [...root.querySelectorAll<HTMLButtonElement>('[data-cat]')];
+    const cards = [...root.querySelectorAll<HTMLElement>('.tour-card')];
+    chips.forEach((c) => c.addEventListener('click', () => {
+      chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
+      cards.forEach((card) => { card.hidden = c.dataset.cat !== 'all' && card.dataset.kind !== c.dataset.cat; });
+    }));
+  });
+</script>

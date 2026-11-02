@@ -1,0 +1,10 @@
+---
+import Icon from './Icon.astro';
+interface Props { label: string }
+const { label } = Astro.props;
+---
+<div class="carousel" data-carousel role="region" aria-label={label}>
+  <button type="button" class="carousel-btn prev" aria-label="הקודם"><Icon name="chev-r" size={22} /></button>
+  <div class="carousel-track"><slot /></div>
+  <button type="button" class="carousel-btn next" aria-label="הבא"><Icon name="chev-l" size={22} /></button>
+</div>
