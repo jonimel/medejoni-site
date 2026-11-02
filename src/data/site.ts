@@ -12,9 +12,9 @@ export const site = {
   currency: 'COP',
   cancelHours: 12,
   // Google Analytics 4 "Measurement ID" (looks like G-XXXXXXXXXX). Empty = no analytics.
-  gaId: '',
+  gaId: 'G-2PCH4ZRZKL',
   // Google Search Console HTML-tag verification code (only if not verifying through DNS).
-  gscVerification: '',
+  gscVerification: 'nDcN8UFi78rtWutRJ-orbP2TN-MdSRLeYE2bxJkod-o',
 };
 
 /** Builds a wa.me link with a prefilled Hebrew message. */
