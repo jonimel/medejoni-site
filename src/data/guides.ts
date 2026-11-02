@@ -23,7 +23,7 @@ export const guides: Guide[] = [
       { id: 'group-or-private', title: 'קבוצתי או פרטי?', paragraphs: ['[השוואה קצרה בין שני סוגי הטיולים.]'], tours: ['guatape-group', 'guatape-private'] },
       { id: 'el-penol', title: 'סלע אל פניול', paragraphs: ['[פסקה על הסלע, המדרגות והנוף.]'], image: 'peniol' },
       { id: 'village', title: 'הכפר הצבעוני', paragraphs: ['[פסקה על הכפר.]'], image: 'umbrellas' },
-      { id: 'lake', title: 'אטרקציות על האגם', paragraphs: ['[פסקה על אופנועי ים, ווייקבורד, סקי מים ושייט.]'], image: 'jetski' },
+      { id: 'lake', title: 'אטרקציות על האגם', paragraphs: ['[פסקה על אופנועי ים, ווייקבורד, סקי מים ושייט.]'], image: 'wakeboard' },
     ],
   },
   {
