@@ -6,8 +6,8 @@ export const site = {
   owner: 'יונתן מילמן',
   // TODO: Jonathan's WhatsApp number in international format, digits only (e.g. 573001234567).
   whatsapp: '972504560505',
-  instagram: 'https://www.instagram.com/',
-  tiktok: 'https://www.tiktok.com/',
+  instagram: 'https://www.instagram.com/medejoni_col/',
+  tiktok: 'https://www.tiktok.com/@medejoni',
   email: 'yonimelmel@gmail.com',
   currency: 'COP',
   cancelHours: 12,
