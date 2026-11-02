@@ -5,7 +5,7 @@ import Icon from '../../components/Icon.astro';
 import { tours, kindLabel, fromPrice } from '../../data/tours';
 import { destinations } from '../../data/destinations';
 
-const activeDests = destinations.filter((d) => !d.comingSoon);
+const activeDests = destinations.filter((d) => !d.comingSoon && tours.some((t) => t.destination === d.slug));
 const maxPrice = Math.max(...tours.map(fromPrice));
 const faq = [
   { q: 'כל המחירים לאדם?', a: 'כן. כל המחירים באתר הם לאדם, בפסו קולומביאני (COP).' },

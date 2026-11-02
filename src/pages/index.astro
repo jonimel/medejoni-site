@@ -32,7 +32,7 @@ const cats = [
   ['group', 'טיולים קבוצתיים'],
   ['evening', 'חוויות ערב'],
 ];
-const moments = ['wakeboard', 'chivain', 'heliview', 'watermelon', 'umbrellas2', 'cave', 'horseride', 'meddusk', 'wakeboard2', 'horses', 'cow'];
+const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview', 'ctg-street', 'watermelon', 'umbrellas2', 'cave', 'horseride', 'ctg-fort', 'meddusk', 'wakeboard2', 'horses', 'cow'];
 ---
 <Base
   title="Medejoni | טיולים בקולומביה בעברית – מדג'ין, גואטפה ועוד"
@@ -76,7 +76,7 @@ const moments = ['wakeboard', 'chivain', 'heliview', 'watermelon', 'umbrellas2',
           </a>
         ) : d.comingSoon ? (
           <div class="dest-card" style={`background:${d.color}`}>
-            <div class="cap"><strong>{d.name}</strong><span>בקרוב</span></div>
+            {d.image && <img src={img(d.image)} alt={d.name} loading="lazy" />}<div class="cap"><strong>{d.name}</strong><span>בקרוב</span></div>
           </div>
         ) : (
           <a href={`/destinations/${d.slug}/`} class="dest-card card">

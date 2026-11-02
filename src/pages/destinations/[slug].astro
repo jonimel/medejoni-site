@@ -40,7 +40,17 @@ const others = destinations.filter((d) => !d.comingSoon && d.slug !== dest.slug)
 
   <section id="tours" class="wrap section">
     <h2 class="section-title">טיולים ב{dest.name}</h2>
-    <div class="tour-grid">{list.map((t) => <TourCard tour={t} />)}</div>
+    {list.length > 0 ? (
+      <div class="tour-grid">{list.map((t) => <TourCard tour={t} />)}</div>
+    ) : (
+      <div class="soon">
+        <p><strong>טיולים ב{dest.name} יעלו לאתר בקרוב.</strong> בינתיים אפשר כבר עכשיו להזמין הסעה משדה התעופה או לבקש שנתכנן לכם את הטיול.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center">
+          <a href="/services/#airport-transfer" class="btn btn-yellow">הסעה משדה התעופה</a>
+          <a href="/services/#trip-planning" class="btn btn-outline">תכנון טיול</a>
+        </div>
+      </div>
+    )}
   </section>
 
   {dest.highlights && (
@@ -57,6 +67,13 @@ const others = destinations.filter((d) => !d.comingSoon && d.slug !== dest.slug)
           ))}
         </div>
       </div>
+    </section>
+  )}
+
+  {dest.gallery && (
+    <section class="wrap" style="padding-bottom:72px">
+      <h2 class="section-title">רגעים מ{dest.name}</h2>
+      <div class="gal">{dest.gallery.map((g) => <img src={img(g)} alt="" loading="lazy" />)}</div>
     </section>
   )}
 
@@ -116,10 +133,16 @@ const others = destinations.filter((d) => !d.comingSoon && d.slug !== dest.slug)
   .hl .num { font-size: 40px; font-weight: 800; color: var(--yellow); -webkit-text-stroke: 1px var(--ink); }
   .hl strong { font-size: 20px; }
   .hl span:last-child { color: var(--muted); }
+  .soon { background: var(--cream); border-radius: 20px; padding: 32px 24px; text-align: center; display: flex; flex-direction: column; gap: 18px; font-size: 18px; line-height: 1.6; }
+  .gal { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 220px; gap: 12px; }
+  .gal img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
+  .gal img:nth-child(1) { grid-row: span 2; }
+  .gal img:nth-child(2) { grid-row: span 2; }
   .when { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
   .when img { width: 100%; height: 360px; object-fit: cover; border-radius: 24px; }
   @media (max-width: 900px) {
     .when { grid-template-columns: 1fr; }
+    .gal { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 160px; }
     .d-tabs { top: 65px; }
   }
 </style>

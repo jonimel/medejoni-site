@@ -13,6 +13,7 @@ export interface Destination {
   color?: string;
   bestTime?: string;
   highlights?: { title: string; text: string }[];
+  gallery?: string[];
 }
 
 export const destinations: Destination[] = [
@@ -63,8 +64,38 @@ export const destinations: Destination[] = [
     intro: 'טבע, נופים, חוות ואטרקציות אדרנלין, במרחק נסיעה קצרה מהעיר.',
   },
   { slug: 'salento', name: 'סלנטו', latin: 'Salento', image: 'salento2', hero: 'salento', intro: '', comingSoon: true, link: '/services/#transfers', linkLabel: "מעבר ממדג'ין" },
-  { slug: 'cartagena', name: 'קרטחנה', latin: 'Cartagena', image: '', hero: '', intro: '', comingSoon: true, color: '#B5651D' },
-  { slug: 'santa-marta', name: 'סנטה מרתה', latin: 'Santa Marta', image: '', hero: '', intro: '', comingSoon: true, color: '#2F7A78' },
+  {
+    slug: 'cartagena',
+    name: 'קרטחנה',
+    latin: 'Cartagena',
+    image: 'ctg-street',
+    hero: 'ctg1',
+    intro: 'העיר העתיקה המוקפת חומה, רחובות קולוניאליים צבעוניים, מבצרים, חופים ואיים בקריביים.',
+    bestTime: 'חם ולח כל השנה, בערך 28–32 מעלות. דצמבר–אפריל הם החודשים היבשים והפופולריים ביותר.',
+    highlights: [
+      { title: 'העיר העתיקה', text: '[תיאור קצר]' },
+      { title: 'מבצר סן פליפה', text: '[תיאור קצר]' },
+      { title: 'חטסמני', text: '[תיאור קצר]' },
+      { title: 'איי הרוסריו', text: '[תיאור קצר]' },
+    ],
+    gallery: ['ctg-palenquera', 'ctg-flag', 'ctg-fort', 'ctg-street', 'ctg1'],
+  },
+  {
+    slug: 'santa-marta',
+    name: 'סנטה מרתה',
+    latin: 'Santa Marta',
+    image: 'tayrona',
+    hero: 'tayrona',
+    intro: 'הקריביים הפראיים: פארק טאירונה, חופים בתוך הג׳ונגל, מפרצים ושייט בסירות מהירות.',
+    bestTime: 'חם כל השנה. דצמבר–אפריל יבשים יותר. שימו לב: פארק טאירונה נסגר לכמה שבועות בשנה לשיקום.',
+    highlights: [
+      { title: 'פארק טאירונה', text: '[תיאור קצר]' },
+      { title: 'קאבו סן חואן', text: '[תיאור קצר]' },
+      { title: 'טגנגה', text: '[תיאור קצר]' },
+      { title: 'שייט בסירה', text: '[תיאור קצר]' },
+    ],
+    gallery: ['tayrona2', 'lancha', 'taganga', 'tayrona'],
+  },
 ];
 
 export const getDestination = (slug: string) => destinations.find((d) => d.slug === slug);

@@ -24,7 +24,7 @@ const count = (slug: string) => {
           <div class="cap"><strong>{d.name}</strong><span>{d.linkLabel}</span></div>
         </a>
       ) : d.comingSoon ? (
-        <div class="dest-card" style={`background:${d.color};flex:none;width:auto`}><div class="cap"><strong>{d.name}</strong><span>בקרוב</span></div></div>
+        <div class="dest-card" style={`background:${d.color};flex:none;width:auto`}>{d.image && <img src={img(d.image)} alt={d.name} loading="lazy" />}<div class="cap"><strong>{d.name}</strong><span>בקרוב</span></div></div>
       ) : (
         <a href={`/destinations/${d.slug}/`} class="dest-card card" style="flex:none;width:auto">
           <img class="zoom" src={img(d.image)} alt={d.name} loading="lazy" />
