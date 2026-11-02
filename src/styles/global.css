@@ -259,3 +259,12 @@ button { font: inherit; }
 /* Page headers: a soft blend of the flag colours (yellow, blue, red), not solid yellow. */
 .page-top { background: linear-gradient(250deg, #FFEFA6 0%, #FFF6D1 38%, #E2EBFB 70%, #FBE0E3 100%); }
 .couples-note { max-width: 640px; margin: -4px auto 24px; text-align: center; font-size: 17px; line-height: 1.6; color: var(--text); background: #FDEEF1; border-radius: 14px; padding: 12px 18px; }
+
+/* Tour day schedule */
+.schedule{list-style:none;padding:0;margin:8px 0 28px;position:relative}
+.schedule li{position:relative;padding:0 30px 18px 0}
+.schedule li::before{content:'';position:absolute;right:5px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 3px #fff,0 0 0 4px var(--blue)}
+.schedule li::after{content:'';position:absolute;right:10px;top:22px;bottom:0;width:2px;background:#e3e7ef}
+.schedule li:last-child::after{display:none}
+.schedule strong{display:block;font-weight:700}
+.schedule span{display:block;color:#5a6478;font-size:15px;margin-top:2px}

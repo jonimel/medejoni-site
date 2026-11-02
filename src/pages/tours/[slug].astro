@@ -103,6 +103,15 @@ const booking = JSON.stringify({
           )}
         </div>
 
+        {tour.schedule && tour.schedule.length > 0 && (
+          <>
+            <h2 class="h2">מהלך היום</h2>
+            <ol class="schedule">
+              {tour.schedule.map((s) => <li><strong>{s.title}</strong>{s.text && <span>{s.text}</span>}</li>)}
+            </ol>
+          </>
+        )}
+
         {hasTiers(tour) && (
           <>
             <h2 class="h2">מחירים לפי גודל הקבוצה</h2>
