@@ -6,6 +6,7 @@ import { destinations, type Destination } from '../../data/destinations';
 import { tours } from '../../data/tours';
 import { guides } from '../../data/guides';
 import { img, thumb, waLink } from '../../data/site';
+import { destinationSeo } from '../../data/seo';
 
 export function getStaticPaths() {
   return destinations.filter((d) => !d.comingSoon).map((dest) => ({ params: { slug: dest.slug }, props: { dest } }));
@@ -16,14 +17,40 @@ const list = tours.filter((t) => t.destination === dest.slug);
 const more = tours.filter((t) => t.destination !== dest.slug);
 const related = guides.filter((g) => g.sections.some((s) => s.tours?.some((x) => list.find((t) => t.slug === x))));
 const others = destinations.filter((d) => !d.comingSoon && d.slug !== dest.slug);
+const seo = destinationSeo[dest.slug];
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const abs = (p: string) => new URL(p, Astro.site).toString();
+const ld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'TouristDestination',
+    '@id': `${pageUrl}#place`,
+    name: dest.name,
+    alternateName: dest.latin,
+    description: dest.intro,
+    url: pageUrl,
+    image: abs(img(dest.hero)),
+    containedInPlace: { '@type': 'Country', name: 'Colombia' },
+    ...(list.length ? { includesAttraction: list.map((t) => ({ '@type': 'TouristTrip', name: t.title, url: abs(`/tours/${t.slug}/`) })) } : {}),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'דף הבית', item: abs('/') },
+      { '@type': 'ListItem', position: 2, name: 'יעדים', item: abs('/destinations/') },
+      { '@type': 'ListItem', position: 3, name: dest.name },
+    ],
+  },
+];
 ---
-<Base title={`טיולים ב${dest.name} (${dest.latin}) עם יונתן`} description={`${dest.intro} חוויה מקומית ואותנטית ב${dest.name} עם יונתן מילמן.`} image={img(dest.hero)} nav="destinations">
+<Base title={seo?.title ?? `טיולים ב${dest.name} (${dest.latin}) עם יונתן`} description={seo?.description ?? `${dest.intro} חוויה מקומית ואותנטית ב${dest.name} עם יונתן מילמן.`} image={img(dest.hero)} imageAlt={`${dest.name} (${dest.latin}), קולומביה`} nav="destinations" jsonLd={ld}>
   <section class="d-hero">
-    <img src={img(dest.hero)} alt={dest.name} />
+    <img src={img(dest.hero)} alt={`${dest.name} (${dest.latin}), קולומביה`} fetchpriority="high" />
     <div class="wrap d-hero-body">
-      <nav class="crumbs" aria-label="פירורי לחם" style="color:#fff"><a href="/" style="color:#fff">דף הבית</a> › יעדים › {dest.name}</nav>
+      <nav class="crumbs" aria-label="פירורי לחם" style="color:#fff"><a href="/" style="color:#fff">דף הבית</a> › <a href="/destinations/" style="color:#fff">יעדים</a> › {dest.name}</nav>
       <span class="pill">{dest.latin}</span>
-      <h1>{dest.name}</h1>
+      <h1>{dest.name}{seo?.h1Sub && <span class="h1-sub">{seo.h1Sub}</span>}</h1>
       <p>{dest.intro}</p>
     </div>
   </section>
@@ -62,7 +89,7 @@ const others = destinations.filter((d) => !d.comingSoon && d.slug !== dest.slug)
             <div class="reveal" style={`transition-delay:${i * 80}ms`}>
               <span class="num">{String(i + 1).padStart(2, '0')}</span>
               <strong>{h.title}</strong>
-              <span>{h.text}</span>
+              {!h.text.startsWith('[') && <span>{h.text}</span>}
             </div>
           ))}
         </div>
@@ -145,4 +172,5 @@ const others = destinations.filter((d) => !d.comingSoon && d.slug !== dest.slug)
     .gal { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 160px; }
     .d-tabs { top: 65px; }
   }
+  .h1-sub { display: block; font-size: 0.42em; font-weight: 600; margin-top: 6px; opacity: 0.95; }
 </style>

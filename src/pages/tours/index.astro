@@ -19,8 +19,14 @@ const ld = {
   '@type': 'FAQPage',
   mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
 };
+const itemList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'טיולים בקולומביה',
+  itemListElement: tours.map((t, i) => ({ '@type': 'ListItem', position: i + 1, url: new URL(`/tours/${t.slug}/`, Astro.site).toString(), name: t.title })),
+};
 ---
-<Base title="כל הטיולים בקולומביה" description="כל הטיולים של Medejoni: טיולים פרטיים, קבוצתיים וחוויות ערב במדג'ין, גואטפה, חרדין ואנטיוקיה. מחירים לאדם ב־COP." nav="tours" jsonLd={ld}>
+<Base title="טיולים ואטרקציות בקולומביה – כל הטיולים" description="כל הטיולים והאטרקציות: מדג'ין, גואטפה, חרדין, כפרי אנטיוקיה ופארק טאירונה. טיולים פרטיים, קבוצתיים וחוויות ערב, עם מחירים לאדם ב־COP." nav="tours" jsonLd={[ld, itemList]}>
   <section class="page-top">
     <div class="wrap" style="padding-top:40px;padding-bottom:40px">
       <nav class="crumbs" aria-label="פירורי לחם" style="padding-top:0;color:var(--ink)"><a href="/" style="color:var(--ink)">דף הבית</a> › טיולים</nav>
@@ -68,6 +74,7 @@ const ld = {
           </select>
         </label>
       </div>
+      <h2 class="sr-only">רשימת הטיולים</h2>
       <div class="tour-grid" data-grid>
         {tours.map((t) => <TourCard tour={t} />)}
       </div>

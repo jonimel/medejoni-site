@@ -19,10 +19,10 @@ export const guides: Guide[] = [
     slug: 'colombia-two-week-itinerary',
     title: 'מסלול טיול בקולומביה לשבועיים: ערים, קפה וחופים בלי לרוץ בין יעדים',
     seoTitle: 'מסלול טיול בקולומביה לשבועיים: ערים, קפה וחופים',
-    sub: "מדג'ין, גואטפה, אזור הקפה והקריביים",
+    sub: "מדג׳ין, גואטפה, אזור הקפה והקריביים",
     image: 'umbrellas2',
     tag: 'מסלולים',
-    description: 'בונים מסלול לקולומביה? גלו איך לשלב מדיין, גואטפה, אזור הקפה והקריביים בשבועיים, ומה כדאי לדעת על החוויות שמקבלות תשומת לב.',
+    description: 'בונים מסלול לקולומביה? גלו איך לשלב מדג׳ין, גואטפה, אזור הקפה והקריביים בשבועיים, ומה כדאי לדעת על החוויות שמקבלות תשומת לב.',
     markdown: true,
     sections: [],
   },
@@ -33,7 +33,7 @@ export const guides: Guide[] = [
     sub: 'עונות הגשם, חודש אחרי חודש, לפי אזור',
     image: 'salento2',
     tag: 'תכנון',
-    description: 'מתי כדאי לטוס לקולומביה? מדריך לעונות הגשם, למדיין, לבוגוטה ולחופים, עם חלוקה לחודשים וטיפים לבניית מסלול שמתאים לעונה.',
+    description: 'מתי כדאי לטוס לקולומביה? מדריך לעונות הגשם, למדג׳ין, לבוגוטה ולחופים, עם חלוקה לחודשים וטיפים לבניית מסלול שמתאים לעונה.',
     markdown: true,
     sections: [],
   },
@@ -92,3 +92,9 @@ export const guides: Guide[] = [
 ];
 
 export const getGuide = (slug: string) => guides.find((g) => g.slug === slug);
+
+/**
+ * A guide whose text is still placeholders ("[פסקה.]"). Such pages are hidden from Google
+ * (noindex + left out of the sitemap) until Jonathan writes them, because empty pages hurt SEO.
+ */
+export const isDraft = (g: Guide) => !g.markdown && g.sections.every((s) => s.paragraphs.every((p) => p.trim().startsWith('[')));

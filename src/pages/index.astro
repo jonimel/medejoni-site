@@ -35,8 +35,19 @@ const cats = [
 const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview', 'ctg-street', 'watermelon', 'umbrellas2', 'cave', 'horseride', 'ctg-fort', 'meddusk', 'wakeboard2', 'horses', 'cow'];
 ---
 <Base
-  title="Medejoni | קולומביה אותנטית עם יונתן – מדג'ין, גואטפה ועוד"
-  description="לחוות את קולומביה כמו מקומי, עם יונתן מילמן שגר במדג'ין: גואטפה, סיור אסקובר, משחק של נסיונל, חרדין ועוד. איסוף מהמלון וביטול גמיש."
+  title="טיולים בקולומביה עם יונתן: מדג'ין, גואטפה וטאירונה"
+  description="קולומביה אותנטית עם יונתן מילמן, ישראלי שגר במדג'ין: טיול לגואטפה, סיור קומונה 13 ואסקובר, חרדין, פארק טאירונה והסעות משדה התעופה. איסוף מהמלון."
+  imageAlt="סלע אל פניול והאגם בגואטפה, קולומביה"
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': new URL('/#website', Astro.site).toString(),
+    name: 'Medejoni',
+    alternateName: 'מדג׳וני',
+    url: new URL('/', Astro.site).toString(),
+    inLanguage: 'he',
+    publisher: { '@id': new URL('/#org', Astro.site).toString() },
+  }}
 >
   <section class="hero" aria-label="סליידר ראשי" data-hero>
     {slides.map((s, i) => (

@@ -5,6 +5,8 @@ import Carousel from '../../components/Carousel.astro';
 import Icon from '../../components/Icon.astro';
 import { tours, kindLabel, fromPrice, hasTiers, type Tour } from '../../data/tours';
 import { getDestination } from '../../data/destinations';
+import { guides, isDraft } from '../../data/guides';
+import { tourSeo } from '../../data/seo';
 import { formatCOP, img, thumb, waLink } from '../../data/site';
 
 export function getStaticPaths() {
@@ -16,16 +18,33 @@ const dest = getDestination(tour.destination)!;
 const price = fromPrice(tour);
 const similar = tours.filter((t) => t.slug !== tour.slug).sort((a, b) => Number(b.destination === tour.destination) - Number(a.destination === tour.destination));
 const upsell = tour.slug === 'guatape-group' ? tours.find((t) => t.slug === 'guatape-private') : undefined;
+const seo = tourSeo[tour.slug];
+const pageUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const org = { '@id': new URL('/#org', Astro.site).toString() };
+const prices = tour.tiers.map((t) => t.price);
+const offerBase = { priceCurrency: 'COP', availability: 'https://schema.org/InStock', url: pageUrl, seller: org };
+// Guides that mention this tour (only finished ones), for internal links.
+const relatedGuides = guides.filter((g) => !isDraft(g) && g.sections.some((s) => s.tours?.includes(tour.slug)));
 const ld = [
   {
     '@context': 'https://schema.org',
-    '@type': 'TouristTrip',
+    '@type': ['TouristTrip', 'Product'],
+    '@id': `${pageUrl}#trip`,
     name: tour.title,
     description: tour.intro,
+    url: pageUrl,
     image: tour.images.map((i) => new URL(img(i), Astro.site).toString()),
     touristType: 'Israeli travelers',
     inLanguage: 'he',
-    offers: { '@type': 'Offer', price, priceCurrency: 'COP', availability: 'https://schema.org/InStock' },
+    provider: org,
+    brand: { '@type': 'Brand', name: 'Medejoni' },
+    category: kindLabel[tour.kind],
+    ...(tour.schedule?.length
+      ? { itinerary: { '@type': 'ItemList', itemListElement: tour.schedule.map((s, i) => ({ '@type': 'ListItem', position: i + 1, name: s.title })) } }
+      : {}),
+    offers: hasTiers(tour)
+      ? { '@type': 'AggregateOffer', ...offerBase, lowPrice: Math.min(...prices), highPrice: Math.max(...prices), offerCount: prices.length }
+      : { '@type': 'Offer', ...offerBase, price },
   },
   {
     '@context': 'https://schema.org',
@@ -38,7 +57,8 @@ const ld = [
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'דף הבית', item: new URL('/', Astro.site).toString() },
       { '@type': 'ListItem', position: 2, name: 'טיולים', item: new URL('/tours/', Astro.site).toString() },
-      { '@type': 'ListItem', position: 3, name: tour.title },
+      { '@type': 'ListItem', position: 3, name: dest.name, item: new URL(`/destinations/${dest.slug}/`, Astro.site).toString() },
+      { '@type': 'ListItem', position: 4, name: tour.title },
     ],
   },
 ];
@@ -51,13 +71,13 @@ const booking = JSON.stringify({
   aheadHours: tour.bookAheadHours,
 });
 ---
-<Base title={`${tour.title} – ${tour.place}`} description={`${tour.intro} ${hasTiers(tour) ? 'החל מ־' : ''}${formatCOP(price)} לאדם.`} image={img(tour.images[0])} nav="tours" jsonLd={ld} waText={`היי יונתן, אשמח לפרטים על "${tour.title}"`}>
+<Base title={seo?.title ?? `${tour.title} – ${tour.place}`} description={`${seo?.description ?? tour.short} ${hasTiers(tour) ? 'החל מ־' : ''}${formatCOP(price)} לאדם.`} image={img(tour.images[0])} imageAlt={`${tour.title}, ${tour.place}`} nav="tours" jsonLd={ld} waText={`היי יונתן, אשמח לפרטים על "${tour.title}"`}>
   <div class="wrap">
     <nav class="crumbs" aria-label="פירורי לחם"><a href="/">דף הבית</a> › <a href="/tours/">טיולים</a> › <a href={`/destinations/${dest.slug}/`}>{dest.name}</a> › {tour.title}</nav>
 
     <div class="gallery" data-gallery>
       <div class="g-main">
-        {tour.images.map((im, i) => <img src={img(im)} alt={`${tour.title} – תמונה ${i + 1}`} class:list={{ 'is-active': i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />)}
+        {tour.images.map((im, i) => <img src={img(im)} alt={`${tour.title}, ${tour.place}, קולומביה – תמונה ${i + 1}`} fetchpriority={i === 0 ? 'high' : undefined} class:list={{ 'is-active': i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />)}
         <button type="button" class="g-arrow g-prev" aria-label="התמונה הקודמת" data-g-prev><Icon name="chev-r" size={22} /></button>
         <button type="button" class="g-arrow g-next" aria-label="התמונה הבאה" data-g-next><Icon name="chev-l" size={22} /></button>
         <span class="g-count ltr" data-g-count>1/{tour.images.length}</span>
@@ -136,6 +156,11 @@ const booking = JSON.stringify({
         <div class="faq">
           {tour.faq.map((f, i) => <details open={i === 0}><summary>{f.q}</summary><p>{f.a}</p></details>)}
         </div>
+
+        <p class="more-links">
+          עוד על היעד: <a href={`/destinations/${dest.slug}/`}>טיולים ב{dest.name}</a>
+          {relatedGuides.map((g) => <> · <a href={`/guides/${g.slug}/`}>{g.seoTitle ?? g.title}</a></>)}
+        </p>
       </article>
 
       <aside class="book" id="book" aria-label="הזמנה" data-booking={booking}>
@@ -239,6 +264,8 @@ const booking = JSON.stringify({
     .jump { display: flex !important; }
     .upsell img { width: 96px; height: 80px; }
   }
+  .more-links { margin-top: 20px; color: var(--muted); line-height: 1.8; }
+  .more-links a { color: var(--link); font-weight: 600; }
 </style>
 
 <script>
