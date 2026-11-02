@@ -240,3 +240,9 @@ button { font: inherit; }
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* Wordmark in soft Colombian flag colors (header only; footer stays white) */
+.site-header .logo-name {
+  background: linear-gradient(90deg, #D9A400 0%, #D9A400 30%, #1A4A9E 50%, #1A4A9E 68%, #B8202F 88%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
