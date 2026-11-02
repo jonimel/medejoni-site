@@ -4,6 +4,6 @@ import sitemap from '@astrojs/sitemap';
 
 // Change `site` to the real domain once it is bought.
 export default defineConfig({
-  site: 'https://www.medejoni.com',
+  site: 'https://medejoni.com',
   integrations: [sitemap()],
 });

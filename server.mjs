@@ -78,6 +78,11 @@ async function serveFile(res, path, status = 200) {
 createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://x');
+    // One address for Google: send www.medejoni.com to medejoni.com.
+    if ((req.headers.host || '').startsWith('www.')) {
+      res.writeHead(301, { Location: `https://${req.headers.host.slice(4)}${req.url}` }).end();
+      return;
+    }
     if (req.method === 'POST') {
       const fields = Object.fromEntries(new URLSearchParams(await readBody(req)));
       if (fields.company) { res.writeHead(200).end('ok'); return; } // honeypot: a bot filled the hidden field
