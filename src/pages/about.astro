@@ -7,11 +7,9 @@ const steps = [
   { title: 'הכל דרכי', text: 'אני בונה איתכם את הטיול, בוחר מי ילווה אתכם ונשאר זמין לאורך כל הדרך.' },
   { title: 'מחירים הוגנים', text: 'מחירים של מקומי, בלי תיווך של סוכנות.' },
 ];
-// TODO: replace with real reviews from travelers.
+// Real reviews only (confirmed by Jonathan). Add new ones to this list.
 const reviews = [
-  { text: '[ביקורת אמיתית של מטייל תיכנס כאן]', who: '[שם המטייל] · [טיול]' },
-  { text: '[ביקורת שנייה]', who: '[שם] · [טיול]' },
-  { text: '[ביקורת שלישית]', who: '[שם] · [טיול]' },
+  { text: 'הגענו לקולומביה עם הרבה אי וודאות, דיברנו עם יונתן והכל היה כל כך קל. הוא סידר לנו טיול לגואטפה, שטנו באגם ואכלנו במקום מקומי שלא היינו מוצאים לבד. הרגשנו כמו עם חבר שגר פה.', who: 'מיכל, 23 · טיול לגואטפה', stars: 5 },
 ];
 ---
 <Base title="מי אני – יונתן מילמן, ישראלי במדג'ין" description="היי, אני יונתן מילמן, ישראלי שגר במדג'ין. אני מראה לכם את קולומביה האותנטית, כמו שהמקומיים חיים אותה, ומלווה אתכם אישית לאורך כל הטיול." image={img('yonatan')} nav="about">
@@ -51,16 +49,17 @@ const reviews = [
       <div class="rv-track">
         {reviews.map((r, i) => (
           <figure class:list={['rv', { 'is-active': i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
+            <div class="stars" aria-label={`${r.stars} כוכבים`}>{'★'.repeat(r.stars)}</div>
             <blockquote>“{r.text}”</blockquote>
             <figcaption>{r.who}</figcaption>
           </figure>
         ))}
       </div>
-      <div style="display:flex;gap:10px;align-items:center">
+      {reviews.length > 1 && <div style="display:flex;gap:10px;align-items:center">
         <button type="button" class="rv-btn" aria-label="הקודם" data-rv-prev>›</button>
         {reviews.map((_, i) => <span class:list={['rv-dot', { 'is-active': i === 0 }]}></span>)}
         <button type="button" class="rv-btn" aria-label="הבא" data-rv-next>‹</button>
-      </div>
+      </div>}
     </div>
   </section>
 
@@ -80,6 +79,7 @@ const reviews = [
   .rv { grid-area: 1 / 1; margin: 0; opacity: 0; transform: translateX(-20px); transition: opacity 500ms ease, transform 500ms ease; }
   .rv.is-active { opacity: 1; transform: none; }
   .rv blockquote { margin: 0; font-size: 24px; line-height: 1.6; font-weight: 500; }
+  .stars { color: #F5B301; font-size: 24px; letter-spacing: 4px; margin-bottom: 10px; }
   .rv figcaption { margin-top: 12px; color: #4B5563; }
   .rv-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid #D1D5DB; background: #fff; cursor: pointer; font-size: 20px; }
   .rv-dot { height: 8px; width: 8px; border-radius: 999px; background: #C7D2E8; transition: all 300ms ease; }
@@ -103,7 +103,7 @@ const reviews = [
       items.forEach((x, k) => { x.classList.toggle('is-active', k === i); x.setAttribute('aria-hidden', String(k !== i)); });
       dots.forEach((d, k) => d.classList.toggle('is-active', k === i));
     };
-    root.querySelector('[data-rv-prev]')!.addEventListener('click', () => show(i - 1));
-    root.querySelector('[data-rv-next]')!.addEventListener('click', () => show(i + 1));
+    root.querySelector('[data-rv-prev]')?.addEventListener('click', () => show(i - 1));
+    root.querySelector('[data-rv-next]')?.addEventListener('click', () => show(i + 1));
   }
 </script>
