@@ -8,7 +8,7 @@ import { tours } from '../data/tours';
 import { destinations } from '../data/destinations';
 import { guides } from '../data/guides';
 import { services } from '../data/services';
-import { img, thumb, waLink } from '../data/site';
+import { img, thumb, waLink, site } from '../data/site';
 
 const slides = [
   { kicker: 'קולומביה, כמו שהמקומיים חיים אותה', title: 'קולומביה אותנטית, עם יונתן', sub: "לא עוד טיול של תיירים. המקומות, האנשים והטעמים שאני חי כאן כל יום", img: 'peniol' },
@@ -192,7 +192,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
   <section aria-label="רגעים מהשטח" style="padding:8px 0 72px;overflow:hidden">
     <div class="wrap" style="margin-bottom:24px;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:12px">
       <h2 style="font-size:32px">רגעים מהשטח</h2>
-      <span style="display:flex;gap:16px;font-weight:600"><a href="https://www.instagram.com/" target="_blank" rel="noopener">אינסטגרם</a><a href="https://www.tiktok.com/" target="_blank" rel="noopener">טיקטוק</a></span>
+      <span style="display:flex;gap:16px;font-weight:600"><a href={site.instagram} target="_blank" rel="noopener">אינסטגרם</a><a href={site.tiktok} target="_blank" rel="noopener">טיקטוק</a></span>
     </div>
     <div class="marquee">
       {moments.concat(moments).map((m, i) => <img src={thumb(m)} alt="" loading="lazy" aria-hidden={i >= moments.length ? 'true' : undefined} />)}

@@ -54,6 +54,7 @@ const orgLd = {
   areaServed: { '@type': 'Country', name: 'Colombia' },
   currenciesAccepted: 'COP',
   knowsLanguage: ['he', 'es', 'en'],
+  sameAs: [site.instagram, site.tiktok].filter((u) => !/\.com\/?$/.test(u)),
 };
 const footerTours = tours.filter((t) => t.featured).slice(0, 4);
 ---
