@@ -23,4 +23,7 @@ export function formatCOP(n: number) {
   return n.toLocaleString('en-US') + ' COP';
 }
 
-export const img = (name: string) => `/images/${name}.jpg`;
+/** Pages use WebP (smaller, same quality). The .jpg originals stay for social previews. */
+export const img = (name: string) => `/images/${name}.webp`;
+/** Smaller (max 800px) WebP for cards and thumbnails, so lists load fast. */
+export const thumb = (name: string) => `/images/sm/${name}.webp`;

@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { destinations } from '../../data/destinations';
 import { tours } from '../../data/tours';
-import { img } from '../../data/site';
+import { img, thumb } from '../../data/site';
 const count = (slug: string) => {
   const n = tours.filter((t) => t.destination === slug).length;
   return n === 0 ? 'בקרוב' : n === 1 ? 'טיול אחד' : `${n} טיולים`;
@@ -20,14 +20,14 @@ const count = (slug: string) => {
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px">
       {destinations.map((d) => d.comingSoon && d.link ? (
         <a href={d.link} class="dest-card card" style="flex:none;width:auto">
-          <img class="zoom" src={img(d.image)} alt={d.name} loading="lazy" />
+          <img class="zoom" src={thumb(d.image)} alt={d.name} loading="lazy" />
           <div class="cap"><strong>{d.name}</strong><span>{d.linkLabel}</span></div>
         </a>
       ) : d.comingSoon ? (
-        <div class="dest-card" style={`background:${d.color};flex:none;width:auto`}>{d.image && <img src={img(d.image)} alt={d.name} loading="lazy" />}<div class="cap"><strong>{d.name}</strong><span>בקרוב</span></div></div>
+        <div class="dest-card" style={`background:${d.color};flex:none;width:auto`}>{d.image && <img src={thumb(d.image)} alt={d.name} loading="lazy" />}<div class="cap"><strong>{d.name}</strong><span>בקרוב</span></div></div>
       ) : (
         <a href={`/destinations/${d.slug}/`} class="dest-card card" style="flex:none;width:auto">
-          <img class="zoom" src={img(d.image)} alt={d.name} loading="lazy" />
+          <img class="zoom" src={thumb(d.image)} alt={d.name} loading="lazy" />
           <div class="cap"><strong>{d.name}</strong><span>{count(d.slug)}</span></div>
         </a>
       ))}

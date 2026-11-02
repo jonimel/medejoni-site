@@ -6,7 +6,7 @@ import { site } from '../data/site';
 
 // Minimal tour data for the client-side booking flow.
 const data = JSON.stringify(tours.map((t) => ({
-  slug: t.slug, title: t.title, image: `/images/${t.images[0]}.jpg`, tiers: t.tiers, min: t.minPeople,
+  slug: t.slug, title: t.title, image: `/images/${t.images[0]}.webp`, tiers: t.tiers, min: t.minPeople,
   addOns: t.addOns, pickup: t.pickup, ahead: t.bookAheadHours,
 })));
 ---

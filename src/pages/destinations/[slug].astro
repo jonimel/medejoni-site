@@ -5,7 +5,7 @@ import Carousel from '../../components/Carousel.astro';
 import { destinations, type Destination } from '../../data/destinations';
 import { tours } from '../../data/tours';
 import { guides } from '../../data/guides';
-import { img, waLink } from '../../data/site';
+import { img, thumb, waLink } from '../../data/site';
 
 export function getStaticPaths() {
   return destinations.filter((d) => !d.comingSoon).map((dest) => ({ params: { slug: dest.slug }, props: { dest } }));
@@ -73,7 +73,7 @@ const others = destinations.filter((d) => !d.comingSoon && d.slug !== dest.slug)
   {dest.gallery && (
     <section class="wrap" style="padding-bottom:72px">
       <h2 class="section-title">רגעים מ{dest.name}</h2>
-      <div class="gal">{dest.gallery.map((g) => <img src={img(g)} alt="" loading="lazy" />)}</div>
+      <div class="gal">{dest.gallery.map((g) => <img src={thumb(g)} alt="" loading="lazy" />)}</div>
     </section>
   )}
 
@@ -97,7 +97,7 @@ const others = destinations.filter((d) => !d.comingSoon && d.slug !== dest.slug)
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px">
           {related.map((g) => (
             <a href={`/guides/${g.slug}/`} class="card" style="display:flex;gap:16px;align-items:center;background:#fff;border-radius:16px;padding:12px;text-decoration:none;color:inherit">
-              <img src={img(g.image)} alt="" loading="lazy" style="width:110px;height:90px;object-fit:cover;border-radius:12px" />
+              <img src={thumb(g.image)} alt="" loading="lazy" style="width:110px;height:90px;object-fit:cover;border-radius:12px" />
               <span style="display:flex;flex-direction:column;gap:4px"><strong style="font-size:18px">{g.title}</strong><span style="color:var(--link);font-weight:600">לקריאה ←</span></span>
             </a>
           ))}

@@ -5,7 +5,7 @@ import Carousel from '../../components/Carousel.astro';
 import Icon from '../../components/Icon.astro';
 import { tours, kindLabel, fromPrice, hasTiers, type Tour } from '../../data/tours';
 import { getDestination } from '../../data/destinations';
-import { formatCOP, img, waLink } from '../../data/site';
+import { formatCOP, img, thumb, waLink } from '../../data/site';
 
 export function getStaticPaths() {
   return tours.map((tour) => ({ params: { slug: tour.slug }, props: { tour } }));
@@ -63,7 +63,7 @@ const booking = JSON.stringify({
       </div>
       <div class="g-thumbs">
         {tour.images.map((im, i) => (
-          <button type="button" aria-label={`תמונה ${i + 1}`} data-g-thumb={i} class:list={{ 'is-active': i === 0 }}><img src={img(im)} alt="" loading="lazy" /></button>
+          <button type="button" aria-label={`תמונה ${i + 1}`} data-g-thumb={i} class:list={{ 'is-active': i === 0 }}><img src={thumb(im)} alt="" loading="lazy" /></button>
         ))}
       </div>
     </div>
@@ -113,7 +113,7 @@ const booking = JSON.stringify({
 
         {upsell && (
           <a href={`/tours/${upsell.slug}/`} class="upsell card">
-            <img src={img(upsell.images[0])} alt="" loading="lazy" />
+            <img src={thumb(upsell.images[0])} alt="" loading="lazy" />
             <div>
               <strong>רוצים את גואטפה רק לעצמכם?</strong>
               <span>בטיול הפרטי יש נהג ומדריך צמוד, ואפשר להוסיף אופנועי ים, ווייקבורד וסקי מים.</span>

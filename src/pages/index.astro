@@ -8,7 +8,7 @@ import { tours } from '../data/tours';
 import { destinations } from '../data/destinations';
 import { guides } from '../data/guides';
 import { services } from '../data/services';
-import { img, waLink } from '../data/site';
+import { img, thumb, waLink } from '../data/site';
 
 const slides = [
   { kicker: 'טיולים בעברית בקולומביה', title: 'גלו את קולומביה', sub: "טיולים פרטיים וקבוצתיים, עם יונתן שגר במדג'ין", img: 'peniol' },
@@ -71,16 +71,16 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
       {destinations.map((d) => (
         d.comingSoon && d.link ? (
           <a href={d.link} class="dest-card card">
-            <img class="zoom" src={img(d.image)} alt={d.name} loading="lazy" />
+            <img class="zoom" src={thumb(d.image)} alt={d.name} loading="lazy" />
             <div class="cap"><strong>{d.name}</strong><span>{d.linkLabel}</span></div>
           </a>
         ) : d.comingSoon ? (
           <div class="dest-card" style={`background:${d.color}`}>
-            {d.image && <img src={img(d.image)} alt={d.name} loading="lazy" />}<div class="cap"><strong>{d.name}</strong><span>בקרוב</span></div>
+            {d.image && <img src={thumb(d.image)} alt={d.name} loading="lazy" />}<div class="cap"><strong>{d.name}</strong><span>בקרוב</span></div>
           </div>
         ) : (
           <a href={`/destinations/${d.slug}/`} class="dest-card card">
-            <img class="zoom" src={img(d.image)} alt={d.name} loading="lazy" />
+            <img class="zoom" src={thumb(d.image)} alt={d.name} loading="lazy" />
             <div class="cap"><strong>{d.name}</strong><span>{countFor(d.slug)}</span></div>
           </a>
         )
@@ -122,7 +122,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px">
       {services.map((s) => (
         <a href={`/services/#${s.id}`} class="card" style="text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;gap:12px;background:#fff;padding-bottom:22px;position:relative">
-          <div style="height:170px;overflow:hidden"><img class="zoom" src={img(s.image)} alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover" /></div>
+          <div style="height:170px;overflow:hidden"><img class="zoom" src={thumb(s.image)} alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover" /></div>
           <span class="blob" aria-hidden="true" style={`background:${s.blob};position:absolute;top:142px;right:20px;border:3px solid #fff;z-index:1`}>{s.icon}</span>
           <div style="padding:14px 22px 0;display:flex;flex-direction:column;gap:10px;flex:1">
           <strong style="font-size:21px">{s.title}</strong>
@@ -162,7 +162,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
   <section class="wrap section reveal">
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:40px">
       <div style="flex:0 0 260px;position:relative">
-        <img src={img('yonatan')} alt="יונתן מילמן רוכב על סוס בהרי אנטיוקיה" loading="lazy" style="width:260px;height:300px;object-fit:cover;object-position:40% 55%;border-radius:24px;border:6px solid var(--yellow)" />
+        <img src={thumb('yonatan')} alt="יונתן מילמן רוכב על סוס בהרי אנטיוקיה" loading="lazy" style="width:260px;height:300px;object-fit:cover;object-position:40% 55%;border-radius:24px;border:6px solid var(--yellow)" />
         <span class="pill pill-blue" style="position:absolute;bottom:-14px;left:20px;font-size:14px;padding:6px 12px">גר במדג'ין</span>
       </div>
       <div style="flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:14px">
@@ -183,7 +183,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
       <span style="display:flex;gap:16px;font-weight:600"><a href="https://www.instagram.com/" target="_blank" rel="noopener">אינסטגרם</a><a href="https://www.tiktok.com/" target="_blank" rel="noopener">טיקטוק</a></span>
     </div>
     <div class="marquee">
-      {moments.concat(moments).map((m, i) => <img src={img(m)} alt="" loading="lazy" aria-hidden={i >= moments.length ? 'true' : undefined} />)}
+      {moments.concat(moments).map((m, i) => <img src={thumb(m)} alt="" loading="lazy" aria-hidden={i >= moments.length ? 'true' : undefined} />)}
     </div>
   </section>
 
@@ -191,9 +191,9 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
     <div class="wrap section">
       <h2 class="section-title">מאמרים לפני שטסים</h2>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px">
-        {guides.map((g) => (
+        {guides.slice(0, 3).map((g) => (
           <a href={`/guides/${g.slug}/`} class="card" style="text-decoration:none;color:inherit;border-radius:16px;overflow:hidden;background:#fff;display:flex;flex-direction:column">
-            <div style="height:210px;overflow:hidden"><img class="zoom" src={img(g.image)} alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover" /></div>
+            <div style="height:210px;overflow:hidden"><img class="zoom" src={thumb(g.image)} alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover" /></div>
             <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:8px">
               <h3 style="font-size:21px;font-weight:600;line-height:1.4">{g.title}</h3>
               <span style="font-size:15px;color:var(--muted)">{g.sub}</span>
@@ -202,6 +202,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
           </a>
         ))}
       </div>
+      <div style="text-align:center;margin-top:28px"><a href="/guides/" class="btn btn-outline">לכל המאמרים</a></div>
     </div>
   </section>
   <LeadForm source="home" />

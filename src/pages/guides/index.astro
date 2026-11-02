@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { guides } from '../../data/guides';
-import { img } from '../../data/site';
+import { img, thumb } from '../../data/site';
 ---
 <Base title="מאמרים על טיול בקולומביה" description="מאמרים בעברית לטיול בקולומביה: מה עושים במדג'ין, טיול לגואטפה, טבע ליד העיר ועוד, מיונתן שגר במדג'ין." nav="guides">
   <section style="background:var(--cream)">
@@ -15,7 +15,7 @@ import { img } from '../../data/site';
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:28px">
       {guides.map((g) => (
         <a href={`/guides/${g.slug}/`} class="card" style="text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column">
-          <div style="height:220px;overflow:hidden"><img class="zoom" src={img(g.image)} alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover" /></div>
+          <div style="height:220px;overflow:hidden"><img class="zoom" src={thumb(g.image)} alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover" /></div>
           <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:8px">
             <span class="pill pill-soft" style="align-self:flex-start">{g.tag}</span>
             <h2 style="font-size:21px;font-weight:600;line-height:1.4">{g.title}</h2>

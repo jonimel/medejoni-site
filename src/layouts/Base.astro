@@ -18,7 +18,7 @@ interface Props {
 const { title, description, image = '/images/peniol.jpg', jsonLd, nav, waText, noindex } = Astro.props;
 const fullTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL(image, Astro.site);
+const ogImage = new URL(image.replace(/\.webp$/, '.jpg'), Astro.site);
 const wa = waLink(waText);
 const navItems = [
   { key: 'destinations', href: '/destinations/', label: 'יעדים' },
@@ -97,7 +97,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
         </div>
         <div class="col">
           <strong>מאמרים</strong>
-          {guides.map((g) => <a href={`/guides/${g.slug}/`}>{g.title}</a>)}
+          {guides.slice(0, 4).map((g) => <a href={`/guides/${g.slug}/`}>{g.seoTitle ?? g.title}</a>)}
         </div>
         <div class="col">
           <strong>שירותים</strong>

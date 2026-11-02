@@ -7,10 +7,47 @@ export interface Guide {
   image: string;
   description: string;
   tag: string;
+  /** Title for the browser tab / Google, when it differs from the on-page title. */
+  seoTitle?: string;
+  /** Full article body lives in src/articles/<slug>.md instead of sections. */
+  markdown?: boolean;
   sections: { id: string; title: string; paragraphs: string[]; image?: string; tip?: string; tours?: string[] }[];
 }
 
 export const guides: Guide[] = [
+  {
+    slug: 'colombia-two-week-itinerary',
+    title: 'מסלול טיול בקולומביה לשבועיים: ערים, קפה וחופים בלי לרוץ בין יעדים',
+    seoTitle: 'מסלול טיול בקולומביה לשבועיים: ערים, קפה וחופים',
+    sub: "מדג'ין, גואטפה, אזור הקפה והקריביים",
+    image: 'umbrellas2',
+    tag: 'מסלולים',
+    description: 'בונים מסלול לקולומביה? גלו איך לשלב מדיין, גואטפה, אזור הקפה והקריביים בשבועיים, ומה כדאי לדעת על החוויות שמקבלות תשומת לב.',
+    markdown: true,
+    sections: [],
+  },
+  {
+    slug: 'colombia-weather-best-time',
+    title: 'מזג אוויר בקולומביה: מתי כדאי לטוס ואיך בוחרים מסלול לפי העונה?',
+    seoTitle: 'מזג אוויר בקולומביה: מתי לטוס ולאיזה אזור?',
+    sub: 'עונות הגשם, חודש אחרי חודש, לפי אזור',
+    image: 'salento2',
+    tag: 'תכנון',
+    description: 'מתי כדאי לטוס לקולומביה? מדריך לעונות הגשם, למדיין, לבוגוטה ולחופים, עם חלוקה לחודשים וטיפים לבניית מסלול שמתאים לעונה.',
+    markdown: true,
+    sections: [],
+  },
+  {
+    slug: 'colombia-money-budget',
+    title: 'כסף בקולומביה: איך משלמים וכמה כסף צריך לטיול?',
+    seoTitle: 'כסף בקולומביה: מטבע, אשראי ותכנון תקציב לטיול',
+    sub: 'פזו, אשראי, כספומטים ובניית תקציב',
+    image: 'ctg-street',
+    tag: 'תכנון',
+    description: 'מתכננים טיול בקולומביה? הכירו את הפזו, בדקו איך להחליף ולמשוך כסף, והבינו אילו הוצאות לכלול בתקציב כדי להגיע מוכנים.',
+    markdown: true,
+    sections: [],
+  },
   {
     slug: 'guatape-group-or-private',
     title: 'טיול לגואטפה: קבוצתי או פרטי, ומה לא לפספס',
