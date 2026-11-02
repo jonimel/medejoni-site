@@ -278,11 +278,11 @@ export const tours: Tour[] = [
     ],
     excludes: ['ארוחת צהריים'],
     tiers: [
-      { min: 3, price: 369000, label: '3 עד 4 משתתפים' },
+      { min: 4, price: 369000, label: '4 משתתפים' },
       { min: 5, price: 329000, label: '5 עד 6 משתתפים' },
       { min: 7, price: 259000, label: '7 עד 8 משתתפים' },
     ],
-    minPeople: 3,
+    minPeople: 4,
     addOns: [],
     schedule: [
       { title: 'איסוף מהמלון או מהדירה ב־7:00', text: 'נוסעים לחרדין בין הנופים הירוקים של אנטיוקיה.' },
