@@ -63,7 +63,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd ? [orgLd].concat(jsonLd as any) : orgLd)} />
 </head>
-<body class="has-wa-float">
+<body>
   <a href="#main" class="sr-only">דלג לתוכן</a>
   <header class="site-header">
     <div class="wrap">
@@ -129,7 +129,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
     </div>
   </footer>
 
-  <a href={wa} class="wa-float" target="_blank" rel="noopener" data-wa-float><Icon name="whatsapp" />וואטסאפ ליונתן</a>
+  <a href={waLink('היי יונתן, יש לי שאלה')} class="wa-float" target="_blank" rel="noopener" aria-label="שאלות? דברו איתנו בוואטסאפ"><Icon name="whatsapp" size={24} />שאלות? דברו איתנו</a>
 
   <script>
     // Mobile menu
@@ -139,6 +139,41 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
       const open = menu?.classList.toggle('is-open');
       btn.setAttribute('aria-expanded', String(!!open));
     });
+
+    // Lead forms: post to Netlify Forms (emailed to Jonathan) and show a thank-you message.
+    document.querySelectorAll<HTMLFormElement>('form[data-lead]').forEach((form) => {
+      const status = form.querySelector<HTMLElement>('[data-status]')!;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!form.reportValidity()) return;
+        const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+        const label = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'שולח...';
+        status.className = 'form-status full';
+        status.textContent = '';
+        try {
+          const res = await fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(new FormData(form) as any).toString(),
+          });
+          if (!res.ok) throw new Error(String(res.status));
+          form.reset();
+          status.classList.add('ok');
+          status.textContent = 'תודה! קיבלנו את הפרטים, ויונתן יחזור אליכם בהקדם.';
+        } catch {
+          status.classList.add('err');
+          status.textContent = 'משהו השתבש בשליחה. נסו שוב בעוד רגע.';
+        } finally {
+          btn.disabled = false;
+          btn.textContent = label;
+        }
+      });
+    });
+    // Date fields can't be in the past.
+    const today = new Date().toISOString().slice(0, 10);
+    document.querySelectorAll<HTMLInputElement>('form[data-lead] input[type=date]').forEach((d) => (d.min = today));
 
     // Reveal-on-scroll
     const io = new IntersectionObserver((entries) => {

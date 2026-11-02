@@ -1,6 +1,6 @@
 ---
 // "Leave your details" form. Submissions go to Netlify Forms (form name "lead"),
-// which emails each lead. Set the email in Netlify: Forms > Form notifications.
+// which emails each lead. Submit handling lives in Base.astro.
 interface Props { title?: string; sub?: string; source: string }
 const { title = 'השאירו פרטים, ויונתן יחזור אליכם', sub = 'שאלה על טיול, הסעה או טיסה? תשובה בעברית, בדרך כלל באותו יום.', source } = Astro.props;
 const options = ['טיול', 'הסעה משדה התעופה', 'מעבר בין ערים', 'סגירת טיסות', 'תכנון טיול שלם', 'אחר'];
@@ -11,19 +11,19 @@ const options = ['טיול', 'הסעה משדה התעופה', 'מעבר בין 
       <h2>{title}</h2>
       <p>{sub}</p>
     </div>
-    <form name="lead" method="POST" data-netlify="true" netlify-honeypot="company" class="lead-form" data-lead>
+    <form name="lead" method="POST" data-netlify="true" netlify-honeypot="company" class="form-card" data-lead>
       <input type="hidden" name="form-name" value="lead" />
       <input type="hidden" name="source" value={source} />
       <p hidden><label>Company <input name="company" /></label></p>
-      <label>שם<input name="name" required autocomplete="name" /></label>
-      <label>טלפון (וואטסאפ)<input name="phone" type="tel" required autocomplete="tel" dir="ltr" /></label>
+      <label>שם מלא<input name="name" required autocomplete="name" /></label>
+      <label>טלפון<input name="phone" type="tel" required autocomplete="tel" dir="ltr" /></label>
       <label>במה אפשר לעזור?
         <select name="interest">{options.map((o) => <option>{o}</option>)}</select>
       </label>
       <label>מתי אתם בקולומביה?<input name="dates" placeholder="למשל: 10–20 בדצמבר" /></label>
       <label class="full">הודעה<textarea name="message" rows="3"></textarea></label>
       <button type="submit" class="btn btn-dark full">שליחה</button>
-      <p class="full lead-status" role="status" data-lead-status></p>
+      <p class="form-status full" role="status" data-status></p>
     </form>
   </div>
 </section>
@@ -33,45 +33,8 @@ const options = ['טיול', 'הסעה משדה התעופה', 'מעבר בין 
   .lead { padding-top: 64px; padding-bottom: 64px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 48px; align-items: center; }
   .lead-text h2 { font-size: clamp(28px, 4vw, 38px); font-weight: 800; margin-bottom: 12px; }
   .lead-text p { font-size: 18px; line-height: 1.6; }
-  .lead-form { background: #fff; border-radius: 20px; padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; box-shadow: var(--shadow-lg); }
-  .lead-form label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 15px; min-width: 0; }
-  .lead-form input, .lead-form select, .lead-form textarea { min-height: 46px; border: 1px solid #D1D5DB; border-radius: 12px; padding: 8px 12px; font: inherit; font-weight: 400; background: #fff; }
-  .lead-form .full { grid-column: 1 / -1; }
-  .lead-status { font-weight: 600; min-height: 1em; margin: 0; }
-  .lead-status.ok { color: #0F7A55; }
-  .lead-status.err { color: var(--red); }
+  .lead .form-card { border: 0; }
   @media (max-width: 900px) {
     .lead { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-    .lead-form { grid-template-columns: minmax(0, 1fr); }
   }
 </style>
-
-<script>
-  document.querySelectorAll<HTMLFormElement>('[data-lead]').forEach((form) => {
-    const status = form.querySelector<HTMLElement>('[data-lead-status]')!;
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!form.reportValidity()) return;
-      const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
-      btn.disabled = true;
-      status.className = 'full lead-status';
-      status.textContent = 'שולח...';
-      try {
-        const res = await fetch('/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(new FormData(form) as any).toString(),
-        });
-        if (!res.ok) throw new Error(String(res.status));
-        form.reset();
-        status.classList.add('ok');
-        status.textContent = 'תודה! קיבלנו את הפרטים, ויונתן יחזור אליכם בהקדם.';
-      } catch {
-        status.classList.add('err');
-        status.textContent = 'משהו השתבש. אפשר לנסות שוב או לכתוב ליונתן בוואטסאפ.';
-      } finally {
-        btn.disabled = false;
-      }
-    });
-  });
-</script>

@@ -1,4 +1,15 @@
-// Services beyond tours. No fixed prices yet: every service is quoted on WhatsApp.
+// Services beyond tours. No fixed prices yet: each service has a quote-request form
+// (Netlify Forms, emailed to Jonathan). Name, phone and number of people are always asked.
+
+export interface FormField {
+  name: string;
+  label: string;
+  type: 'text' | 'date' | 'select' | 'textarea';
+  required?: boolean;
+  options?: string[];
+  placeholder?: string;
+  full?: boolean;
+}
 
 export interface Service {
   id: string;
@@ -9,21 +20,27 @@ export interface Service {
   image: string;
   icon: string;
   blob: string;
-  waText: string;
+  formTitle: string;
+  fields: FormField[];
 }
 
 export const services: Service[] = [
   {
     id: 'airport-transfer',
     title: 'הסעות משדה התעופה',
-    short: "איסוף משדה התעופה של מדג'ין (MDE) ישר למלון, עם נהג שמחכה לכם.",
+    short: "איסוף משדה התעופה במדג'ין, בקרטחנה או בבוגוטה, ישר למלון, עם נהג שמחכה לכם.",
     intro:
-      "נוחתים במדג'ין? נהג מחכה לכם ביציאה עם שלט, ומסיע אתכם ישר למלון. בלי מוניות, בלי מיקוח ובלי לחץ אחרי טיסה ארוכה.",
-    points: ['נהג מחכה ביציאה עם שלט', 'מעקב אחרי הטיסה, גם כשהיא מתעכבת', 'הסעה גם בחזרה לשדה', 'רכבים לזוגות, למשפחות ולקבוצות'],
+      'נוחתים בקולומביה? נהג מחכה לכם ביציאה עם שלט, ומסיע אתכם ישר למלון. בלי מוניות, בלי מיקוח ובלי לחץ אחרי טיסה ארוכה.',
+    points: ['נהג מחכה ביציאה עם שלט', 'מעקב אחרי הטיסה, גם כשהיא מתעכבת', "מדג'ין, קרטחנה ובוגוטה", 'רכבים לזוגות, למשפחות ולקבוצות'],
     image: 'valley',
     icon: '✈',
     blob: '#DCE7FF',
-    waText: "היי יונתן, אני צריך הסעה משדה התעופה במדג'ין",
+    formTitle: 'הזמנת הסעה משדה התעופה',
+    fields: [
+      { name: 'landing_date', label: 'מתי נוחתים?', type: 'date' },
+      { name: 'landing_airport', label: 'איפה נוחתים?', type: 'select', options: ["מדג'ין", 'קרטחנה', 'בוגוטה'] },
+      { name: 'destination', label: 'לאן נוסעים?', type: 'text', placeholder: 'הזינו כתובת או שם מלון', full: true },
+    ],
   },
   {
     id: 'transfers',
@@ -35,18 +52,45 @@ export const services: Service[] = [
     image: 'hills',
     icon: '⇄',
     blob: '#D9F7EF',
-    waText: 'היי יונתן, אני צריך מעבר בין ערים בקולומביה',
+    formTitle: 'הזמנת מעבר בין ערים',
+    fields: [
+      { name: 'from', label: 'מאיפה יוצאים?', type: 'text', placeholder: "למשל: מדג'ין" },
+      { name: 'to', label: 'לאן נוסעים?', type: 'text', placeholder: 'למשל: גואטפה' },
+      { name: 'date', label: 'תאריך', type: 'date' },
+    ],
   },
   {
     id: 'flights',
-    title: 'סגירת טיסות פנים',
-    short: 'עוזרים לכם למצוא ולסגור טיסות בתוך קולומביה: קרטחנה, סנטה מרתה, בוגוטה ועוד.',
+    title: 'סגירת טיסות',
+    short: 'טיסות פנים בקולומביה וטיסות לחו"ל: מוצאים את הטיסה שמתאימה לכם וסוגרים אותה בשבילכם.',
     intro:
-      'קולומביה גדולה, והרבה פעמים טיסה פנימית חוסכת יום שלם של נסיעה. אנחנו מוצאים את הטיסה שמתאימה למסלול שלכם וסוגרים אותה בשבילכם.',
-    points: ['השוואת חברות ושעות', 'התאמה למסלול ולטיולים שהזמנתם', 'עזרה עם כבודה ושינויים', 'הכל בוואטסאפ, בעברית'],
+      'צריכים טיסה בתוך קולומביה או טיסה לחו"ל? אנחנו מוצאים את הטיסה שמתאימה למסלול שלכם, משווים מחירים ושעות, וסוגרים אותה בשבילכם.',
+    points: ['טיסות פנים וטיסות לחו"ל', 'השוואת חברות, מחירים ושעות', 'התאמה למסלול ולטיולים שהזמנתם', 'עזרה עם כבודה ושינויים'],
     image: 'meddusk',
     icon: '✓',
     blob: '#FFF3B0',
-    waText: 'היי יונתן, אשמח לעזרה בסגירת טיסה בתוך קולומביה',
+    formTitle: 'בקשה לסגירת טיסה',
+    fields: [
+      { name: 'from', label: 'מאיפה ממריאים?', type: 'text', placeholder: "למשל: מדג'ין" },
+      { name: 'to', label: 'איפה נוחתים?', type: 'text', placeholder: 'למשל: קרטחנה' },
+      { name: 'date', label: 'תאריך', type: 'date' },
+    ],
+  },
+  {
+    id: 'trip-planning',
+    title: 'תכנון טיולים',
+    short: 'מבולבלים? לא יודעים איפה להתחיל? נבנה לכם מסלול אישי בקולומביה.',
+    intro:
+      'מבולבלים? לא יודעים איפה להתחיל? בשביל זה אנחנו כאן! דברו איתי, ואבנה לכם מסלול שמתאים בדיוק לכם: יעדים, סדר, לינה, טיולים, הסעות וטיסות.',
+    points: ['מסלול אישי לפי הזמן והתקציב', 'המלצות שאני באמת מכיר', 'סידור הסעות, טיסות וטיולים', 'ליווי בעברית לאורך כל הטיול'],
+    image: 'lake',
+    icon: '★',
+    blob: '#FDE2EC',
+    formTitle: 'בואו נתכנן לכם טיול',
+    fields: [
+      { name: 'arrival_date', label: 'מתי מגיעים?', type: 'date' },
+      { name: 'days', label: 'לכמה ימים?', type: 'text', placeholder: 'למשל: שבועיים' },
+      { name: 'message', label: 'ספרו לנו קצת: מה אתם אוהבים, מה חשוב לכם', type: 'textarea', full: true, required: false },
+    ],
   },
 ];

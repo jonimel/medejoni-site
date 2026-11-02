@@ -5,7 +5,7 @@ export const site = {
   tagline: 'חוויה אותנטית בקולומביה',
   owner: 'יונתן מילמן',
   // TODO: Jonathan's WhatsApp number in international format, digits only (e.g. 573001234567).
-  whatsapp: '',
+  whatsapp: '972504560505',
   instagram: 'https://www.instagram.com/',
   tiktok: 'https://www.tiktok.com/',
   email: 'yonimelmel@gmail.com',

@@ -1,0 +1,29 @@
+---
+// One quote-request form per service. Each is a separate Netlify form (name = service id),
+// so the email subject tells Jonathan which service the lead is for.
+import type { FormField } from '../data/services';
+interface Props { id: string; title: string; fields: FormField[] }
+const { id, title, fields } = Astro.props;
+---
+<form name={id} method="POST" data-netlify="true" netlify-honeypot="company" class="form-card" data-lead>
+  <input type="hidden" name="form-name" value={id} />
+  <p hidden><label>Company <input name="company" /></label></p>
+  <h3>{title}</h3>
+  <label>שם מלא<input name="name" required autocomplete="name" /></label>
+  <label>טלפון<input name="phone" type="tel" required autocomplete="tel" dir="ltr" /></label>
+  <label>כמה אנשים?<input name="people" type="number" min="1" max="50" value="2" required inputmode="numeric" /></label>
+  {fields.map((f) => (
+    <label class:list={{ full: f.full }}>
+      {f.label}
+      {f.type === 'select' ? (
+        <select name={f.name} required>{f.options!.map((o) => <option>{o}</option>)}</select>
+      ) : f.type === 'textarea' ? (
+        <textarea name={f.name} rows="3" required={f.required !== false} placeholder={f.placeholder}></textarea>
+      ) : (
+        <input name={f.name} type={f.type} required={f.required !== false} placeholder={f.placeholder} />
+      )}
+    </label>
+  ))}
+  <button type="submit" class="btn btn-yellow full">{id === 'trip-planning' ? 'שלחו לי ואחזור אליכם' : 'שליחת בקשה להצעת מחיר'}</button>
+  <p class="form-status full" role="status" data-status></p>
+</form>
