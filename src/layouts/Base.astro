@@ -217,14 +217,6 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
       else localStorage.removeItem(REF_KEY);
     } catch { /* storage blocked: just don't attribute */ }
 
-    // "How did you hear about us?": pre-select the partner the visitor came from.
-    if (partner) {
-      document.querySelectorAll<HTMLSelectElement>('select[data-heard-from]').forEach((sel) => {
-        const opt = sel.querySelector<HTMLOptionElement>(`option[data-partner="${partner}"]`);
-        if (opt && !sel.value) sel.value = opt.value;
-      });
-    }
-
     // WhatsApp clicks: saved by the server in Supabase (table whatsapp_clicks) and counted in Google Analytics.
     // sendBeacon does not delay opening WhatsApp, and a failure is ignored.
     document.addEventListener('click', (e) => {
