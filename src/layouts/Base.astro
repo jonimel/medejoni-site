@@ -103,20 +103,21 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
   )}
 </head>
 <body>
-  <a href="#main" class="sr-only">דלג לתוכן</a>
+  <a href="#main" class="sr-only skip-link">דלג לתוכן הראשי</a>
   <header class="site-header">
     <div class="wrap">
-      <a href="/" class="logo" aria-label="Medejoni, לדף הבית">
-        <svg class="co-flag" viewBox="0 0 30 20" width="54" height="36" role="img" aria-label="דגל קולומביה"><rect width="30" height="10" fill="#FCD116"/><rect y="10" width="30" height="5" fill="#003893"/><rect y="15" width="30" height="5" fill="#CE1126"/></svg>
+      <a href="/" class="logo">
+        <svg class="co-flag" viewBox="0 0 30 20" width="54" height="36" aria-hidden="true" focusable="false"><rect width="30" height="10" fill="#FCD116"/><rect y="10" width="30" height="5" fill="#003893"/><rect y="15" width="30" height="5" fill="#CE1126"/></svg>
         <span class="logo-text">
           <span class="logo-name">Medejoni</span>
           <span class="logo-sub">{site.tagline}</span>
         </span>
+        <span class="sr-only">, לדף הבית</span>
       </a>
       <nav class="main-nav" aria-label="ניווט ראשי">
         {navItems.map((n) => <a href={n.href} aria-current={(nav ?? (Astro.url.pathname === '/' ? 'home' : undefined)) === n.key ? 'page' : undefined}>{n.label}</a>)}
       </nav>
-      <button class="menu-btn" type="button" aria-label="תפריט" aria-expanded="false" aria-controls="mobile-nav" data-menu-btn><Icon name="menu" size={26} /></button>
+      <button class="menu-btn" type="button" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="mobile-nav" data-menu-btn><Icon name="menu" size={26} /></button>
     </div>
     <nav id="mobile-nav" class="mobile-nav" aria-label="תפריט נייד">
       {[...navItems.filter((n) => n.key === 'home' || n.key === 'about'), ...navItems.filter((n) => n.key !== 'home' && n.key !== 'about')].map((n) => <a href={n.href}>{n.label}</a>)}
@@ -124,7 +125,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
     <div class="flag flag-thin" aria-hidden="true"><span></span><span></span><span></span></div>
   </header>
 
-  <main id="main"><slot /></main>
+  <main id="main" tabindex="-1"><slot /></main>
 
   <footer class="site-footer">
     <div class="top">
@@ -146,6 +147,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
           <strong>מידע</strong>
           <a href="/about/">מי אני</a>
           <a href="/tours/#faq">שאלות נפוצות</a>
+          <a href="/accessibility/">הצהרת נגישות</a>
           <span style="color:var(--muted)">ביטול עד 12 שעות לפני הטיול</span>
         </div>
         <div class="col">
@@ -165,18 +167,25 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
         </span>
       </div>
     </div>
+    <a href={waLink('היי יונתן, יש לי שאלה')} class="wa-float" target="_blank" rel="noopener" aria-label="שאלות? דברו איתנו בוואטסאפ"><Icon name="whatsapp" size={24} />שאלות? דברו איתנו</a>
   </footer>
-
-  <a href={waLink('היי יונתן, יש לי שאלה')} class="wa-float" target="_blank" rel="noopener" aria-label="שאלות? דברו איתנו בוואטסאפ"><Icon name="whatsapp" size={24} />שאלות? דברו איתנו</a>
 
   <script>
     // Mobile menu
     const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
     const menu = document.getElementById('mobile-nav');
-    btn?.addEventListener('click', () => {
-      const open = menu?.classList.toggle('is-open');
-      btn.setAttribute('aria-expanded', String(!!open));
+    const setMenu = (open: boolean) => {
+      menu?.classList.toggle('is-open', open);
+      btn?.setAttribute('aria-expanded', String(open));
+      btn?.setAttribute('aria-label', open ? 'סגירת תפריט' : 'פתיחת תפריט');
+    };
+    btn?.addEventListener('click', () => setMenu(!menu?.classList.contains('is-open')));
+    // Escape closes the mobile menu and returns focus to its button.
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu?.classList.contains('is-open')) { setMenu(false); btn?.focus(); }
     });
+    // Skip link: move keyboard focus into the main content, not just scroll.
+    document.querySelector('.skip-link')?.addEventListener('click', () => document.getElementById('main')?.focus());
 
     // Lead forms: post to Netlify Forms (emailed to Jonathan) and show a thank-you message.
     document.querySelectorAll<HTMLFormElement>('form[data-lead]').forEach((form) => {
@@ -224,6 +233,11 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
     // Carousels: arrow buttons scroll the track by one card
     document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
       const track = root.querySelector<HTMLElement>('.carousel-track')!;
+      // A track with no links inside still needs to be reachable by keyboard so it can be scrolled.
+      if (!track.querySelector('a, button, input, select, textarea, [tabindex]')) {
+        track.tabIndex = 0;
+        track.setAttribute('aria-label', root.getAttribute('aria-label') ?? '');
+      }
       const prev = root.querySelector<HTMLButtonElement>('.carousel-btn.prev');
       const next = root.querySelector<HTMLButtonElement>('.carousel-btn.next');
       const step = () => {
@@ -247,6 +261,16 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
       // visitor hovers, touches or focuses it, or when it is off screen.
       if (root.hasAttribute('data-auto') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
         let paused = false;
+        let stopped = false;
+        const pauseBtn = root.querySelector<HTMLButtonElement>('[data-carousel-pause]');
+        if (pauseBtn) {
+          pauseBtn.hidden = false;
+          pauseBtn.addEventListener('click', () => {
+            stopped = !stopped;
+            pauseBtn.setAttribute('aria-pressed', String(stopped));
+            pauseBtn.querySelector('[data-label]')!.textContent = stopped ? 'הפעלת גלילה' : 'עצירת גלילה';
+          });
+        }
         let visible = false;
         let resumeAt = 0;
         const hold = (ms: number) => { resumeAt = Date.now() + ms; };
@@ -259,7 +283,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
         next?.addEventListener('click', () => hold(8000));
         new IntersectionObserver(([e]) => (visible = e.isIntersecting), { threshold: 0.4 }).observe(root);
         setInterval(() => {
-          if (paused || !visible || document.hidden || Date.now() < resumeAt) return;
+          if (stopped || paused || !visible || document.hidden || Date.now() < resumeAt) return;
           const max = track.scrollWidth - track.clientWidth;
           if (max < 4) return;
           if (Math.abs(track.scrollLeft) >= max - 4) track.scrollTo({ left: 0 });

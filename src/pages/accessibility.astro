@@ -1,0 +1,84 @@
+---
+// Accessibility statement (הצהרת נגישות), as required by the Israeli Equal Rights for
+// Persons with Disabilities regulations (service accessibility, 2013) and IS 5568.
+// Update `updated` whenever the site is re-checked.
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+
+const updated = 'נובמבר 2026';
+const phone = site.whatsapp ? `+${site.whatsapp.slice(0, 3)}-${site.whatsapp.slice(3, 5)}-${site.whatsapp.slice(5)}` : '';
+const done = [
+  'כל האתר כתוב בעברית, מוגדר כשפה עברית ובכיוון ימין לשמאל, כך שקוראי מסך מקריאים אותו נכון.',
+  'אפשר לנווט בכל האתר בעזרת המקלדת בלבד (Tab, Shift+Tab, Enter, רווח), ויש מסגרת ברורה סביב הרכיב שנמצא בפוקוס.',
+  'בראש כל עמוד יש קישור "דלג לתוכן הראשי", שמאפשר לדלג על התפריט.',
+  'מבנה כותרות היררכי בכל עמוד, ואזורים מסומנים (כותרת עליונה, ניווט, תוכן ראשי, כותרת תחתונה).',
+  'לתמונות שמעבירות מידע יש טקסט חלופי בעברית. תמונות לקישוט בלבד מסומנות כך שקוראי מסך מדלגים עליהן.',
+  'ניגודיות הצבעים בין טקסט לרקע עומדת ברמה AA.',
+  'לכל שדה בטפסים יש תווית ברורה, שדות חובה מסומנים לקוראי מסך, והודעות שגיאה ואישור מוקראות אוטומטית.',
+  'לסליידרים ולתמונות שזזות לבד יש כפתור עצירה. הם נעצרים גם כשמעבירים עליהם עכבר או מגיעים אליהם במקלדת.',
+  'מי שהגדיר במכשיר "הפחתת תנועה" לא יראה אנימציות ותנועה אוטומטית באתר.',
+  'קישורים שנפתחים בחלון חדש (למשל וואטסאפ ורשתות חברתיות) מסומנים כך לקוראי מסך.',
+  'האתר מותאם לטלפון, לטאבלט ולמחשב, ואפשר להגדיל את התצוגה עד 200% בלי לאבד תוכן.',
+];
+---
+<Base title="הצהרת נגישות" description="הצהרת הנגישות של Medejoni: מה הונגש באתר, מה עדיין לא, ואיך פונים אליי בנושא נגישות.">
+  <section class="page-top">
+    <div class="wrap" style="padding-top:40px;padding-bottom:40px">
+      <nav class="crumbs" aria-label="פירורי לחם" style="padding-top:0;color:var(--ink)"><a href="/" style="color:var(--ink)">דף הבית</a> › הצהרת נגישות</nav>
+      <h1 style="font-size:clamp(34px,5vw,52px);font-weight:800">הצהרת נגישות</h1>
+      <p style="font-size:19px;margin-top:10px">חשוב לי שכל מי שרוצה לטייל בקולומביה יוכל להשתמש באתר בקלות, כולל אנשים עם מוגבלות.</p>
+    </div>
+  </section>
+
+  <article class="wrap section a11y">
+    <h2>על האתר</h2>
+    <p>
+      Medejoni הוא האתר של {site.owner}, שמארגן טיולים, הסעות וטיסות בקולומביה. האתר הונגש בהתאם
+      לתקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע"ג־2013, לתקן הישראלי
+      ת"י 5568 ולהנחיות הבינלאומיות WCAG 2.1 ברמה AA, ככל שהדבר אפשרי.
+    </p>
+    <p>ההנגשה נעשתה בקוד של האתר עצמו, בלי תוסף נגישות חיצוני, כך שהיא עובדת עם הכלים שכבר יש לכם במכשיר: קורא מסך, הגדלת תצוגה, ניגודיות גבוהה ומקלדת.</p>
+
+    <h2>מה עשיתי כדי להנגיש את האתר</h2>
+    <ul>{done.map((d) => <li>{d}</li>)}</ul>
+
+    <h2>הדפדפנים והכלים שהאתר נבדק איתם</h2>
+    <p>האתר נבדק בכלי בדיקה אוטומטי (axe) ובבדיקה ידנית עם מקלדת, בדפדפן Chrome בתצוגת מחשב ובתצוגת טלפון. הוא בנוי לפי התקנים של הדפדפנים העדכניים (Chrome, Safari, Edge, Firefox).</p>
+
+    <h2>מה עדיין לא נגיש במלואו</h2>
+    <ul>
+      <li>תכנים של שירותים חיצוניים שהאתר מקשר אליהם, כמו וואטסאפ, אינסטגרם, טיקטוק ו־Google, אינם בשליטתי ונגישותם באחריות החברות שמפעילות אותם.</li>
+      <li>חלק מהתמונות והתכנים מתווספים לאתר באופן שוטף. אם נתקלתם בתמונה בלי תיאור מתאים או בתוכן שקשה להשתמש בו, אשמח שתספרו לי ואתקן.</li>
+    </ul>
+
+    <h2>נגישות הטיולים והשירות בשטח</h2>
+    <p>
+      הטיולים מתקיימים בקולומביה, בשטח פתוח, ולפעמים כוללים הליכה, מדרגות ושבילים לא סלולים (למשל העלייה לסלע אל פניול בגואטפה).
+      רמת הנגישות משתנה מטיול לטיול. ספרו לי מראש מה אתם צריכים, ואבדוק איתכם איזה טיול, רכב או מסלול מתאים, ואילו התאמות אפשר לעשות.
+    </p>
+
+    <h2 id="contact-a11y">פנייה בנושא נגישות</h2>
+    <p>נתקלתם בבעיה באתר, או צריכים התאמה בשירות? אפשר לפנות אליי ישירות, ואחזור אליכם בהקדם, ולכל המאוחר בתוך 7 ימי עסקים.</p>
+    <dl class="a11y-contact">
+      <dt>רכז הנגישות</dt><dd>{site.owner}</dd>
+      <dt>אימייל</dt><dd><a href={`mailto:${site.email}?subject=${encodeURIComponent('פנייה בנושא נגישות')}`} class="ltr">{site.email}</a></dd>
+      {phone && <><dt>טלפון / וואטסאפ</dt><dd><a href={`tel:+${site.whatsapp}`} class="ltr">{phone}</a></dd></>}
+    </dl>
+    <p>כדי שאוכל לטפל בפנייה מהר, כדאי לציין מה הבעיה, באיזה עמוד היא, ובאיזה דפדפן או כלי עזר השתמשתם.</p>
+
+    <p class="a11y-updated">ההצהרה עודכנה לאחרונה: {updated}.</p>
+  </article>
+</Base>
+
+<style>
+  .a11y { max-width: 860px; }
+  .a11y h2 { font-size: 26px; font-weight: 700; margin: 36px 0 12px; }
+  .a11y h2:first-child { margin-top: 0; }
+  .a11y p, .a11y li { font-size: 18px; line-height: 1.75; color: var(--text); }
+  .a11y p + p { margin-top: 12px; }
+  .a11y ul { padding-inline-start: 22px; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .a11y-contact { display: grid; grid-template-columns: max-content 1fr; gap: 10px 24px; margin: 18px 0; padding: 20px 24px; background: var(--cream); border-radius: 16px; font-size: 18px; }
+  .a11y-contact dt { font-weight: 700; }
+  .a11y-contact dd { margin: 0; }
+  .a11y-updated { margin-top: 32px !important; font-size: 16px !important; color: var(--muted) !important; }
+</style>

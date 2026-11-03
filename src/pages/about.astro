@@ -38,7 +38,7 @@ const reviews = [
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px">
       {steps.map((s, i) => (
         <div class="reveal" style={`border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:10px;transition-delay:${i * 100}ms`}>
-          <span style="font-size:44px;font-weight:800;color:var(--yellow);-webkit-text-stroke:1px var(--ink)">0{i + 1}</span>
+          <span class="deco-num" aria-hidden="true" data-n={`0${i + 1}`} style="font-size:44px"></span>
           <strong style="font-size:21px">{s.title}</strong>
           <span style="font-size:17px;line-height:1.6;color:#4B5563">{s.text}</span>
         </div>
@@ -49,19 +49,19 @@ const reviews = [
   <section style="background:var(--sky)" data-reviews>
     <div class="wrap section" style="max-width:900px;text-align:center;display:flex;flex-direction:column;gap:24px;align-items:center">
       <h2 style="font-size:34px">מה מטיילים אומרים</h2>
-      <div class="rv-track">
+      <div class="rv-track" aria-live="polite">
         {reviews.map((r, i) => (
           <figure class:list={['rv', { 'is-active': i === 0 }]} aria-hidden={i === 0 ? undefined : 'true'}>
-            <div class="stars" aria-label={`${r.stars} כוכבים`}>{'★'.repeat(r.stars)}</div>
+            <div class="stars" role="img" aria-label={`דירוג ${r.stars} מתוך 5 כוכבים`}>{'★'.repeat(r.stars)}</div>
             <blockquote>“{r.text}”</blockquote>
             <figcaption>{r.who}</figcaption>
           </figure>
         ))}
       </div>
       {reviews.length > 1 && <div style="display:flex;gap:10px;align-items:center">
-        <button type="button" class="rv-btn" aria-label="הקודם" data-rv-prev>›</button>
-        {reviews.map((_, i) => <span class:list={['rv-dot', { 'is-active': i === 0 }]}></span>)}
-        <button type="button" class="rv-btn" aria-label="הבא" data-rv-next>‹</button>
+        <button type="button" class="rv-btn" aria-label="ההמלצה הקודמת" data-rv-prev>›</button>
+        {reviews.map((_, i) => <span aria-hidden="true" class:list={['rv-dot', { 'is-active': i === 0 }]}></span>)}
+        <button type="button" class="rv-btn" aria-label="ההמלצה הבאה" data-rv-next>‹</button>
       </div>}
     </div>
   </section>

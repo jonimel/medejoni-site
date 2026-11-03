@@ -4,6 +4,12 @@ interface Props { label: string; /** Advance by itself every few seconds. */ aut
 const { label, auto } = Astro.props;
 ---
 <div class="carousel" data-carousel data-auto={auto ? '' : undefined} role="region" aria-label={label}>
+  {auto && (
+    <button type="button" class="pause-btn on-light carousel-pause" aria-pressed="false" data-carousel-pause hidden>
+      <span class="ico-pause" aria-hidden="true">❚❚</span><span class="ico-play" aria-hidden="true">▶</span>
+      <span data-label>עצירת גלילה</span>
+    </button>
+  )}
   <button type="button" class="carousel-btn prev" aria-label="הקודם"><Icon name="chev-r" size={22} /></button>
   <div class="carousel-track"><slot /></div>
   <button type="button" class="carousel-btn next" aria-label="הבא"><Icon name="chev-l" size={22} /></button>
