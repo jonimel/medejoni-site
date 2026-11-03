@@ -10,7 +10,7 @@ import { guides, isDraft } from './src/data/guides.ts';
 // Pages Google should not index (also kept out of the sitemap).
 const hidden = ['/booking/', '/404/', ...guides.filter(isDraft).map((g) => `/guides/${g.slug}/`)];
 
-/** After the build, give every <img src="/images/..."> its real width/height (less layout jumping = better Core Web Vitals). */
+/** After the build: mark new-tab links for screen readers, and give every <img src="/images/..."> its real width/height (less layout jumping = better Core Web Vitals). */
 function imageDimensions() {
   return {
     name: 'image-dimensions',
@@ -30,7 +30,14 @@ function imageDimensions() {
             const size = cache.get(src);
             return size ? tag.replace(/^<img\b/, `<img width="${size.width}" height="${size.height}"`) : tag;
           });
-          if (out !== html) writeFileSync(file, out);
+          // Links that open a new tab say so to screen readers (WCAG 3.2.5 / IS 5568).
+          const NEW_TAB = ' (נפתח בחלון חדש)';
+          const out2 = out.replace(/<a\b([^>]*\btarget="_blank"[^>]*)>([\s\S]*?)<\/a>/g, (m, attrs, inner) => {
+            if (m.includes(NEW_TAB.trim())) return m;
+            if (/\saria-label="/.test(attrs)) return m.replace(/(\saria-label="[^"]*)"/, `$1${NEW_TAB}"`);
+            return `<a${attrs}>${inner}<span class="sr-only">${NEW_TAB}</span></a>`;
+          });
+          if (out2 !== html) writeFileSync(file, out2);
         }
       },
     },

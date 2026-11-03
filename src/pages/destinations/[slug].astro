@@ -88,7 +88,7 @@ const ld = [
         <div class="hl">
           {dest.highlights.map((h, i) => (
             <div class="reveal" style={`transition-delay:${i * 80}ms`}>
-              <span class="num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="num deco-num" aria-hidden="true" data-n={String(i + 1).padStart(2, '0')}></span>
               <strong>{h.title}</strong>
               {!h.text.startsWith('[') && <span>{h.text}</span>}
             </div>

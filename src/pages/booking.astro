@@ -15,9 +15,9 @@ const data = JSON.stringify(tours.map((t) => ({
     <h1 style="font-size:clamp(28px,4vw,38px);font-weight:800;margin-bottom:24px">השלמת הזמנה</h1>
 
     <ol class="stepper" aria-label="שלבי ההזמנה">
-      <li class="is-current" data-step-ind="1"><span>1</span>הטיול</li>
-      <li data-step-ind="2"><span>2</span>הפרטים שלכם</li>
-      <li data-step-ind="3"><span>3</span>אישור</li>
+      <li class="is-current" aria-current="step" data-step-ind="1"><span aria-hidden="true">1</span><span class="sr-only">שלב 1: </span>הטיול</li>
+      <li data-step-ind="2"><span aria-hidden="true">2</span><span class="sr-only">שלב 2: </span>הפרטים שלכם</li>
+      <li data-step-ind="3"><span aria-hidden="true">3</span><span class="sr-only">שלב 3: </span>אישור</li>
     </ol>
 
     <div class="b-layout">
@@ -28,7 +28,7 @@ const data = JSON.stringify(tours.map((t) => ({
         <input type="hidden" name="tour_title" data-h-title />
         <p hidden><label>Company <input name="company" /></label></p>
         <fieldset data-step="1">
-          <legend>הטיול שבחרתם</legend>
+          <legend tabindex="-1">הטיול שבחרתם</legend>
           <label class="f">טיול
             <select name="tour" required data-f-tour>
               {tours.map((t) => <option value={t.slug}>{t.title}</option>)}
@@ -43,7 +43,7 @@ const data = JSON.stringify(tours.map((t) => ({
         </fieldset>
 
         <fieldset data-step="2" hidden>
-          <legend>הפרטים שלכם</legend>
+          <legend tabindex="-1">הפרטים שלכם</legend>
           <div class="row">
             <label class="f">שם מלא<input name="name" required autocomplete="name" /></label>
             <label class="f">טלפון (וואטסאפ)<input name="phone" type="tel" required autocomplete="tel" dir="ltr" placeholder="+972 50 000 0000" /></label>
@@ -58,7 +58,7 @@ const data = JSON.stringify(tours.map((t) => ({
         </fieldset>
 
         <fieldset data-step="3" hidden>
-          <legend>אישור ושליחה</legend>
+          <legend tabindex="-1">אישור ושליחה</legend>
           <div class="note">
             <strong>איך זה עובד?</strong>
             <span>ההזמנה נשלחת ליונתן. הוא חוזר אליכם לאישור זמינות ופרטי תשלום, בדרך כלל באותו יום. תשלום באתר (מלא או מקדמה) יתווסף בהמשך.</span>
@@ -69,7 +69,7 @@ const data = JSON.stringify(tours.map((t) => ({
             <button type="button" class="btn btn-outline" data-back>חזרה</button>
             <button type="submit" class="btn btn-yellow" data-submit>שליחת ההזמנה</button>
           </div>
-          <p class="err" data-err hidden></p>
+          <p class="err" data-err role="alert" hidden></p>
         </fieldset>
 
         <div class="done" data-done hidden tabindex="-1">
@@ -89,7 +89,7 @@ const data = JSON.stringify(tours.map((t) => ({
           <strong data-s-title style="font-size:19px"></strong>
           <span data-s-meta style="color:var(--muted)"></span>
           <ul data-s-lines></ul>
-          <div class="s-total"><span>סה״כ לתשלום</span><strong class="ltr" data-s-total></strong></div>
+          <div class="s-total" aria-live="polite"><span>סה״כ לתשלום</span><strong class="ltr" data-s-total></strong></div>
           <small style="color:var(--muted)">המחירים בפסו קולומביאני (COP), לאדם.</small>
         </div>
       </aside>
@@ -232,9 +232,11 @@ const data = JSON.stringify(tours.map((t) => ({
 
   function go(n: number) {
     steps.forEach((s, i) => (s.hidden = i !== n));
-    inds.forEach((el, i) => { el.classList.toggle('is-current', i === n); el.classList.toggle('is-done', i < n); });
+    inds.forEach((el, i) => { el.classList.toggle('is-current', i === n); el.classList.toggle('is-done', i < n); el.toggleAttribute('aria-current', i === n); if (i === n) el.setAttribute('aria-current', 'step'); });
     if (n === 2) fillReview();
     root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Keyboard and screen-reader users land on the new step's title.
+    steps[n]?.querySelector<HTMLElement>('legend')?.focus({ preventScroll: true });
   }
   function valid(step: HTMLFieldSetElement) {
     let ok = true;
@@ -304,7 +306,7 @@ const data = JSON.stringify(tours.map((t) => ({
       // Google Analytics: count the booking request (only when analytics is on).
       (window as any).gtag?.('event', 'generate_lead', { form_name: 'booking' });
       steps.forEach((s) => (s.hidden = true));
-      inds.forEach((el) => { el.classList.remove('is-current'); el.classList.add('is-done'); });
+      inds.forEach((el) => { el.classList.remove('is-current'); el.classList.add('is-done'); el.removeAttribute('aria-current'); });
       const done = form.querySelector<HTMLElement>('[data-done]')!;
       done.querySelector('[data-done-name]')!.textContent = String(fd.get('name') ?? '');
       done.querySelector<HTMLAnchorElement>('[data-done-wa]')!.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;

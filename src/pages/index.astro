@@ -71,7 +71,11 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
       </form>
     </div>
     <div class="dots">
-      {slides.map((_, i) => <button type="button" class:list={['dot', { 'is-active': i === 0 }]} aria-label={`שקופית ${i + 1}`} data-dot={i}></button>)}
+      {slides.map((_, i) => <button type="button" class:list={['dot', { 'is-active': i === 0 }]} aria-label={`שקופית ${i + 1} מתוך ${slides.length}`} aria-current={i === 0 ? 'true' : undefined} data-dot={i}></button>)}
+      <button type="button" class="pause-btn" aria-pressed="false" data-hero-pause hidden>
+        <span class="ico-pause" aria-hidden="true">❚❚</span><span class="ico-play" aria-hidden="true">▶</span>
+        <span data-label>עצירה</span>
+      </button>
     </div>
   </section>
   <div class="flag" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -194,7 +198,13 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
       <h2 style="font-size:32px">רגעים מהשטח</h2>
       <span style="display:flex;gap:16px;font-weight:600"><a href={site.instagram} target="_blank" rel="noopener">אינסטגרם</a><a href={site.tiktok} target="_blank" rel="noopener">טיקטוק</a></span>
     </div>
-    <div class="marquee">
+    <div class="wrap" style="display:flex;justify-content:flex-end;margin:-12px auto 12px">
+      <button type="button" class="pause-btn on-light" aria-pressed="false" data-marquee-pause>
+        <span class="ico-pause" aria-hidden="true">❚❚</span><span class="ico-play" aria-hidden="true">▶</span>
+        <span data-label>עצירת תמונות</span>
+      </button>
+    </div>
+    <div class="marquee" data-marquee>
       {moments.concat(moments).map((m, i) => <img src={thumb(m)} alt="" loading="lazy" aria-hidden={i >= moments.length ? 'true' : undefined} />)}
     </div>
   </section>
@@ -232,7 +242,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
     const show = (n: number) => {
       i = (n + slides.length) % slides.length;
       slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
-      dots.forEach((d, k) => d.classList.toggle('is-active', k === i));
+      dots.forEach((d, k) => { d.classList.toggle('is-active', k === i); d.toggleAttribute('aria-current', k === i); });
       text.classList.add('is-changing');
       setTimeout(() => {
         const s = slides[i].dataset;
@@ -242,13 +252,36 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
         text.classList.remove('is-changing');
       }, 300);
     };
-    const start = () => { stop(); timer = window.setInterval(() => show(i + 1), 5500); };
+    // stopped = the visitor pressed pause (or asked the OS for reduced motion); hover/focus only pause for a moment.
+    let stopped = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const stop = () => window.clearInterval(timer);
+    const start = () => { stop(); if (!stopped) timer = window.setInterval(() => show(i + 1), 5500); };
     dots.forEach((d, k) => d.addEventListener('click', () => { show(k); start(); }));
     hero.addEventListener('mouseenter', stop);
     hero.addEventListener('mouseleave', start);
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) start();
+    hero.addEventListener('focusin', stop);
+    hero.addEventListener('focusout', (e) => { if (!hero.contains(e.relatedTarget as Node)) start(); });
+    const pauseBtn = hero.querySelector<HTMLButtonElement>('[data-hero-pause]');
+    if (pauseBtn && !stopped) {
+      pauseBtn.hidden = false;
+      pauseBtn.addEventListener('click', () => {
+        stopped = !stopped;
+        pauseBtn.setAttribute('aria-pressed', String(stopped));
+        pauseBtn.querySelector('[data-label]')!.textContent = stopped ? 'הפעלה' : 'עצירה';
+        start();
+      });
+    }
+    start();
   }
+
+  // "Moments" photo strip: pause / play button.
+  const mq = document.querySelector<HTMLElement>('[data-marquee]');
+  const mqBtn = document.querySelector<HTMLButtonElement>('[data-marquee-pause]');
+  mqBtn?.addEventListener('click', () => {
+    const p = !!mq?.classList.toggle('is-paused');
+    mqBtn.setAttribute('aria-pressed', String(p));
+    mqBtn.querySelector('[data-label]')!.textContent = p ? 'הפעלת תמונות' : 'עצירת תמונות';
+  });
 
   // Tour category chips
   document.querySelectorAll<HTMLElement>('[data-filter-root]').forEach((root) => {

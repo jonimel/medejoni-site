@@ -75,16 +75,16 @@ const booking = JSON.stringify({
   <div class="wrap">
     <nav class="crumbs" aria-label="פירורי לחם"><a href="/">דף הבית</a> › <a href="/tours/">טיולים</a> › <a href={`/destinations/${dest.slug}/`}>{dest.name}</a> › {tour.title}</nav>
 
-    <div class="gallery" data-gallery>
+    <div class="gallery" data-gallery role="region" aria-label="גלריית תמונות">
       <div class="g-main">
         {tour.images.map((im, i) => <img src={img(im)} alt={`${tour.title}, ${tour.place}, קולומביה – תמונה ${i + 1}`} fetchpriority={i === 0 ? 'high' : undefined} class:list={{ 'is-active': i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />)}
         <button type="button" class="g-arrow g-prev" aria-label="התמונה הקודמת" data-g-prev><Icon name="chev-r" size={22} /></button>
         <button type="button" class="g-arrow g-next" aria-label="התמונה הבאה" data-g-next><Icon name="chev-l" size={22} /></button>
-        <span class="g-count ltr" data-g-count>1/{tour.images.length}</span>
+        <span class="g-count ltr" data-g-count aria-live="polite">1/{tour.images.length}</span>
       </div>
       <div class="g-thumbs">
         {tour.images.map((im, i) => (
-          <button type="button" aria-label={`תמונה ${i + 1}`} data-g-thumb={i} class:list={{ 'is-active': i === 0 }}><img src={thumb(im)} alt="" loading="lazy" /></button>
+          <button type="button" aria-label={`הצגת תמונה ${i + 1} מתוך ${tour.images.length}`} aria-pressed={i === 0 ? 'true' : 'false'} data-g-thumb={i} class:list={{ 'is-active': i === 0 }}><img src={thumb(im)} alt="" loading="lazy" /></button>
         ))}
       </div>
     </div>
@@ -279,7 +279,7 @@ const booking = JSON.stringify({
     const show = (n: number) => {
       i = (n + imgs.length) % imgs.length;
       imgs.forEach((im, k) => im.classList.toggle('is-active', k === i));
-      thumbs.forEach((t, k) => t.classList.toggle('is-active', k === i));
+      thumbs.forEach((t, k) => { t.classList.toggle('is-active', k === i); t.setAttribute('aria-pressed', String(k === i)); });
       count.textContent = `${i + 1}/${imgs.length}`;
     };
     g.querySelector('[data-g-prev]')!.addEventListener('click', () => show(i - 1));
