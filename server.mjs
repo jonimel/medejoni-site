@@ -40,13 +40,13 @@ const formTitles = {
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
-async function sendLead(fields) {
+async function sendLead(fields, suspect = false) {
   const form = fields['form-name'] || 'lead';
   const rows = Object.entries(fields)
-    .filter(([k, v]) => k !== 'company' && k !== 'form-name' && String(v).trim() !== '')
+    .filter(([k, v]) => k !== 'company' && k !== 'hp_field' && k !== 'form-name' && String(v).trim() !== '')
     .map(([k, v]) => `<tr><td style="padding:6px 10px;font-weight:bold">${esc(labels[k] || k)}</td><td style="padding:6px 10px">${esc(v)}</td></tr>`)
     .join('');
-  const subject = `ליד חדש: ${formTitles[form] || form}${fields.name ? ` – ${fields.name}` : ''}`;
+  const subject = `${suspect ? '[חשד לספאם] ' : ''}ליד חדש: ${formTitles[form] || form}${fields.name ? ` – ${fields.name}` : ''}`;
   const html = `<div dir="rtl" style="font-family:Arial,sans-serif"><h2>${esc(subject)}</h2><table border="1" style="border-collapse:collapse">${rows}</table></div>`;
   if (!process.env.RESEND_API_KEY) throw new Error('RESEND_API_KEY is not set');
   const email = { from: mailFrom, to: [leadEmail], subject, html };
@@ -102,11 +102,13 @@ createServer(async (req, res) => {
     }
     if (req.method === 'POST') {
       const fields = Object.fromEntries(new URLSearchParams(await readBody(req)));
-      if (fields.company) { res.writeHead(200).end('ok'); return; } // honeypot: a bot filled the hidden field
+      // Honeypot: a hidden field people never see. If it is filled, it is probably a bot,
+      // but browser autofill can fill it too, so the lead is still emailed, marked as suspected spam.
+      const suspect = Boolean(fields.hp_field || fields.company);
       // Every lead is written to the Railway logs too, so none is lost even if the email fails.
       console.log('Lead received:', JSON.stringify(fields));
       try {
-        await sendLead(fields);
+        await sendLead(fields, suspect);
         res.writeHead(200).end('ok');
       } catch (e) {
         console.error('Lead email failed:', e.message, JSON.stringify(fields));

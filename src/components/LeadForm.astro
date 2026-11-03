@@ -11,10 +11,10 @@ const options = ['טיול', 'הסעה משדה התעופה', 'מעבר בין 
       <h2>{title}</h2>
       <p>{sub}</p>
     </div>
-    <form name="lead" method="POST" data-netlify="true" netlify-honeypot="company" class="form-card" data-lead>
+    <form name="lead" method="POST" data-netlify="true" netlify-honeypot="hp_field" class="form-card" data-lead>
       <input type="hidden" name="form-name" value="lead" />
       <input type="hidden" name="source" value={source} />
-      <p hidden><label>Company <input name="company" /></label></p>
+      <p hidden aria-hidden="true"><label>Leave empty <input name="hp_field" tabindex="-1" autocomplete="off" /></label></p>
       <label>שם מלא<input name="name" required autocomplete="name" /></label>
       <label>טלפון<input name="phone" type="tel" required autocomplete="tel" dir="ltr" /></label>
       <label>במה אפשר לעזור?
