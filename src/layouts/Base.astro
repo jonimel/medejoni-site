@@ -199,6 +199,18 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
       const fromUrl = (q.get('utm_source') || q.get('ref') || '').trim().toLowerCase();
       if (/^[a-z0-9_-]{1,40}$/.test(fromUrl)) {
         localStorage.setItem(REF_KEY, JSON.stringify({ code: fromUrl, until: Date.now() + REF_DAYS * 864e5 }));
+        // Count the visit in Supabase (server: /api/visit). Only once the page is really shown to the visitor,
+        // and not again on refresh (sessionStorage) or later pages (server cookie).
+        const send = () => {
+          try { if (sessionStorage.getItem('mj_visit_sent') === location.href) return; sessionStorage.setItem('mj_visit_sent', location.href); } catch { /* ignore */ }
+          fetch('/api/visit', {
+            method: 'POST', keepalive: true, credentials: 'same-origin',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ code: fromUrl, page: location.pathname, referrer: document.referrer }),
+          }).catch(() => {});
+        };
+        if ((document as any).prerendering) document.addEventListener('prerenderingchange', send, { once: true });
+        else send();
       }
       const saved = JSON.parse(localStorage.getItem(REF_KEY) || 'null');
       if (saved && saved.until > Date.now()) partner = saved.code;
