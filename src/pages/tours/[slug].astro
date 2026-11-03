@@ -77,7 +77,7 @@ const booking = JSON.stringify({
 
     <div class="gallery" data-gallery role="region" aria-label="גלריית תמונות">
       <div class="g-main">
-        {tour.images.map((im, i) => <img src={img(im)} alt={`${tour.title}, ${tour.place}, קולומביה – תמונה ${i + 1}`} fetchpriority={i === 0 ? 'high' : undefined} class:list={{ 'is-active': i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />)}
+        {tour.images.map((im, i) => <img src={img(im)} alt={`${tour.title}, ${tour.place}, קולומביה – תמונה ${i + 1}`} fetchpriority={i === 0 ? 'high' : 'low'} class:list={{ 'is-active': i === 0 }} loading={i === 0 ? 'eager' : 'lazy'} />)}
         <button type="button" class="g-arrow g-prev" aria-label="התמונה הקודמת" data-g-prev><Icon name="chev-r" size={22} /></button>
         <button type="button" class="g-arrow g-next" aria-label="התמונה הבאה" data-g-next><Icon name="chev-l" size={22} /></button>
         <span class="g-count ltr" data-g-count aria-live="polite">1/{tour.images.length}</span>

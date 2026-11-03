@@ -52,7 +52,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
   <section class="hero" aria-label="סליידר ראשי" data-hero>
     {slides.map((s, i) => (
       <div class:list={['hero-slide', { 'is-active': i === 0 }]} data-kicker={s.kicker} data-title={s.title} data-sub={s.sub}>
-        <img src={img(s.img)} alt="" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} />
+        <img src={img(s.img)} alt="" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'low'} />
       </div>
     ))}
     <div class="hero-body">

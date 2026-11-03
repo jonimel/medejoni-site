@@ -10,6 +10,7 @@
 //                   after verifying a domain, use e.g. "Medejoni <leads@medejoni.com>")
 //   PORT            set by Railway automatically.
 import { createServer } from 'node:http';
+import { brotliCompressSync, gzipSync, constants as zlib } from 'node:zlib';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -82,14 +83,53 @@ async function readBody(req) {
   return body;
 }
 
-async function serveFile(res, path, status = 200) {
-  const data = await readFile(path);
+// Text files (pages, styles, scripts) are sent compressed: about 4-5 times smaller.
+const compressible = new Set(['.html', '.css', '.js', '.json', '.xml', '.txt', '.svg']);
+// Files are read and compressed once, then kept in memory (the site is small).
+const fileCache = new Map();
+
+async function loadFile(path, mtimeMs) {
+  const hit = fileCache.get(path);
+  if (hit && hit.mtimeMs === mtimeMs) return hit;
+  const raw = await readFile(path);
+  const entry = { mtimeMs, raw, etag: `"${raw.length.toString(36)}-${Math.round(mtimeMs).toString(36)}"` };
+  if (compressible.has(extname(path)) && raw.length > 1024) {
+    entry.br = brotliCompressSync(raw, { params: { [zlib.BROTLI_PARAM_QUALITY]: 11 } });
+    entry.gzip = gzipSync(raw, { level: 9 });
+  }
+  fileCache.set(path, entry);
+  return entry;
+}
+
+function cacheControl(urlPath, ext) {
+  if (ext === '.html') return 'no-cache'; // always check for a new version (cheap thanks to ETag)
+  if (urlPath.startsWith('/_astro/')) return 'public, max-age=31536000, immutable'; // file names change on every edit
+  if (urlPath.startsWith('/images/')) return 'public, max-age=2592000'; // 30 days
+  return 'public, max-age=86400';
+}
+
+async function serveFile(req, res, path, status = 200) {
+  const { mtimeMs } = await stat(path);
+  const file = await loadFile(path, mtimeMs);
   const ext = extname(path);
-  res.writeHead(status, {
+  const headers = {
     'Content-Type': types[ext] || 'application/octet-stream',
-    'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=604800',
-  });
-  res.end(data);
+    'Cache-Control': cacheControl(new URL(req.url, 'http://x').pathname, ext),
+    ETag: file.etag,
+    'X-Content-Type-Options': 'nosniff',
+  };
+  if (file.gzip) headers.Vary = 'Accept-Encoding';
+  if (status === 200 && req.headers['if-none-match'] === file.etag) {
+    res.writeHead(304, headers).end();
+    return;
+  }
+  const accept = String(req.headers['accept-encoding'] || '');
+  let body = file.raw;
+  if (file.br && /\bbr\b/.test(accept)) { body = file.br; headers['Content-Encoding'] = 'br'; }
+  else if (file.gzip && /\bgzip\b/.test(accept)) { body = file.gzip; headers['Content-Encoding'] = 'gzip'; }
+  headers['Content-Length'] = body.length;
+  res.writeHead(status, headers);
+  res.end(req.method === 'HEAD' ? undefined : body);
 }
 
 createServer(async (req, res) => {
@@ -116,7 +156,9 @@ createServer(async (req, res) => {
       }
       return;
     }
-    let path = normalize(join(root, decodeURIComponent(url.pathname)));
+    let decoded;
+    try { decoded = decodeURIComponent(url.pathname); } catch { res.writeHead(400).end('Bad request'); return; }
+    let path = normalize(join(root, decoded));
     if (!path.startsWith(root)) { res.writeHead(403).end(); return; }
     const s = await stat(path).catch(() => null);
     if (s?.isDirectory()) {
@@ -125,9 +167,9 @@ createServer(async (req, res) => {
     } else if (!s && !extname(path)) {
       path += '.html';
     }
-    if (await stat(path).catch(() => null)) return await serveFile(res, path);
+    if (await stat(path).catch(() => null)) return await serveFile(req, res, path);
     const notFound = join(root, '404.html');
-    if (await stat(notFound).catch(() => null)) return await serveFile(res, notFound, 404);
+    if (await stat(notFound).catch(() => null)) return await serveFile(req, res, notFound, 404);
     res.writeHead(404).end('Not found');
   } catch (e) {
     console.error(e);

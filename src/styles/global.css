@@ -23,7 +23,7 @@
 html { scroll-behavior: smooth; overflow-x: clip; }
 body {
   margin: 0;
-  font-family: 'Rubik', system-ui, sans-serif;
+  font-family: 'Rubik Variable', 'Rubik', system-ui, sans-serif;
   color: var(--ink);
   background: #fff;
   line-height: 1.5;
@@ -134,6 +134,8 @@ button { font: inherit; }
 .carousel-btn[disabled] { opacity: 0; pointer-events: none; }
 .carousel-btn.prev { right: -18px; }
 .carousel-btn.next { left: -18px; }
+/* On laptop-size screens the arrows would hang off the edge of the screen. */
+@media (max-width: 1340px) { .carousel-btn.prev { right: 4px; } .carousel-btn.next { left: 4px; } }
 
 /* Cards */
 .card { transition: transform 200ms ease, box-shadow 200ms ease; }

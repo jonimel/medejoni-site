@@ -1,5 +1,8 @@
 ---
+import '@fontsource-variable/rubik/wght.css';
 import '../styles/global.css';
+// The font is served from our own site (no extra trip to Google); the Hebrew part is preloaded.
+import rubikHebrew from '@fontsource-variable/rubik/files/rubik-hebrew-wght-normal.woff2?url';
 import Icon from '../components/Icon.astro';
 import { site, waLink } from '../data/site';
 import { tours } from '../data/tours';
@@ -86,9 +89,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
   <meta name="theme-color" content="#FCD116" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="sitemap" href="/sitemap-index.xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preload" href={rubikHebrew} as="font" type="font/woff2" crossorigin />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd ? [orgLd].concat(jsonLd as any) : orgLd)} />
   {site.gaId && (
     <>

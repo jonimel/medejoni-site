@@ -10,7 +10,8 @@ import { guides, isDraft } from './src/data/guides.ts';
 // Pages Google should not index (also kept out of the sitemap).
 const hidden = ['/booking/', '/404/', ...guides.filter(isDraft).map((g) => `/guides/${g.slug}/`)];
 
-/** After the build: mark new-tab links for screen readers, and give every <img src="/images/..."> its real width/height (less layout jumping = better Core Web Vitals). */
+/** After the build: mark new-tab links for screen readers, and give every <img src="/images/..."> its real width/height (less layout jumping = better Core Web Vitals)
+ *  and a srcset with the small copy, so phones download smaller photos. */
 function imageDimensions() {
   return {
     name: 'image-dimensions',
@@ -19,6 +20,10 @@ function imageDimensions() {
         const root = fileURLToPath(dir);
         const pub = fileURLToPath(new URL('./public', import.meta.url));
         const cache = new Map();
+        const sizeOf = (src) => {
+          if (!cache.has(src)) cache.set(src, imageSize(join(pub, src)));
+          return cache.get(src);
+        };
         const walk = (d) => readdirSync(d).flatMap((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : [join(d, f)]));
         for (const file of walk(root).filter((f) => f.endsWith('.html'))) {
           const html = readFileSync(file, 'utf8');
@@ -26,9 +31,16 @@ function imageDimensions() {
             if (/\swidth=/.test(tag)) return tag;
             const src = tag.match(/\ssrc="(\/images\/[^"]+)"/)?.[1];
             if (!src) return tag;
-            if (!cache.has(src)) cache.set(src, imageSize(join(pub, src)));
-            const size = cache.get(src);
-            return size ? tag.replace(/^<img\b/, `<img width="${size.width}" height="${size.height}"`) : tag;
+            const size = sizeOf(src);
+            let attrs = size ? ` width="${size.width}" height="${size.height}"` : '';
+            // Big photos also offer the 800px copy, so phones (and small boxes) download about half.
+            const small = src.match(/^\/images\/([^/]+\.webp)$/) && src.replace('/images/', '/images/sm/');
+            const smallSize = small && sizeOf(small);
+            if (smallSize && size && smallSize.width < size.width && !/\ssrcset=/.test(tag)) {
+              attrs += ` srcset="${small} ${smallSize.width}w, ${src} ${size.width}w"`;
+              if (!/\ssizes=/.test(tag)) attrs += ' sizes="100vw"';
+            }
+            return tag.replace(/^<img\b/, `<img${attrs}`);
           });
           // Links that open a new tab say so to screen readers (WCAG 3.2.5 / IS 5568).
           const NEW_TAB = ' (נפתח בחלון חדש)';

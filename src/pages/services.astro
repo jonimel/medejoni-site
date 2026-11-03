@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import ServiceForm from '../components/ServiceForm.astro';
 import { services } from '../data/services';
-import { img } from '../data/site';
+import { img, thumb } from '../data/site';
 
 const ld = services.map((s) => ({
   '@context': 'https://schema.org',
@@ -38,13 +38,13 @@ const ld = services.map((s) => ({
               <strong>מסלולים פופולריים</strong>
               {s.routes.map((r) => (
                 <button type="button" class="route card" data-route-from={r.from} data-route-to={r.to} data-form={s.id}>
-                  <img src={img(r.image)} alt="" loading="lazy" />
+                  <img src={thumb(r.image)} alt="" loading="lazy" />
                   <span><strong>{r.from} ← {r.to}</strong><small>{r.note}</small><em>להזמנה ←</em></span>
                 </button>
               ))}
             </div>
           )}
-          <img src={img(s.image)} alt="" loading={i === 0 ? 'eager' : 'lazy'} />
+          <img src={img(s.image)} alt="" loading={i === 0 ? 'eager' : 'lazy'} sizes="(max-width: 900px) 100vw, 50vw" />
         </div>
         <ServiceForm id={s.id} title={s.formTitle} fields={s.fields} />
       </div>
