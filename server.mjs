@@ -30,7 +30,8 @@ const types = {
 const labels = {
   'form-name': 'טופס', name: 'שם', phone: 'טלפון', people: 'כמה אנשים', date: 'תאריך', tour_title: 'טיול',
   addons: 'תוספות', total: 'סה״כ', landing_date: 'תאריך נחיתה', landing_airport: 'שדה נחיתה', destination: 'יעד',
-  from: 'מאיפה', to: 'לאן', arrival_date: 'תאריך הגעה', days: 'כמה ימים', message: 'הודעה', source: 'מקור',
+  from: 'מאיפה', to: 'לאן', tour: 'קוד טיול', email: 'אימייל', hotel: 'איסוף מ', notes: 'הערות',
+  interest: 'מתעניין ב', dates: 'מתי בקולומביה', arrival_date: 'תאריך הגעה', days: 'כמה ימים', message: 'הודעה', source: 'מקור',
 };
 const formTitles = {
   booking: 'הזמנת טיול', lead: 'השארת פרטים', 'airport-transfer': 'הסעה משדה התעופה',
@@ -39,21 +40,37 @@ const formTitles = {
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
-async function sendLead(fields) {
+async function sendLead(fields, suspect = false) {
   const form = fields['form-name'] || 'lead';
   const rows = Object.entries(fields)
-    .filter(([k, v]) => k !== 'company' && k !== 'form-name' && String(v).trim() !== '')
+    .filter(([k, v]) => k !== 'company' && k !== 'hp_field' && k !== 'form-name' && String(v).trim() !== '')
     .map(([k, v]) => `<tr><td style="padding:6px 10px;font-weight:bold">${esc(labels[k] || k)}</td><td style="padding:6px 10px">${esc(v)}</td></tr>`)
     .join('');
-  const subject = `ליד חדש: ${formTitles[form] || form}${fields.name ? ` – ${fields.name}` : ''}`;
+  const subject = `${suspect ? '[חשד לספאם] ' : ''}ליד חדש: ${formTitles[form] || form}${fields.name ? ` – ${fields.name}` : ''}`;
   const html = `<div dir="rtl" style="font-family:Arial,sans-serif"><h2>${esc(subject)}</h2><table border="1" style="border-collapse:collapse">${rows}</table></div>`;
   if (!process.env.RESEND_API_KEY) throw new Error('RESEND_API_KEY is not set');
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: mailFrom, to: [leadEmail], subject, html }),
-  });
-  if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
+  const email = { from: mailFrom, to: [leadEmail], subject, html };
+  // Replying to the email goes straight to the customer, when they gave an email.
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email || '')) email.reply_to = fields.email;
+  // Try twice: a short network hiccup or rate limit should not lose a booking.
+  let lastError;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(email),
+      });
+      const text = await res.text();
+      if (res.ok) { console.log('Lead email sent:', form, text); return; }
+      lastError = new Error(`Resend ${res.status}: ${text}`);
+      if (res.status < 500 && res.status !== 429) break; // a setup problem; retrying won't help
+    } catch (e) {
+      lastError = e;
+    }
+    await new Promise((r) => setTimeout(r, 1500));
+  }
+  throw lastError;
 }
 
 async function readBody(req) {
@@ -85,9 +102,13 @@ createServer(async (req, res) => {
     }
     if (req.method === 'POST') {
       const fields = Object.fromEntries(new URLSearchParams(await readBody(req)));
-      if (fields.company) { res.writeHead(200).end('ok'); return; } // honeypot: a bot filled the hidden field
+      // Honeypot: a hidden field people never see. If it is filled, it is probably a bot,
+      // but browser autofill can fill it too, so the lead is still emailed, marked as suspected spam.
+      const suspect = Boolean(fields.hp_field || fields.company);
+      // Every lead is written to the Railway logs too, so none is lost even if the email fails.
+      console.log('Lead received:', JSON.stringify(fields));
       try {
-        await sendLead(fields);
+        await sendLead(fields, suspect);
         res.writeHead(200).end('ok');
       } catch (e) {
         console.error('Lead email failed:', e.message, JSON.stringify(fields));

@@ -5,9 +5,9 @@ import type { FormField } from '../data/services';
 interface Props { id: string; title: string; fields: FormField[] }
 const { id, title, fields } = Astro.props;
 ---
-<form name={id} method="POST" data-netlify="true" netlify-honeypot="company" class="form-card" data-lead>
+<form name={id} method="POST" data-netlify="true" netlify-honeypot="hp_field" class="form-card" data-lead>
   <input type="hidden" name="form-name" value={id} />
-  <p hidden><label>Company <input name="company" /></label></p>
+  <p hidden aria-hidden="true"><label>Leave empty <input name="hp_field" tabindex="-1" autocomplete="off" /></label></p>
   <h3>{title}</h3>
   <label>שם מלא<input name="name" required autocomplete="name" /></label>
   <label>טלפון<input name="phone" type="tel" required autocomplete="tel" dir="ltr" /></label>

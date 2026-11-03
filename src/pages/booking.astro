@@ -21,12 +21,12 @@ const data = JSON.stringify(tours.map((t) => ({
     </ol>
 
     <div class="b-layout">
-      <form class="b-form" name="booking" method="POST" data-netlify="true" netlify-honeypot="company" novalidate data-form>
+      <form class="b-form" name="booking" method="POST" data-netlify="true" netlify-honeypot="hp_field" novalidate data-form>
         <input type="hidden" name="form-name" value="booking" />
         <input type="hidden" name="addons" data-h-addons />
         <input type="hidden" name="total" data-h-total />
         <input type="hidden" name="tour_title" data-h-title />
-        <p hidden><label>Company <input name="company" /></label></p>
+        <p hidden aria-hidden="true"><label>Leave empty <input name="hp_field" tabindex="-1" autocomplete="off" /></label></p>
         <fieldset data-step="1">
           <legend tabindex="-1">הטיול שבחרתם</legend>
           <label class="f">טיול
