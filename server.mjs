@@ -71,7 +71,10 @@ function supabaseRpc(fn, body) {
     body: JSON.stringify(body),
     signal: AbortSignal.timeout(5000),
   })
-    .then(async (r) => { if (!r.ok) console.error(`Supabase ${fn} failed:`, r.status, await r.text()); })
+    .then(async (r) => {
+      if (r.ok) console.log(`Supabase ${fn} saved:`, body.p_code || body.p_partner_code || '-', body.p_landing_page || body.p_page || '');
+      else console.error(`Supabase ${fn} failed:`, r.status, await r.text());
+    })
     .catch((e) => console.error(`Supabase ${fn} failed:`, e.message));
 }
 const supabaseOn = () => Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY);
@@ -92,7 +95,8 @@ function tooManyClicks(req) {
 /** POST /api/wa-click from the browser when someone taps a WhatsApp button. */
 async function trackWhatsAppClick(req) {
   const body = await readBody(req).catch(() => '');
-  if (!supabaseOn() || BOT.test(String(req.headers['user-agent'] || '')) || tooManyClicks(req)) return;
+  if (!supabaseOn()) { console.log('WhatsApp click not saved: SUPABASE_URL / SUPABASE_SERVICE_KEY not set'); return; }
+  if (BOT.test(String(req.headers['user-agent'] || '')) || tooManyClicks(req)) return;
   let data = {};
   try { data = JSON.parse(body); } catch { return; }
   const partner = String(data.partner || '').toLowerCase();
@@ -106,20 +110,27 @@ async function trackWhatsAppClick(req) {
 
 const deviceOf = (ua) => (/iPad|Tablet/i.test(ua) ? 'tablet' : /Mobi|Android|iPhone/i.test(ua) ? 'mobile' : 'desktop');
 
-/** Returns Set-Cookie headers to add to the page, or [] if this request is not a new partner visit. */
-function trackReferral(req, url) {
-  const raw = (url.searchParams.get('utm_source') || url.searchParams.get('ref') || '').trim().toLowerCase();
-  if (!REF_CODE.test(raw) || !supabaseOn()) return [];
+/** POST /api/visit, sent by the page itself (Base.astro) when it is opened with ?utm_source=<code>.
+ *  Sent from the page, not counted when the server serves the HTML, because phones often load a typed link
+ *  in advance (prerender/prefetch) and then show that copy without asking the server again.
+ *  Returns Set-Cookie headers, or [] if this is not a new partner visit. */
+async function trackReferral(req) {
+  const text = await readBody(req).catch(() => '');
+  let data = {};
+  try { data = JSON.parse(text); } catch { return []; }
+  const raw = String(data.code || '').trim().toLowerCase();
+  if (!REF_CODE.test(raw)) return [];
+  if (!supabaseOn()) { console.log('Referral visit not saved: SUPABASE_URL / SUPABASE_SERVICE_KEY not set'); return []; }
   const ua = String(req.headers['user-agent'] || '');
-  if (!ua || BOT.test(ua) || req.headers.purpose === 'prefetch' || req.headers['sec-purpose']) return [];
+  if (!ua || BOT.test(ua) || tooManyClicks(req)) { console.log('Referral visit skipped (bot or too many):', ua.slice(0, 120)); return []; }
   const cookies = readCookies(req);
-  if (cookies.mj_ref === raw) return []; // already counted in this browser session
+  if (cookies.mj_ref === raw) { console.log('Referral visit already counted in this browser session:', raw); return []; }
   const visitorId = validVisitor(cookies.mj_vid) || randomUUID();
   const body = {
     p_code: raw,
     p_visitor_id: visitorId,
-    p_landing_page: url.pathname.slice(0, 300),
-    p_referrer: String(req.headers.referer || '').slice(0, 500) || null,
+    p_landing_page: String(data.page || '/').slice(0, 300),
+    p_referrer: String(data.referrer || '').slice(0, 500) || null,
     p_device: deviceOf(ua),
   };
   supabaseRpc('log_referral_visit', body);
@@ -229,6 +240,11 @@ createServer(async (req, res) => {
       res.writeHead(301, { Location: `https://${req.headers.host.slice(4)}${req.url}` }).end();
       return;
     }
+    if (req.method === 'POST' && url.pathname === '/api/visit') {
+      const setCookie = await trackReferral(req);
+      res.writeHead(204, setCookie.length ? { 'Set-Cookie': setCookie } : {}).end();
+      return;
+    }
     if (req.method === 'POST' && url.pathname === '/api/wa-click') {
       await trackWhatsAppClick(req);
       res.writeHead(204).end();
@@ -261,10 +277,7 @@ createServer(async (req, res) => {
     } else if (!s && !extname(path)) {
       path += '.html';
     }
-    if (await stat(path).catch(() => null)) {
-      const setCookie = req.method === 'GET' && path.endsWith('.html') ? trackReferral(req, url) : [];
-      return await serveFile(req, res, path, 200, setCookie.length ? { 'Set-Cookie': setCookie } : {});
-    }
+    if (await stat(path).catch(() => null)) return await serveFile(req, res, path);
     const notFound = join(root, '404.html');
     if (await stat(notFound).catch(() => null)) return await serveFile(req, res, notFound, 404);
     res.writeHead(404).end('Not found');
@@ -272,4 +285,9 @@ createServer(async (req, res) => {
     console.error(e);
     if (!res.headersSent) res.writeHead(500).end('error');
   }
-}).listen(port, () => console.log(`Medejoni running on port ${port}`));
+}).listen(port, () => {
+  console.log(`Medejoni running on port ${port}`);
+  console.log(supabaseOn()
+    ? `Partner tracking: ON (Supabase ${new URL(process.env.SUPABASE_URL).host}, key type ${process.env.SUPABASE_SERVICE_KEY.slice(0, 10)}...)`
+    : 'Partner tracking: OFF (SUPABASE_URL / SUPABASE_SERVICE_KEY not set)');
+});
