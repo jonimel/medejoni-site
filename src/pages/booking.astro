@@ -112,9 +112,9 @@ import HeardFrom from '../components/HeardFrom.astro';
   .b-form fieldset[hidden] { display: none; }
   .b-form legend { font-size: 22px; font-weight: 700; padding: 0 6px; }
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  .f { display: flex; flex-direction: column; gap: 6px; font-weight: 600; flex: 1; min-width: 0; }
-  .f input, .f select, .f textarea { min-height: 48px; border: 1px solid #D1D5DB; border-radius: 12px; padding: 10px 12px; font: inherit; font-weight: 400; background: #fff; }
-  .f input:focus, .f select:focus, .f textarea:focus { border-color: var(--blue); outline: 2px solid rgba(0, 56, 147, 0.2); }
+  :global(.f) { display: flex; flex-direction: column; gap: 6px; font-weight: 600; flex: 1; min-width: 0; }
+  :global(.f input), :global(.f select), :global(.f textarea) { min-height: 48px; border: 1px solid #D1D5DB; border-radius: 12px; padding: 10px 12px; font: inherit; font-weight: 400; background: #fff; }
+  :global(.f input:focus), :global(.f select:focus), :global(.f textarea:focus) { border-color: var(--blue); outline: 2px solid rgba(0, 56, 147, 0.2); }
   .f input[aria-invalid='true'] { border-color: var(--red); }
   .row { display: flex; gap: 16px; flex-wrap: wrap; }
   .row .f { flex: 1 1 200px; }
