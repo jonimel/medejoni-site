@@ -71,3 +71,12 @@ npm run dev
 Railway builds with `npm run build` and starts with `node server.mjs` (see `railway.json`).
 Set these variables on the Railway service: `RESEND_API_KEY` (required), `LEAD_EMAIL` (default yonimelmel@gmail.com), `MAIL_FROM` (optional).
 The same forms keep working on Netlify (Netlify Forms) because both receive POST `/`.
+
+## מעקב שותפים (אגל ועוד)
+
+- קישור לשותף: `https://medejoni.com/?utm_source=agal&utm_medium=referral` (לשותף אחר מחליפים את `agal`).
+- כל כניסה דרך קישור כזה נשמרת ב־Supabase בטבלה `referral_visits` (רענון ומעבר בין עמודים לא נספרים שוב). לחיצות על וואטסאפ נשמרות ב־`whatsapp_clicks`.
+- דוחות מוכנים: `referral_report` (לכל שותף) ו־`referral_daily` (לפי יום).
+- שותף חדש: Supabase ← Table Editor ← `referral_partners` ← Insert row עם `code` (אותיות באנגלית קטנות) ו־`name`. להשבתה: `is_active` = false.
+- הקמה חד־פעמית: מריצים את `supabase/referrals.sql` ב־SQL Editor, ומוסיפים ב־Railway את `SUPABASE_URL` ו־`SUPABASE_SERVICE_KEY`. בלי המשתנים האלה האתר עובד רגיל, רק בלי רישום.
+- בטפסים יש שדה "איך הגעתם אלינו?", ומי שהגיע דרך שותף רואה במייל של הליד גם "הגיע דרך שותף".

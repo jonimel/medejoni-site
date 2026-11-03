@@ -1,6 +1,7 @@
 ---
 // "Leave your details" form. Submissions go to Netlify Forms (form name "lead"),
 // which emails each lead. Submit handling lives in Base.astro.
+import HeardFrom from './HeardFrom.astro';
 interface Props { title?: string; sub?: string; source: string }
 const { title = 'השאירו פרטים, ויונתן יחזור אליכם', sub = 'שאלה על טיול, הסעה או טיסה? אני עונה אישית, בדרך כלל באותו יום.', source } = Astro.props;
 const options = ['טיול', 'הסעה משדה התעופה', 'מעבר בין ערים', 'סגירת טיסות', 'תכנון טיול שלם', 'אחר'];
@@ -21,6 +22,7 @@ const options = ['טיול', 'הסעה משדה התעופה', 'מעבר בין 
         <select name="interest">{options.map((o) => <option>{o}</option>)}</select>
       </label>
       <label>מתי אתם בקולומביה?<input name="dates" placeholder="למשל: 10–20 בדצמבר" /></label>
+      <HeardFrom full />
       <label class="full">הודעה<textarea name="message" rows="3"></textarea></label>
       <button type="submit" class="btn btn-dark full">שליחה</button>
       <p class="form-status full" role="status" data-status></p>

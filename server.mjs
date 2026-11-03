@@ -9,7 +9,10 @@
 //                   (works only when sending to the email you signed up to Resend with;
 //                   after verifying a domain, use e.g. "Medejoni <leads@medejoni.com>")
 //   PORT            set by Railway automatically.
+//   SUPABASE_URL          optional, for partner referral tracking (supabase/referrals.sql).
+//   SUPABASE_SERVICE_KEY  optional, the "service_role" secret key. Server only, never sent to browsers.
 import { createServer } from 'node:http';
+import { randomUUID } from 'node:crypto';
 import { brotliCompressSync, gzipSync, constants as zlib } from 'node:zlib';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
@@ -32,12 +35,97 @@ const labels = {
   'form-name': 'טופס', name: 'שם', phone: 'טלפון', people: 'כמה אנשים', date: 'תאריך', tour_title: 'טיול',
   addons: 'תוספות', total: 'סה״כ', landing_date: 'תאריך נחיתה', landing_airport: 'שדה נחיתה', destination: 'יעד',
   from: 'מאיפה', to: 'לאן', tour: 'קוד טיול', email: 'אימייל', hotel: 'איסוף מ', notes: 'הערות',
-  interest: 'מתעניין ב', dates: 'מתי בקולומביה', arrival_date: 'תאריך הגעה', days: 'כמה ימים', message: 'הודעה', source: 'מקור',
+  interest: 'מתעניין ב', dates: 'מתי בקולומביה', arrival_date: 'תאריך הגעה', days: 'כמה ימים', message: 'הודעה', source: 'מקור', partner: 'הגיע דרך שותף', heard_from: 'איך הגיע אלינו',
 };
 const formTitles = {
   booking: 'הזמנת טיול', lead: 'השארת פרטים', 'airport-transfer': 'הסעה משדה התעופה',
   transfers: 'מעבר בין ערים', flights: 'סגירת טיסה', 'trip-planning': 'תכנון טיול',
 };
+
+// ---- Partner referrals (e.g. https://medejoni.com/?utm_source=agal) ----
+// A page opened with ?utm_source=<code> (or ?ref=<code>) is saved as one row in Supabase (referral_visits).
+// - The database function log_referral_visit only accepts codes listed as active in referral_partners,
+//   so a new partner is just a new row there, with no code change.
+// - Each browser gets an anonymous random id (cookie mj_vid, 1 year) to count unique and returning visitors.
+//   No IP address or personal details are saved.
+// - Refreshing the page, or opening another page, does not count again: a cookie that lasts until the browser
+//   is closed (mj_ref) remembers that this visit was already counted for that partner.
+// - Tracking can never break the site: it runs in the background with a short timeout, and errors are only logged.
+const REF_CODE = /^[a-z0-9_-]{1,40}$/;
+const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|curl|wget|python|headless|lighthouse/i;
+
+function readCookies(req) {
+  return Object.fromEntries(String(req.headers.cookie || '').split(';').map((c) => c.trim().split('=')).filter(([k]) => k));
+}
+
+/** Calls a database function in Supabase in the background. Never throws, never blocks the visitor. */
+function supabaseRpc(fn, body) {
+  fetch(`${process.env.SUPABASE_URL.replace(/\/$/, '')}/rest/v1/rpc/${fn}`, {
+    method: 'POST',
+    headers: {
+      apikey: process.env.SUPABASE_SERVICE_KEY,
+      // Older "service_role" keys (they start with eyJ) also go in Authorization; new "sb_secret_" keys only in apikey.
+      ...(process.env.SUPABASE_SERVICE_KEY.startsWith('eyJ') ? { Authorization: `Bearer ${process.env.SUPABASE_SERVICE_KEY}` } : {}),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(5000),
+  })
+    .then(async (r) => { if (!r.ok) console.error(`Supabase ${fn} failed:`, r.status, await r.text()); })
+    .catch((e) => console.error(`Supabase ${fn} failed:`, e.message));
+}
+const supabaseOn = () => Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY);
+const validVisitor = (id) => (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id || '') ? id : null);
+
+// Simple limit so one browser/bot can't flood the WhatsApp-click table: 20 clicks per 10 minutes per IP.
+const clickLog = new Map();
+function tooManyClicks(req) {
+  const ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+  const now = Date.now();
+  const recent = (clickLog.get(ip) || []).filter((t) => now - t < 600_000);
+  recent.push(now);
+  clickLog.set(ip, recent);
+  if (clickLog.size > 5000) clickLog.clear();
+  return recent.length > 20;
+}
+
+/** POST /api/wa-click from the browser when someone taps a WhatsApp button. */
+async function trackWhatsAppClick(req) {
+  const body = await readBody(req).catch(() => '');
+  if (!supabaseOn() || BOT.test(String(req.headers['user-agent'] || '')) || tooManyClicks(req)) return;
+  let data = {};
+  try { data = JSON.parse(body); } catch { return; }
+  const partner = String(data.partner || '').toLowerCase();
+  supabaseRpc('log_whatsapp_click', {
+    p_visitor_id: validVisitor(readCookies(req).mj_vid),
+    p_page: String(data.page || '').slice(0, 300),
+    p_partner_code: REF_CODE.test(partner) ? partner : null,
+    p_device: deviceOf(String(req.headers['user-agent'] || '')),
+  });
+}
+
+const deviceOf = (ua) => (/iPad|Tablet/i.test(ua) ? 'tablet' : /Mobi|Android|iPhone/i.test(ua) ? 'mobile' : 'desktop');
+
+/** Returns Set-Cookie headers to add to the page, or [] if this request is not a new partner visit. */
+function trackReferral(req, url) {
+  const raw = (url.searchParams.get('utm_source') || url.searchParams.get('ref') || '').trim().toLowerCase();
+  if (!REF_CODE.test(raw) || !supabaseOn()) return [];
+  const ua = String(req.headers['user-agent'] || '');
+  if (!ua || BOT.test(ua) || req.headers.purpose === 'prefetch' || req.headers['sec-purpose']) return [];
+  const cookies = readCookies(req);
+  if (cookies.mj_ref === raw) return []; // already counted in this browser session
+  const visitorId = validVisitor(cookies.mj_vid) || randomUUID();
+  const body = {
+    p_code: raw,
+    p_visitor_id: visitorId,
+    p_landing_page: url.pathname.slice(0, 300),
+    p_referrer: String(req.headers.referer || '').slice(0, 500) || null,
+    p_device: deviceOf(ua),
+  };
+  supabaseRpc('log_referral_visit', body);
+  const flags = 'Path=/; SameSite=Lax; Secure; HttpOnly';
+  return [`mj_vid=${visitorId}; Max-Age=31536000; ${flags}`, `mj_ref=${raw}; ${flags}`];
+}
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
@@ -108,7 +196,7 @@ function cacheControl(urlPath, ext) {
   return 'public, max-age=86400';
 }
 
-async function serveFile(req, res, path, status = 200) {
+async function serveFile(req, res, path, status = 200, extraHeaders = {}) {
   const { mtimeMs } = await stat(path);
   const file = await loadFile(path, mtimeMs);
   const ext = extname(path);
@@ -117,6 +205,7 @@ async function serveFile(req, res, path, status = 200) {
     'Cache-Control': cacheControl(new URL(req.url, 'http://x').pathname, ext),
     ETag: file.etag,
     'X-Content-Type-Options': 'nosniff',
+    ...extraHeaders,
   };
   if (file.gzip) headers.Vary = 'Accept-Encoding';
   if (status === 200 && req.headers['if-none-match'] === file.etag) {
@@ -138,6 +227,11 @@ createServer(async (req, res) => {
     // One address for Google: send www.medejoni.com to medejoni.com.
     if ((req.headers.host || '').startsWith('www.')) {
       res.writeHead(301, { Location: `https://${req.headers.host.slice(4)}${req.url}` }).end();
+      return;
+    }
+    if (req.method === 'POST' && url.pathname === '/api/wa-click') {
+      await trackWhatsAppClick(req);
+      res.writeHead(204).end();
       return;
     }
     if (req.method === 'POST') {
@@ -167,7 +261,10 @@ createServer(async (req, res) => {
     } else if (!s && !extname(path)) {
       path += '.html';
     }
-    if (await stat(path).catch(() => null)) return await serveFile(req, res, path);
+    if (await stat(path).catch(() => null)) {
+      const setCookie = req.method === 'GET' && path.endsWith('.html') ? trackReferral(req, url) : [];
+      return await serveFile(req, res, path, 200, setCookie.length ? { 'Set-Cookie': setCookie } : {});
+    }
     const notFound = join(root, '404.html');
     if (await stat(notFound).catch(() => null)) return await serveFile(req, res, notFound, 404);
     res.writeHead(404).end('Not found');

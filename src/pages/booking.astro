@@ -9,6 +9,7 @@ const data = JSON.stringify(tours.map((t) => ({
   slug: t.slug, title: t.title, image: `/images/${t.images[0]}.webp`, tiers: t.tiers, min: t.minPeople,
   addOns: t.addOns, single: !!t.singleAddOn, pickup: t.pickup, ahead: t.bookAheadHours,
 })));
+import HeardFrom from '../components/HeardFrom.astro';
 ---
 <Base title="הזמנת טיול" description="השלמת הזמנה לטיול בקולומביה עם Medejoni." noindex>
   <div class="wrap" style="padding-top:32px;padding-bottom:72px" data-booking-root data-tours={data} data-wa={site.whatsapp}>
@@ -50,6 +51,7 @@ const data = JSON.stringify(tours.map((t) => ({
           </div>
           <label class="f">אימייל<input name="email" type="email" autocomplete="email" dir="ltr" /></label>
           <label class="f" data-hotel-wrap>שם המלון או כתובת לאיסוף<input name="hotel" /></label>
+          <HeardFrom class="f" />
           <label class="f">הערות<textarea name="notes" rows="3"></textarea></label>
           <div class="nav-row">
             <button type="button" class="btn btn-outline" data-back>חזרה</button>
@@ -300,7 +302,15 @@ const data = JSON.stringify(tours.map((t) => ({
       const res = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(new FormData(form) as any).toString(),
+        body: (() => {
+          const data = new URLSearchParams(new FormData(form) as any);
+          // Partner who referred this visitor (set by the site layout from ?utm_source=..., kept 30 days).
+          try {
+            const saved = JSON.parse(localStorage.getItem('mj_partner') || 'null');
+            if (saved && saved.until > Date.now()) data.set('partner', saved.code);
+          } catch { /* storage blocked */ }
+          return data.toString();
+        })(),
       });
       if (!res.ok) throw new Error(String(res.status));
       // Google Analytics: count the booking request (only when analytics is on).

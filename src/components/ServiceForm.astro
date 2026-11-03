@@ -1,6 +1,7 @@
 ---
 // One quote-request form per service. Each is a separate Netlify form (name = service id),
 // so the email subject tells Jonathan which service the lead is for.
+import HeardFrom from './HeardFrom.astro';
 import type { FormField } from '../data/services';
 interface Props { id: string; title: string; fields: FormField[] }
 const { id, title, fields } = Astro.props;
@@ -24,6 +25,7 @@ const { id, title, fields } = Astro.props;
       )}
     </label>
   ))}
+  <HeardFrom full />
   <button type="submit" class="btn btn-yellow full">{id === 'trip-planning' ? 'שלחו לי ואחזור אליכם' : 'שליחת בקשה להצעת מחיר'}</button>
   <p class="form-status full" role="status" data-status></p>
 </form>
