@@ -188,7 +188,43 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
     // Skip link: move keyboard focus into the main content, not just scroll.
     document.querySelector('.skip-link')?.addEventListener('click', () => document.getElementById('main')?.focus());
 
-    // Lead forms: post to Netlify Forms (emailed to Jonathan) and show a thank-you message.
+    // Partner referrals: a link like https://medejoni.com/?utm_source=agal (or ?ref=agal) marks the visitor
+    // as coming from that partner for 30 days (last partner link wins), so their lead email says so.
+    // Visits themselves are counted by Google Analytics from the utm_source in the link.
+    const REF_KEY = 'mj_partner';
+    const REF_DAYS = 30;
+    let partner = '';
+    try {
+      const q = new URLSearchParams(location.search);
+      const fromUrl = (q.get('utm_source') || q.get('ref') || '').trim().toLowerCase();
+      if (/^[a-z0-9_-]{1,40}$/.test(fromUrl)) {
+        localStorage.setItem(REF_KEY, JSON.stringify({ code: fromUrl, until: Date.now() + REF_DAYS * 864e5 }));
+      }
+      const saved = JSON.parse(localStorage.getItem(REF_KEY) || 'null');
+      if (saved && saved.until > Date.now()) partner = saved.code;
+      else localStorage.removeItem(REF_KEY);
+    } catch { /* storage blocked: just don't attribute */ }
+
+    // "How did you hear about us?": pre-select the partner the visitor came from.
+    if (partner) {
+      document.querySelectorAll<HTMLSelectElement>('select[data-heard-from]').forEach((sel) => {
+        const opt = sel.querySelector<HTMLOptionElement>(`option[data-partner="${partner}"]`);
+        if (opt && !sel.value) sel.value = opt.value;
+      });
+    }
+
+    // WhatsApp clicks: saved by the server in Supabase (table whatsapp_clicks) and counted in Google Analytics.
+    // sendBeacon does not delay opening WhatsApp, and a failure is ignored.
+    document.addEventListener('click', (e) => {
+      const a = (e.target as HTMLElement).closest?.('a[href*="wa.me/"]');
+      if (!a) return;
+      (window as any).gtag?.('event', 'whatsapp_click', { page_path: location.pathname, partner: partner || undefined });
+      try {
+        navigator.sendBeacon?.('/api/wa-click', new Blob([JSON.stringify({ page: location.pathname, partner })], { type: 'text/plain' }));
+      } catch { /* ignore */ }
+    });
+
+    // Lead forms: post to the server (emailed to Jonathan) and show a thank-you message.
     document.querySelectorAll<HTMLFormElement>('form[data-lead]').forEach((form) => {
       const status = form.querySelector<HTMLElement>('[data-status]')!;
       form.addEventListener('submit', async (e) => {
@@ -204,7 +240,11 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
           const res = await fetch('/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams(new FormData(form) as any).toString(),
+            body: (() => {
+              const data = new URLSearchParams(new FormData(form) as any);
+              if (partner) data.set('partner', partner);
+              return data.toString();
+            })(),
           });
           if (!res.ok) throw new Error(String(res.status));
           // Google Analytics: count the lead (only when analytics is on).
