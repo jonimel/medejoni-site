@@ -11,7 +11,7 @@ create table if not exists public.referral_partners (
   created_at timestamptz not null default now()
 );
 
-insert into public.referral_partners (code, name) values ('agal', 'Agal')
+insert into public.referral_partners (code, name) values ('agal', 'הגל (Hagal)')
 on conflict (code) do nothing;
 
 -- 2) Visits: one row per visit that arrived through a partner link (refreshes and page changes are not counted again).
