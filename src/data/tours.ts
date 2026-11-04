@@ -94,7 +94,7 @@ export const tours: Tour[] = [
     bookAheadHours: 36,
     duration: 'יום מלא',
     tags: ['יום מלא', 'כולל ארוחות', 'כולל שייט'],
-    images: ['peniol', 'umbrellas', 'lake', 'umbrellas2'],
+    images: ['guatape-colombia-el-penol', 'guatape-day-trip-umbrella-street', 'day-trips-from-medellin-guatape-lake', 'guatape-colorful-streets'],
     faq: [
       { q: 'מאיפה יוצאים?', a: 'הטיול הקבוצתי יוצא מפארק אל פובלדו במדג׳ין.' },
       { q: 'הכניסה לסלע אל פניול כלולה?', a: 'לא. מי שרוצה לעלות לסלע משלם במקום 35,000 פסו.' },
@@ -135,7 +135,7 @@ export const tours: Tour[] = [
     bookAheadHours: 48,
     duration: 'יום מלא',
     tags: [pickupHotel, 'מדריך צמוד', 'ארוחת בוקר'],
-    images: ['wakeboard', 'jetski', 'wakeboard2', 'heliview', 'helicopter', 'horseride', 'lake'],
+    images: ['guatape-wakeboard-el-penol', 'guatape-jet-ski', 'guatape-lake-wakeboarding', 'guatape-helicopter-view-el-penol', 'guatape-helicopter-tour', 'guatape-horse-riding', 'day-trips-from-medellin-guatape-lake'],
     faq: [
       { q: 'אפשר להוסיף אטרקציות?', a: 'כן. אופנועי ים, ווייקבורד, סקי מים ועוד, בתיאום מראש ובתוספת תשלום.' },
       { q: 'כמה זמן מראש צריך להזמין?', a: 'מומלץ לפחות 48 שעות מראש.' },
@@ -165,7 +165,7 @@ export const tours: Tour[] = [
     bookAheadHours: 36,
     duration: 'חצי יום',
     tags: [pickupHotel, 'מדריך צמוד'],
-    images: ['esc-mural', 'esc-museum', 'esc-cover', 'meddusk'],
+    images: ['pablo-escobar-tour-medellin', 'pablo-escobar-museum-medellin', 'pablo-escobar-magazine-cover', 'medellin-tours-viewpoint-evening'],
     faq: [...commonFaq],
     featured: true,
   },
@@ -188,7 +188,7 @@ export const tours: Tour[] = [
     bookAheadHours: 48,
     duration: '4 עד 6 שעות',
     tags: [pickupHotel, 'טעימות אוכל', '4 עד 6 שעות'],
-    images: ['c13-sign', 'comuna13b', 'c13-art', 'comuna13', 'c13-crafts'],
+    images: ['comuna-13-tour-que-chimba-medellin', 'comuna-13-medellin-view', 'comuna-13-street-art', 'comuna-13-medellin', 'comuna-13-crafts-market'],
     faq: [{ q: 'כמה זמן נמשך הסיור?', a: 'בין 4 ל־6 שעות, כולל איסוף מהמלון וחזרה.' }, ...commonFaq],
     featured: true,
   },
@@ -214,7 +214,7 @@ export const tours: Tour[] = [
     bookAheadHours: 36,
     duration: 'יום מלא',
     tags: [pickupHotel, 'מדריך צמוד', 'שני סיורים ביום אחד'],
-    images: ['esc-mural', 'c13-sign', 'esc-museum', 'c13-art', 'comuna13b'],
+    images: ['pablo-escobar-tour-medellin', 'comuna-13-tour-que-chimba-medellin', 'pablo-escobar-museum-medellin', 'comuna-13-street-art', 'comuna-13-medellin-view'],
     faq: [...commonFaq],
   },
   {
@@ -242,7 +242,7 @@ export const tours: Tour[] = [
     bookAheadHours: 48,
     duration: 'יום מלא',
     tags: ['ארוחת בוקר', 'אטרקציות לבחירה'],
-    images: ['paraglide', 'paintball', 'hills', 'cow', 'fishing'],
+    images: ['paragliding-medellin', 'paintball-antioquia', 'antioquia-countryside-colombia', 'antioquia-farm-cow', 'private-tour-medellin-fishing'],
     faq: [...commonFaq],
   },
   {
@@ -262,7 +262,7 @@ export const tours: Tour[] = [
     bookAheadHours: 48,
     duration: 'ערב',
     tags: ['כולל כרטיס', 'כולל הסעה'],
-    images: ['stadium', 'fireworks'],
+    images: ['atletico-nacional-match-medellin', 'atletico-nacional-fans-medellin'],
     faq: [{ q: 'מתי יש משחקים?', a: 'לפי לוח המשחקים של הליגה. כתבו ליונתן ונבדוק תאריכים פנויים.' }, ...commonFaq],
     featured: true,
   },
@@ -284,7 +284,7 @@ export const tours: Tour[] = [
     bookAheadHours: 48,
     duration: 'ערב',
     tags: ['כולל כניסה', 'מינימום 4'],
-    images: ['star', 'mednight', 'meddusk'],
+    images: ['medellin-attractions-viewpoint-night', 'medellin-nightlife-city-lights', 'medellin-tours-viewpoint-evening'],
     faq: [{ q: 'יש מינימום משתתפים?', a: 'כן, מינימום ארבעה משתתפים.' }, ...commonFaq],
   },
   {
@@ -323,7 +323,7 @@ export const tours: Tour[] = [
     bookAheadHours: 48,
     duration: 'יום מלא',
     tags: ['רכב פרטי', 'ג׳יפים ומערה', 'סוסים בשקיעה'],
-    images: ['jd-view', 'jd-horses', 'jd-cave', 'jd-falls-horses', 'jd-cave2', 'jd-hills', 'jd-ride', 'jd-stream'],
+    images: ['jardin-town-mountain-view', 'jardin-colombia-horse-trail', 'jardin-cueva-del-esplendor', 'jardin-waterfall-horses', 'cueva-del-esplendor-waterfall', 'jardin-mountains', 'jardin-horse-ride-road', 'jardin-jungle-stream'],
     faq: [
       { q: 'מתי יוצאים ומתי חוזרים?', a: 'איסוף ב־7:00 בבוקר, וחוזרים למדג׳ין בסביבות 21:00.' },
       { q: 'האטרקציות כלולות במחיר?', a: 'כן. טיול הג׳יפים, המערה והרכיבה על סוסים כלולים. ארוחת הצהריים משולמת בנפרד.' },
@@ -349,7 +349,7 @@ export const tours: Tour[] = [
     bookAheadHours: 48,
     duration: 'ערב',
     tags: ['משקה ראשון', 'מדריך'],
-    images: ['chiva', 'chivain'],
+    images: ['chiva-rumbera-medellin', 'chiva-rumbera-party-bus'],
     faq: [...commonFaq],
   },
   // Santa Marta boat tours to Tayrona park. Source: partner catalog (Nov 2026), prices +10% per Jonathan.
@@ -372,7 +372,7 @@ export const tours: Tour[] = [
     bookAheadHours: 24,
     duration: 'יום מלא',
     tags: ['שייט בסירה', 'יציאה ב־9:30', 'שבילים ותצפיות'],
-    images: ['sm-cabo1', 'sm-cabo2', 'sm-cabo3', 'sm-cabo4'],
+    images: ['cabo-san-juan-tayrona', 'cabo-san-juan-aerial', 'tayrona-national-park-coast', 'cabo-san-juan-beach'],
     faq: [
       { q: 'אפשר לנסוע רק בכיוון אחד?', a: 'כן. הלוך בלבד: 159,000 COP לאדם. חזור בלבד: 119,000 COP לאדם.' },
       { q: 'מאיפה יוצאים?', a: 'ממפרץ סנטה מרתה. הסירה יוצאת ב־9:30 וחוזרת ב־15:30.' },
@@ -399,7 +399,7 @@ export const tours: Tour[] = [
     bookAheadHours: 24,
     duration: 'יום מלא',
     tags: ['2 חופים', 'כולל שנורקל', 'יציאה ב־9:30'],
-    images: ['sm-super1', 'sm-super2', 'sm-cristal2', 'sm-cinto2'],
+    images: ['super-tayrona-beach', 'tayrona-beach-sand', 'playa-cristal-boat', 'bahia-cinto-beach'],
     faq: [
       { q: 'מאיפה יוצאים?', a: 'ממפרץ סנטה מרתה. הסירה יוצאת ב־9:30 וחוזרת ב־15:30.' },
       { q: 'אפשר להזמין סירה פרטית?', a: 'כן. יש סירות פרטיות ל־16 עד 38 איש, ואתם בוחרים את החופים. המחיר בתיאום מולנו.' },
@@ -426,7 +426,7 @@ export const tours: Tour[] = [
     bookAheadHours: 24,
     duration: 'יום מלא',
     tags: ['שייט בסירה', 'יציאה ב־9:30', 'חוף שקט'],
-    images: ['sm-cinto1', 'sm-cinto2', 'sm-cinto3'],
+    images: ['bahia-cinto-tayrona', 'bahia-cinto-beach', 'santa-marta-boat-tour'],
     faq: [
       { q: 'אפשר לנסוע רק בכיוון אחד?', a: 'כן. כיוון אחד (הלוך או חזור): 119,000 COP לאדם.' },
       { q: 'אפשר להזמין סירה פרטית?', a: 'כן. יש סירות פרטיות ל־16 עד 38 איש, ואתם בוחרים את החופים. המחיר בתיאום מולנו.' },
@@ -452,7 +452,7 @@ export const tours: Tour[] = [
     bookAheadHours: 24,
     duration: 'יום מלא',
     tags: ['שייט בסירה', 'שנורקל', 'יציאה ב־9:30'],
-    images: ['sm-cristal1', 'sm-cristal2', 'sm-cristal3'],
+    images: ['playa-cristal-tayrona', 'playa-cristal-boat', 'tayrona-speedboat-santa-marta'],
     faq: [
       { q: 'אפשר לנסוע רק בכיוון אחד?', a: 'כן. כיוון אחד (הלוך או חזור): 119,000 COP לאדם.' },
       { q: 'לאן חוזרים?', a: 'לטגנגה או למרינה של סנטה מרתה, ב־15:30.' },
@@ -478,7 +478,7 @@ export const tours: Tour[] = [
     bookAheadHours: 24,
     duration: 'יום מלא',
     tags: ['20 דקות שייט', 'יציאה ב־9:30', 'תצפית'],
-    images: ['sm-concha1', 'sm-concha2', 'sm-concha4'],
+    images: ['bahia-concha-santa-marta', 'bahia-concha-beach-boats', 'santa-marta-boat-to-tayrona'],
     faq: [
       { q: 'אפשר להזמין סירה פרטית?', a: 'כן. יש סירות פרטיות ל־16 עד 38 איש, ואתם בוחרים את החופים. המחיר בתיאום מולנו.' },
       ...commonFaq,

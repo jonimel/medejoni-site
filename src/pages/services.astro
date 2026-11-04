@@ -1,4 +1,5 @@
 ---
+import { alt } from '../data/photos';
 import Base from '../layouts/Base.astro';
 import ServiceForm from '../components/ServiceForm.astro';
 import { services } from '../data/services';
@@ -13,7 +14,7 @@ const ld = services.map((s) => ({
   provider: { '@type': 'TravelAgency', name: 'Medejoni' },
 }));
 ---
-<Base title="הסעות משדה התעופה, מעברים וטיסות בקולומביה" description="הסעה משדה התעופה למלון במדג'ין, בקרטחנה ובבוגוטה, מעברים פרטיים בין ערים, וסגירת טיסות פנים ולחו״ל, בתיאום אישי עם יונתן מילמן." image={img('valley')} nav="services" jsonLd={ld}>
+<Base title="הסעות משדה התעופה, מעברים וטיסות בקולומביה" description="הסעה משדה התעופה למלון במדג'ין, בקרטחנה ובבוגוטה, מעברים פרטיים בין ערים, וסגירת טיסות פנים ולחו״ל, בתיאום אישי עם יונתן מילמן." image={img('medellin-for-travelers-aburra-valley')} nav="services" jsonLd={ld}>
   <section class="page-top">
     <div class="wrap" style="padding-top:40px;padding-bottom:40px">
       <nav class="crumbs" aria-label="פירורי לחם" style="padding-top:0;color:var(--ink)"><a href="/" style="color:var(--ink)">דף הבית</a> › הסעות וטיסות</nav>
@@ -44,7 +45,7 @@ const ld = services.map((s) => ({
               ))}
             </div>
           )}
-          <img src={img(s.image)} alt="" loading={i === 0 ? 'eager' : 'lazy'} sizes="(max-width: 900px) 100vw, 50vw" />
+          <img src={img(s.image)} alt={alt(s.image)} loading={i === 0 ? 'eager' : 'lazy'} sizes="(max-width: 900px) 100vw, 50vw" />
         </div>
         <ServiceForm id={s.id} title={s.formTitle} fields={s.fields} />
       </div>

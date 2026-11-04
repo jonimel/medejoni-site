@@ -1,4 +1,5 @@
 ---
+import { alt } from '../data/photos';
 import Base from '../layouts/Base.astro';
 import TourCard from '../components/TourCard.astro';
 import Carousel from '../components/Carousel.astro';
@@ -11,9 +12,9 @@ import { services } from '../data/services';
 import { img, thumb, waLink, site } from '../data/site';
 
 const slides = [
-  { kicker: 'קולומביה, כמו שהמקומיים חיים אותה', title: 'קולומביה אותנטית, עם יונתן', sub: "לא עוד טיול של תיירים. המקומות, האנשים והטעמים שאני חי כאן כל יום", img: 'peniol' },
-  { kicker: "מדג'ין בלילה", title: 'העיר נדלקת בערב', sub: 'סיור מצפים, צ׳יבה רומברה, ואורות העמק מלמעלה', img: 'mednight' },
-  { kicker: 'חוויה של פעם בחיים', title: 'משחק של אתלטיקו נסיונל', sub: 'כרטיס, הסעה, מדריך, והבירה הראשונה עלינו', img: 'fireworks' },
+  { kicker: 'קולומביה, כמו שהמקומיים חיים אותה', title: 'קולומביה אותנטית, עם יונתן', sub: "לא עוד טיול של תיירים. המקומות, האנשים והטעמים שאני חי כאן כל יום", img: 'guatape-colombia-el-penol' },
+  { kicker: "מדג'ין בלילה", title: 'העיר נדלקת בערב', sub: 'סיור מצפים, צ׳יבה רומברה, ואורות העמק מלמעלה', img: 'medellin-nightlife-city-lights' },
+  { kicker: 'חוויה של פעם בחיים', title: 'משחק של אתלטיקו נסיונל', sub: 'כרטיס, הסעה, מדריך, והבירה הראשונה עלינו', img: 'atletico-nacional-fans-medellin' },
 ];
 const why = [
   { icon: 'י', blob: '#FDE2EC', title: 'ליווי אישי וזמינות', text: "גר במדג'ין, קולומביה, וזמין לתת שירות לאורך כל הדרך." },
@@ -32,7 +33,7 @@ const cats = [
   ['couples', 'טיולים לזוגות'],
   ['evening', 'חוויות ערב'],
 ];
-const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview', 'ctg-street', 'watermelon', 'umbrellas2', 'cave', 'horseride', 'ctg-fort', 'meddusk', 'wakeboard2', 'horses', 'cow'];
+const moments = ['tayrona-park-beach-rocks', 'guatape-wakeboard-el-penol', 'cartagena-palenquera-fruit', 'chiva-rumbera-party-bus', 'guatape-helicopter-view-el-penol', 'cartagena-old-city-street', 'medellin-restaurants-watermelon', 'guatape-colorful-streets', 'jardin-cave-waterfall', 'guatape-horse-riding', 'cartagena-attractions-fort', 'medellin-tours-viewpoint-evening', 'guatape-lake-wakeboarding', 'jardin-horseback-riding', 'antioquia-farm-cow'];
 ---
 <Base
   title="טיולים בקולומביה עם יונתן: מדג'ין, גואטפה וטאירונה"
@@ -52,7 +53,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
   <section class="hero" aria-label="סליידר ראשי" data-hero>
     {slides.map((s, i) => (
       <div class:list={['hero-slide', { 'is-active': i === 0 }]} data-kicker={s.kicker} data-title={s.title} data-sub={s.sub}>
-        <img src={img(s.img)} alt="" loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'low'} />
+        <img src={img(s.img)} alt={alt(s.img)} loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'low'} />
       </div>
     ))}
     <div class="hero-body">
@@ -178,7 +179,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
   <section class="wrap section reveal">
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:40px">
       <div style="flex:0 0 260px;position:relative">
-        <img src={thumb('yonatan')} alt="יונתן מילמן רוכב על סוס בהרי אנטיוקיה" loading="lazy" style="width:260px;height:300px;object-fit:cover;object-position:40% 55%;border-radius:24px;border:6px solid var(--yellow)" />
+        <img src={thumb('israeli-guide-medellin-yonatan')} alt="יונתן מילמן רוכב על סוס בהרי אנטיוקיה" loading="lazy" style="width:260px;height:300px;object-fit:cover;object-position:40% 55%;border-radius:24px;border:6px solid var(--yellow)" />
         <span class="pill pill-blue" style="position:absolute;bottom:-14px;left:20px;font-size:14px;padding:6px 12px">גר במדג'ין</span>
       </div>
       <div style="flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:14px">
@@ -205,7 +206,7 @@ const moments = ['tayrona2', 'wakeboard', 'ctg-palenquera', 'chivain', 'heliview
       </button>
     </div>
     <div class="marquee" data-marquee>
-      {moments.concat(moments).map((m, i) => <img src={thumb(m)} alt="" loading="lazy" aria-hidden={i >= moments.length ? 'true' : undefined} />)}
+      {moments.concat(moments).map((m, i) => <img src={thumb(m)} alt={i >= moments.length ? '' : alt(m)} loading="lazy" aria-hidden={i >= moments.length ? 'true' : undefined} />)}
     </div>
   </section>
 
