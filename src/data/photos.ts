@@ -80,6 +80,7 @@ export const photoAlt: Record<string, string> = {
   'private-boat-tayrona': "סירה פרטית במפרץ בפארק טיירונה",
   'coffee-valley-colombia-cocora': "עמק הקפה קולומביה – עמק קוקורה ודקלי השעווה ליד סלנטו",
   'salento-colombia-wax-palm': "סלנטו קולומביה – דקל שעווה בעמק ירוק בהרים",
+  'san-andres-colombia': "סן אנדרס קולומביה – אי קטן עם דקלים, חוף לבן ומים טורקיז",
 };
 
 /** Hebrew description of a photo, for alt text. */
