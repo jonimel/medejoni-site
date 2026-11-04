@@ -24,7 +24,7 @@ interface Props {
   /** Short description of the share image (og:image:alt). */
   imageAlt?: string;
 }
-const { title, description, image = '/images/peniol.jpg', jsonLd, nav, waText, noindex, ogType = 'website', imageAlt } = Astro.props;
+const { title, description, image = '/images/guatape-colombia-el-penol.jpg', jsonLd, nav, waText, noindex, ogType = 'website', imageAlt } = Astro.props;
 const fullTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogPath = image.replace(/\.webp$/, '.jpg');
@@ -50,7 +50,7 @@ const orgLd = {
   slogan: site.tagline,
   url: siteUrl,
   logo: { '@type': 'ImageObject', url: new URL('/logo.png', Astro.site).toString(), width: 512, height: 512 },
-  image: new URL('/images/yonatan.jpg', Astro.site).toString(),
+  image: new URL('/images/israeli-guide-medellin-yonatan.jpg', Astro.site).toString(),
   email: site.email,
   telephone: site.whatsapp ? `+${site.whatsapp}` : undefined,
   founder: { '@type': 'Person', '@id': `${siteUrl}#yonatan`, name: 'Yonatan Milman', alternateName: site.owner, url: new URL('/about/', Astro.site).toString() },

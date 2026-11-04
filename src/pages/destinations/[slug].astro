@@ -1,4 +1,5 @@
 ---
+import { alt } from '../../data/photos';
 import Base from '../../layouts/Base.astro';
 import TourCard from '../../components/TourCard.astro';
 import Carousel from '../../components/Carousel.astro';
@@ -47,7 +48,7 @@ const ld = [
 ---
 <Base title={seo?.title ?? `טיולים ב${dest.name} (${dest.latin}) עם יונתן`} description={seo?.description ?? `${dest.intro} חוויה מקומית ואותנטית ב${dest.name} עם יונתן מילמן.`} image={img(dest.hero)} imageAlt={`${dest.name} (${dest.latin}), קולומביה`} nav="destinations" jsonLd={ld}>
   <section class="d-hero">
-    <img src={img(dest.hero)} alt={`${dest.name} (${dest.latin}), קולומביה`} fetchpriority="high" />
+    <img src={img(dest.hero)} alt={alt(dest.hero) || `${dest.name} (${dest.latin}), קולומביה`} fetchpriority="high" />
     <div class="wrap d-hero-body">
       <nav class="crumbs" aria-label="פירורי לחם" style="color:#fff"><a href="/" style="color:#fff">דף הבית</a> › <a href="/destinations/" style="color:#fff">יעדים</a> › {dest.name}</nav>
       <span class="pill">{dest.latin}</span>
@@ -101,7 +102,7 @@ const ld = [
   {dest.gallery && (
     <section class="wrap" style="padding-bottom:72px">
       <h2 class="section-title">רגעים מ{dest.name}</h2>
-      <div class="gal">{dest.gallery.map((g) => <img src={thumb(g)} alt="" loading="lazy" />)}</div>
+      <div class="gal">{dest.gallery.map((g) => <img src={thumb(g)} alt={alt(g)} loading="lazy" />)}</div>
     </section>
   )}
 
@@ -113,7 +114,7 @@ const ld = [
           <p style="font-size:18px;line-height:1.7;color:var(--text)">{dest.bestTime}</p>
           <a href={waLink(`היי יונתן, אני מתכנן טיול ל${dest.name}`)} class="btn btn-blue" style="margin-top:20px" target="_blank" rel="noopener">תכננו איתי את הטיול</a>
         </div>
-        <img src={img(dest.image)} alt="" loading="lazy" sizes="(max-width: 900px) 100vw, 50vw" />
+        <img src={img(dest.image)} alt={alt(dest.image)} loading="lazy" sizes="(max-width: 900px) 100vw, 50vw" />
       </div>
     </section>
   )}

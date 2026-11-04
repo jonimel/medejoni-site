@@ -1,4 +1,5 @@
 ---
+import { alt } from '../data/photos';
 import Base from '../layouts/Base.astro';
 import { img, waLink } from '../data/site';
 
@@ -15,7 +16,7 @@ const reviews = [
   { text: 'אני וכמה חברים סגרנו עם יונתן יום של רכיבה על סוסים ופיינטבול והיה פשוט כיף! התחלנו ברכיבה מול נופים מדהימים, ואחר כך פיינטבול. יונתן דאג לארגון ולאווירה, ואנחנו רק היינו צריכים להגיע וליהנות. יום מלא צחוקים וחוויות שאנחנו עדיין מדברים עליו!', who: 'שלומית, 24 · סוסים ופיינטבול', stars: 5 },
 ];
 ---
-<Base title="מי אני – יונתן מילמן, ישראלי במדג'ין" description="היי, אני יונתן מילמן, ישראלי שגר במדג'ין. אני מראה לכם את קולומביה האותנטית, כמו שהמקומיים חיים אותה, ומלווה אתכם אישית לאורך כל הטיול." image={img('yonatan')} nav="about">
+<Base title="מי אני – יונתן מילמן, ישראלי במדג'ין" description="היי, אני יונתן מילמן, ישראלי שגר במדג'ין. אני מראה לכם את קולומביה האותנטית, כמו שהמקומיים חיים אותה, ומלווה אתכם אישית לאורך כל הטיול." image={img('israeli-guide-medellin-yonatan')} nav="about">
   <section class="page-top">
     <div class="wrap a-hero">
       <div style="display:flex;flex-direction:column;gap:18px">
@@ -26,9 +27,9 @@ const reviews = [
         <a href={waLink()} class="btn btn-dark" style="align-self:flex-start" target="_blank" rel="noopener">דברו איתי בוואטסאפ</a>
       </div>
       <div class="mosaic">
-        <img src={img('yonatan')} alt="יונתן מילמן רוכב על סוס בהרי אנטיוקיה" sizes="(max-width: 900px) 100vw, 40vw" style="grid-row:span 2;object-position:40% 50%" />
-        <img src={img('valley')} alt="" sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" />
-        <img src={img('fishing')} alt="" sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" />
+        <img src={img('israeli-guide-medellin-yonatan')} alt="יונתן מילמן רוכב על סוס בהרי אנטיוקיה" sizes="(max-width: 900px) 100vw, 40vw" style="grid-row:span 2;object-position:40% 50%" />
+        <img src={img('medellin-for-travelers-aburra-valley')} alt={alt('medellin-for-travelers-aburra-valley')} sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" />
+        <img src={img('private-tour-medellin-fishing')} alt={alt('private-tour-medellin-fishing')} sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" />
       </div>
     </div>
   </section>
@@ -67,10 +68,10 @@ const reviews = [
   </section>
 
   <section class="wrap section photo-grid">
-    <img src={img('horses')} alt="" sizes="(max-width: 900px) 100vw, 60vw" loading="lazy" style="grid-column:span 2;grid-row:span 2" />
-    <img src={img('cave')} alt="" sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" />
-    <img src={img('watermelon')} alt="" sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" style="grid-row:span 2" />
-    <img src={img('umbrellas')} alt="" sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" />
+    <img src={img('jardin-horseback-riding')} alt={alt('jardin-horseback-riding')} sizes="(max-width: 900px) 100vw, 60vw" loading="lazy" style="grid-column:span 2;grid-row:span 2" />
+    <img src={img('jardin-cave-waterfall')} alt={alt('jardin-cave-waterfall')} sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" />
+    <img src={img('medellin-restaurants-watermelon')} alt={alt('medellin-restaurants-watermelon')} sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" style="grid-row:span 2" />
+    <img src={img('guatape-day-trip-umbrella-street')} alt={alt('guatape-day-trip-umbrella-street')} sizes="(max-width: 900px) 100vw, 40vw" loading="lazy" />
   </section>
 </Base>
 

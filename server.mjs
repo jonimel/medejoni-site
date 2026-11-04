@@ -17,9 +17,13 @@ import { brotliCompressSync, gzipSync, constants as zlib } from 'node:zlib';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
 
 const root = join(fileURLToPath(new URL('.', import.meta.url)), 'dist');
 const port = Number(process.env.PORT) || 3000;
+// Photos were renamed to keyword names for Google Images (old name -> new name).
+// Old addresses (already in Google or in shared links) get a permanent redirect to the new file.
+const oldImageNames = JSON.parse(readFileSync(new URL('./src/lib/old-image-names.json', import.meta.url), 'utf8'));
 const leadEmail = process.env.LEAD_EMAIL || 'yonimelmel@gmail.com';
 const mailFrom = process.env.MAIL_FROM || 'Medejoni <onboarding@resend.dev>';
 
@@ -238,6 +242,11 @@ createServer(async (req, res) => {
     // One address for Google: send www.medejoni.com to medejoni.com.
     if ((req.headers.host || '').startsWith('www.')) {
       res.writeHead(301, { Location: `https://${req.headers.host.slice(4)}${req.url}` }).end();
+      return;
+    }
+    const oldImg = req.method !== 'POST' && url.pathname.match(/^\/images\/(sm\/)?([a-z0-9-]+)\.(webp|jpg)$/);
+    if (oldImg && oldImageNames[oldImg[2]]) {
+      res.writeHead(301, { Location: `/images/${oldImg[1] || ''}${oldImageNames[oldImg[2]]}.${oldImg[3]}`, 'Cache-Control': 'public, max-age=2592000' }).end();
       return;
     }
     if (req.method === 'POST' && url.pathname === '/api/visit') {

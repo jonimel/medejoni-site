@@ -1,4 +1,5 @@
 ---
+import { alt } from '../../data/photos';
 import Base from '../../layouts/Base.astro';
 import { guides, isDraft, type Guide } from '../../data/guides';
 import { getTour, fromPrice, hasTiers } from '../../data/tours';
@@ -49,12 +50,12 @@ const ld = [
       <h1 style="font-size:clamp(32px,5vw,46px);font-weight:800">{guide.title}</h1>
       <p style="font-size:20px;line-height:1.6;color:#4B5563">{guide.description}</p>
       <div style="display:flex;align-items:center;gap:12px">
-        <img src={thumb('yonatan')} alt="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:38% 45%" />
+        <img src={thumb('israeli-guide-medellin-yonatan')} alt="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:38% 45%" />
         <span style="display:flex;flex-direction:column;font-size:14px"><strong style="font-size:15px">{site.owner}</strong><span style="color:var(--muted)">גר במדג'ין</span></span>
       </div>
     </div>
     <div class="wrap" style="max-width:1100px;margin-top:24px">
-      <img src={img(guide.image)} alt={guide.sub} fetchpriority="high" style="width:100%;height:clamp(260px,40vw,500px);object-fit:cover;border-radius:24px" />
+      <img src={img(guide.image)} alt={alt(guide.image) || guide.sub} fetchpriority="high" style="width:100%;height:clamp(260px,40vw,500px);object-fit:cover;border-radius:24px" />
     </div>
 
     <div class="wrap a-layout">
@@ -81,7 +82,7 @@ const ld = [
           <section id={s.id} data-sec>
             <h2>{s.title}</h2>
             {s.paragraphs.map((p) => <p>{p}</p>)}
-            {s.image && <img src={img(s.image)} alt="" loading="lazy" />}
+            {s.image && <img src={img(s.image)} alt={alt(s.image)} loading="lazy" />}
             {s.tip && <div class="tip"><strong>טיפ של יונתן:</strong> {s.tip}</div>}
             {s.tours && (
               <div class="embeds">
