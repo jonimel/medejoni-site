@@ -49,6 +49,7 @@ const orgLd = {
   alternateName: 'מדג׳וני',
   slogan: site.tagline,
   url: siteUrl,
+  logo: { '@type': 'ImageObject', url: new URL('/logo.png', Astro.site).toString(), width: 512, height: 512 },
   image: new URL('/images/yonatan.jpg', Astro.site).toString(),
   email: site.email,
   telephone: site.whatsapp ? `+${site.whatsapp}` : undefined,
@@ -87,7 +88,12 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content={ogImage} />
   <meta name="theme-color" content="#FCD116" />
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <!-- Site icon: browser tab + Google search results (Google needs a square icon, a multiple of 48px). -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" href="/icon-96.png" type="image/png" sizes="96x96" />
+  <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
   <link rel="sitemap" href="/sitemap-index.xml" />
   <link rel="preload" href={rubikHebrew} as="font" type="font/woff2" crossorigin />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd ? [orgLd].concat(jsonLd as any) : orgLd)} />
@@ -108,7 +114,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
   <header class="site-header">
     <div class="wrap">
       <a href="/" class="logo">
-        <svg class="co-flag" viewBox="0 0 30 20" width="54" height="36" aria-hidden="true" focusable="false"><rect width="30" height="10" fill="#FCD116"/><rect y="10" width="30" height="5" fill="#003893"/><rect y="15" width="30" height="5" fill="#CE1126"/></svg>
+        <img class="logo-img" src="/images/logo-112.webp" srcset="/images/logo-112.webp 1x, /images/logo-224.webp 2x" width="56" height="56" alt="" />
         <span class="logo-text">
           <span class="logo-name">Medejoni</span>
           <span class="logo-sub">{site.tagline}</span>
@@ -160,7 +166,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
     </div>
     <div class="bottom">
       <div class="wrap">
-        <span class="logo"><span class="logo-name" style="font-size:20px">Medejoni</span></span>
+        <img class="footer-logo" src="/images/logo-224.webp" width="96" height="96" alt="Medejoni – חוויה אותנטית בקולומביה" loading="lazy" decoding="async" />
         <span>© {new Date().getFullYear()} Medejoni · {site.owner}. כל הזכויות שמורות.</span>
         <span class="social">
           <a href={site.instagram} aria-label="אינסטגרם" target="_blank" rel="noopener"><Icon name="instagram" size={24} /></a>
