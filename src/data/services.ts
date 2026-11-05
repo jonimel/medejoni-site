@@ -68,7 +68,7 @@ export const services: Service[] = [
     intro:
       'צריכים טיסה בתוך קולומביה או טיסה לחו"ל? אנחנו מוצאים את הטיסה שמתאימה למסלול שלכם, משווים מחירים ושעות, וסוגרים אותה בשבילכם.',
     points: ['טיסות פנים וטיסות לחו"ל', 'השוואת חברות, מחירים ושעות', 'התאמה למסלול ולטיולים שהזמנתם', 'עזרה עם כבודה ושינויים'],
-    image: 'medellin-tours-viewpoint-evening',
+    image: 'domestic-flights-colombia-medellin-airport',
     icon: '✓',
     blob: '#FFF3B0',
     formTitle: 'בקשה לסגירת טיסה',

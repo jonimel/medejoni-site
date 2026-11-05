@@ -93,6 +93,7 @@ import HeardFrom from '../components/HeardFrom.astro';
           <ul data-s-lines></ul>
           <div class="s-total" aria-live="polite"><span>סה״כ לתשלום</span><strong class="ltr" data-s-total></strong></div>
           <small style="color:var(--muted)">המחירים בפסו קולומביאני (COP), לאדם.</small>
+          <button type="button" class="s-edit" data-s-edit hidden>שינוי טיול, תאריך או משתתפים</button>
         </div>
       </aside>
     </div>
@@ -141,6 +142,8 @@ import HeardFrom from '../components/HeardFrom.astro';
   .s-body :global(li) { display: flex; justify-content: space-between; gap: 12px; }
   .s-total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed var(--line); padding-top: 12px; margin-top: 6px; }
   .s-total strong { font-size: 24px; }
+  .s-edit { align-self: flex-start; background: none; border: 0; padding: 4px 0; font: inherit; font-size: 15px; font-weight: 600; color: var(--blue); text-decoration: underline; cursor: pointer; }
+  .s-edit[hidden] { display: none; }
   @media (max-width: 900px) {
     .b-layout { grid-template-columns: 1fr; }
     .summary { position: static; order: -1; }
@@ -232,10 +235,14 @@ import HeardFrom from '../components/HeardFrom.astro';
     root.querySelector('[data-s-total]')!.textContent = fmt(total);
   }
 
-  function go(n: number) {
+  const editBtn = root.querySelector<HTMLButtonElement>('[data-s-edit]')!;
+  function go(n: number, scroll = true) {
+    cur = n;
+    editBtn.hidden = n === 0;
     steps.forEach((s, i) => (s.hidden = i !== n));
     inds.forEach((el, i) => { el.classList.toggle('is-current', i === n); el.classList.toggle('is-done', i < n); el.toggleAttribute('aria-current', i === n); if (i === n) el.setAttribute('aria-current', 'step'); });
     if (n === 2) fillReview();
+    if (!scroll) return;
     root.scrollIntoView({ behavior: 'smooth', block: 'start' });
     // Keyboard and screen-reader users land on the new step's title.
     steps[n]?.querySelector<HTMLElement>('legend')?.focus({ preventScroll: true });
@@ -265,8 +272,9 @@ import HeardFrom from '../components/HeardFrom.astro';
   }
 
   let cur = 0;
-  form.querySelectorAll('[data-next]').forEach((b) => b.addEventListener('click', () => { if (valid(steps[cur])) go(++cur); }));
-  form.querySelectorAll('[data-back]').forEach((b) => b.addEventListener('click', () => go(--cur)));
+  form.querySelectorAll('[data-next]').forEach((b) => b.addEventListener('click', () => { if (valid(steps[cur])) go(cur + 1); }));
+  form.querySelectorAll('[data-back]').forEach((b) => b.addEventListener('click', () => go(cur - 1)));
+  editBtn.addEventListener('click', () => go(0));
   fTour.addEventListener('change', setupTour);
   [fDate, fPeople].forEach((el) => el.addEventListener('input', render));
 
@@ -312,6 +320,12 @@ import HeardFrom from '../components/HeardFrom.astro';
           return data.toString();
         })(),
       });
+      if (res.status === 429) {
+        // Spam guard: more than 3 sends in 30 minutes from this address.
+        (window as any).mjTooMany(err);
+        err.hidden = false;
+        return;
+      }
       if (!res.ok) throw new Error(String(res.status));
       // Google Analytics: count the booking request (only when analytics is on).
       (window as any).gtag?.('event', 'generate_lead', { form_name: 'booking' });
@@ -333,4 +347,7 @@ import HeardFrom from '../components/HeardFrom.astro';
   });
 
   setupTour();
+  // Coming from a tour page ("להזמנה") with the trip, date and people already chosen: go straight to
+  // "הפרטים שלכם". Step 1 is shown only when the trip has add-ons to pick. The summary shows the choice.
+  if (q.get('tour') === fTour.value && q.get('date') && q.get('people') && !tour().addOns.length) go(1, false);
 </script>

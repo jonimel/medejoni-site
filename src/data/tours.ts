@@ -40,6 +40,8 @@ export interface Tour {
   duration: string;
   tags: string[];
   images: string[];
+  /** Short vertical video shown under "על הטיול": public/videos/<name>.mp4, poster = photo name. */
+  video?: { name: string; poster: string; title: string };
   faq: { q: string; a: string }[];
   featured?: boolean;
   /** Shown under the "טיולים לזוגות" filter on the home page. */
@@ -242,7 +244,8 @@ export const tours: Tour[] = [
     bookAheadHours: 48,
     duration: 'יום מלא',
     tags: ['ארוחת בוקר', 'אטרקציות לבחירה'],
-    images: ['paragliding-medellin', 'paintball-antioquia', 'antioquia-countryside-colombia', 'antioquia-farm-cow', 'private-tour-medellin-fishing'],
+    images: ['paragliding-medellin', 'paragliding-medellin-tandem-flight', 'paintball-antioquia', 'antioquia-countryside-colombia', 'antioquia-farm-cow', 'private-tour-medellin-fishing'],
+    video: { name: 'paragliding-medellin-video', poster: 'paragliding-medellin-tandem-flight', title: 'מצנח רחיפה מעל מדיין – וידאו מהטיול קולומביאני ליום אחד' },
     faq: [...commonFaq],
   },
   {
