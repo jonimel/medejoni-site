@@ -234,6 +234,18 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
       } catch { /* ignore */ }
     });
 
+    // Message for a visitor who sent more than 3 forms in 30 minutes (the server answers 429), with a WhatsApp link.
+    (window as any).mjTooMany = (el: HTMLElement) => {
+      el.textContent = 'כבר קיבלנו את הפנייה שלכם 🙏 אפשר לשלוח שוב בעוד חצי שעה, או ';
+      const a = document.createElement('a');
+      a.href = document.querySelector<HTMLAnchorElement>('.wa-float')?.href || 'https://wa.me/';
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = 'לכתוב לי עכשיו בוואטסאפ';
+      a.style.textDecoration = 'underline';
+      el.append(a);
+    };
+
     // Lead forms: post to the server (emailed to Jonathan) and show a thank-you message.
     document.querySelectorAll<HTMLFormElement>('form[data-lead]').forEach((form) => {
       const status = form.querySelector<HTMLElement>('[data-status]')!;
@@ -256,6 +268,12 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
               return data.toString();
             })(),
           });
+          if (res.status === 429) {
+            // Spam guard: more than 3 sends in 30 minutes from this address.
+            status.classList.add('err');
+            (window as any).mjTooMany(status);
+            return;
+          }
           if (!res.ok) throw new Error(String(res.status));
           // Google Analytics: count the lead (only when analytics is on).
           (window as any).gtag?.('event', 'generate_lead', { form_name: form.getAttribute('name') || 'lead' });

@@ -35,6 +35,8 @@ export const photoAlt: Record<string, string> = {
   'guatape-helicopter-view-el-penol': "סלע אל פניול והאגם של גואטפה מחלון של מסוק",
   'guatape-helicopter-tour': "מסוק לטיסת נוף מעל גואטפה",
   'guatape-horse-riding': "רכיבה על סוסים בהרים באזור גואטפה",
+  'domestic-flights-colombia-medellin-airport': "טיסות פנים בקולומביה – מטוס בשדה התעופה אולאיה הררה במדיין",
+  'paragliding-medellin-tandem-flight': "מצנח רחיפה במדיין – טיסה בזוג מעל ההרים הירוקים של אנטיוקיה",
   'paragliding-medellin': "אטרקציות במדיין – מצנח רחיפה מעל ההרים של אנטיוקיה",
   'paintball-antioquia': "פיינטבול בחווה באנטיוקיה ליד מדיין",
   'antioquia-countryside-colombia': "הנוף הירוק והגבעות של כפרי אנטיוקיה, קולומביה",

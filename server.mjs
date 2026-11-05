@@ -31,7 +31,7 @@ const types = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json', '.xml': 'application/xml', '.txt': 'text/plain; charset=utf-8',
   '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
-  '.webp': 'image/webp', '.gif': 'image/gif', '.ico': 'image/x-icon', '.webmanifest': 'application/manifest+json', '.woff2': 'font/woff2', '.woff': 'font/woff',
+  '.webp': 'image/webp', '.gif': 'image/gif', '.ico': 'image/x-icon', '.webmanifest': 'application/manifest+json', '.woff2': 'font/woff2', '.woff': 'font/woff', '.mp4': 'video/mp4',
 };
 
 // Hebrew labels for the form fields, so the email is easy to read.
@@ -84,10 +84,31 @@ function supabaseRpc(fn, body) {
 const supabaseOn = () => Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY);
 const validVisitor = (id) => (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id || '') ? id : null);
 
+// Spam guard for the site's forms (all forms together): at most 3 sends per 30 minutes from one IP address.
+// Kept in memory, so it starts fresh after each deploy, which is fine for this purpose.
+const LEAD_LIMIT = 3;
+const LEAD_WINDOW_MS = 30 * 60_000;
+const leadLog = new Map();
+// Railway puts the visitor's real address in X-Real-IP (a visitor can't fake it); X-Forwarded-For is the fallback.
+const clientIp = (req) => String(req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+function tooManyLeads(req) {
+  const ip = clientIp(req);
+  const now = Date.now();
+  const recent = (leadLog.get(ip) || []).filter((t) => now - t < LEAD_WINDOW_MS);
+  if (recent.length >= LEAD_LIMIT) {
+    leadLog.set(ip, recent);
+    return true;
+  }
+  recent.push(now);
+  leadLog.set(ip, recent);
+  if (leadLog.size > 5000) for (const [k, v] of leadLog) if (v.every((t) => now - t >= LEAD_WINDOW_MS)) leadLog.delete(k);
+  return false;
+}
+
 // Simple limit so one browser/bot can't flood the WhatsApp-click table: 20 clicks per 10 minutes per IP.
 const clickLog = new Map();
 function tooManyClicks(req) {
-  const ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+  const ip = clientIp(req);
   const now = Date.now();
   const recent = (clickLog.get(ip) || []).filter((t) => now - t < 600_000);
   recent.push(now);
@@ -144,13 +165,13 @@ async function trackReferral(req) {
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
-async function sendLead(fields, suspect = false) {
+async function sendLead(fields) {
   const form = fields['form-name'] || 'lead';
   const rows = Object.entries(fields)
     .filter(([k, v]) => k !== 'company' && k !== 'hp_field' && k !== 'form-name' && String(v).trim() !== '')
     .map(([k, v]) => `<tr><td style="padding:6px 10px;font-weight:bold">${esc(labels[k] || k)}</td><td style="padding:6px 10px">${esc(v)}</td></tr>`)
     .join('');
-  const subject = `${suspect ? '[חשד לספאם] ' : ''}ליד חדש: ${formTitles[form] || form}${fields.name ? ` – ${fields.name}` : ''}`;
+  const subject = `ליד חדש: ${formTitles[form] || form}${fields.name ? ` – ${fields.name}` : ''}`;
   const html = `<div dir="rtl" style="font-family:Arial,sans-serif"><h2>${esc(subject)}</h2><table border="1" style="border-collapse:collapse">${rows}</table></div>`;
   if (!process.env.RESEND_API_KEY) throw new Error('RESEND_API_KEY is not set');
   const email = { from: mailFrom, to: [leadEmail], subject, html };
@@ -207,7 +228,7 @@ async function loadFile(path, mtimeMs) {
 function cacheControl(urlPath, ext) {
   if (ext === '.html') return 'no-cache'; // always check for a new version (cheap thanks to ETag)
   if (urlPath.startsWith('/_astro/')) return 'public, max-age=31536000, immutable'; // file names change on every edit
-  if (urlPath.startsWith('/images/')) return 'public, max-age=2592000'; // 30 days
+  if (urlPath.startsWith('/images/') || urlPath.startsWith('/videos/')) return 'public, max-age=2592000'; // 30 days
   return 'public, max-age=86400';
 }
 
@@ -225,6 +246,23 @@ async function serveFile(req, res, path, status = 200, extraHeaders = {}) {
   if (file.gzip) headers.Vary = 'Accept-Encoding';
   if (status === 200 && req.headers['if-none-match'] === file.etag) {
     res.writeHead(304, headers).end();
+    return;
+  }
+  // Videos: answer "Range" requests (iPhone Safari will not play a video without them).
+  const range = ext === '.mp4' && status === 200 && String(req.headers.range || '').match(/^bytes=(\d*)-(\d*)$/);
+  headers['Accept-Ranges'] = 'bytes';
+  if (range) {
+    const size = file.raw.length;
+    let start = range[1] === '' ? size - Number(range[2]) : Number(range[1]);
+    let end = range[1] !== '' && range[2] !== '' ? Math.min(Number(range[2]), size - 1) : size - 1;
+    if (range[1] === '') start = Math.max(0, start), end = size - 1;
+    if (start > end || start >= size) {
+      res.writeHead(416, { 'Content-Range': `bytes */${size}` }).end();
+      return;
+    }
+    const part = file.raw.subarray(start, end + 1);
+    res.writeHead(206, { ...headers, 'Content-Range': `bytes ${start}-${end}/${size}`, 'Content-Length': part.length });
+    res.end(req.method === 'HEAD' ? undefined : part);
     return;
   }
   const accept = String(req.headers['accept-encoding'] || '');
@@ -261,16 +299,26 @@ createServer(async (req, res) => {
     }
     if (req.method === 'POST') {
       const fields = Object.fromEntries(new URLSearchParams(await readBody(req)));
-      // Honeypot: a hidden field people never see. If it is filled, it is probably a bot,
-      // but browser autofill can fill it too, so the lead is still emailed, marked as suspected spam.
-      const suspect = Boolean(fields.hp_field || fields.company);
+      // Honeypot: a hidden field people never see. If it is filled, it is a bot: no email is sent.
+      // The bot is still told "ok", so it does not try again in another way. It is only written to the logs.
+      if (fields.hp_field || fields.company) {
+        console.log('Spam blocked (hidden field filled):', clientIp(req), JSON.stringify(fields));
+        res.writeHead(200).end('ok');
+        return;
+      }
+      if (tooManyLeads(req)) {
+        console.log('Spam blocked (more than 3 sends in 30 minutes):', clientIp(req), JSON.stringify(fields));
+        res.writeHead(429, { 'Content-Type': 'text/plain; charset=utf-8' }).end('too many');
+        return;
+      }
       // Every lead is written to the Railway logs too, so none is lost even if the email fails.
       console.log('Lead received:', JSON.stringify(fields));
       try {
-        await sendLead(fields, suspect);
+        await sendLead(fields);
         res.writeHead(200).end('ok');
       } catch (e) {
         console.error('Lead email failed:', e.message, JSON.stringify(fields));
+        leadLog.get(clientIp(req))?.pop(); // a send that failed on our side doesn't count toward the limit
         res.writeHead(500).end('error');
       }
       return;

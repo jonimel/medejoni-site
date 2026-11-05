@@ -63,6 +63,18 @@ const ld = [
     ],
   },
 ];
+if (tour.video) {
+  ld.push({
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: tour.video.title,
+    description: tour.short,
+    thumbnailUrl: new URL(img(tour.video.poster), Astro.site).toString(),
+    contentUrl: new URL(`/videos/${tour.video.name}.mp4`, Astro.site).toString(),
+    uploadDate: '2026-11-05',
+    inLanguage: 'he',
+  } as any);
+}
 const booking = JSON.stringify({
   slug: tour.slug,
   tiers: tour.tiers,
@@ -110,6 +122,15 @@ const booking = JSON.stringify({
 
         <h2 class="h2">על הטיול</h2>
         <p class="lead">{tour.intro}</p>
+
+        {tour.video && (
+          <figure class="tour-video">
+            <video controls playsinline preload="none" poster={img(tour.video.poster)} aria-label={tour.video.title} width="720" height="1280">
+              <source src={`/videos/${tour.video.name}.mp4`} type="video/mp4" />
+            </video>
+            <figcaption>{tour.video.title}</figcaption>
+          </figure>
+        )}
 
         <div class="inc">
           <div>
@@ -209,6 +230,9 @@ const booking = JSON.stringify({
 </Base>
 
 <style>
+  .tour-video { margin: 0 0 28px; max-width: 340px; }
+  .tour-video video { width: 100%; height: auto; aspect-ratio: 9 / 16; border-radius: var(--radius, 16px); background: #000; display: block; }
+  .tour-video figcaption { font-size: 14px; color: var(--muted); margin-top: 8px; }
   .gallery { display: grid; grid-template-columns: 1fr 260px; gap: 12px; margin-bottom: 36px; }
   .g-main { position: relative; height: 480px; border-radius: 20px; overflow: hidden; background: var(--navy); }
   .g-main img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 600ms ease; }
