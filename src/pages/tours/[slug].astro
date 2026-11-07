@@ -105,14 +105,21 @@ const booking = JSON.stringify({
     <div class="tour-layout">
       <article>
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+          {tour.recommended && <span class="pill pill-reco">★ מומלץ</span>}
           <span class="pill">{kindLabel[tour.kind]}</span>
           <span class="pill pill-soft">{tour.duration}</span>
         </div>
         <h1 style="font-size:clamp(30px,4.5vw,44px);font-weight:800">{tour.title}</h1>
         <p style="display:flex;align-items:center;gap:6px;color:var(--link);margin-top:8px"><Icon name="pin" size={18} />{tour.place}, קולומביה</p>
 
+        {tour.highlights && tour.highlights.length > 0 && (
+          <ul class="highlights" aria-label="בקצרה">{tour.highlights.map((h) => <li>{h}</li>)}</ul>
+        )}
         <ul class="facts">
           <li><Icon name="pin" /><span><strong>נקודת יציאה</strong>{tour.pickup}</span></li>
+          {tour.start && <li><Icon name="clock" /><span><strong>שעות</strong>{tour.end ? `יציאה ${tour.start} · חזרה ${tour.end}` : `יציאה ${tour.start}`}</span></li>}
+          {tour.guide && <li><Icon name="users" /><span><strong>הדרכה</strong>{tour.guide}</span></li>}
+          {tour.ages && <li><Icon name="check" /><span><strong>למי מתאים</strong>{tour.ages}</span></li>}
           <li><Icon name="clock" /><span><strong>להזמין מראש</strong>לפחות {tour.bookAheadHours} שעות</span></li>
           <li><Icon name="users" /><span><strong>משתתפים</strong>{tour.minPeople > 1 ? `מינימום ${tour.minPeople}` : 'מאדם אחד'}</span></li>
           <li><Icon name="check" /><span><strong>ביטול</strong>עד 12 שעות לפני</span></li>
@@ -154,6 +161,24 @@ const booking = JSON.stringify({
           </>
         )}
 
+        {tour.bring && tour.bring.length > 0 && (
+          <>
+            <h2 class="h2">מה להביא</h2>
+            <ul class="bring">{tour.bring.map((x) => <li>{x}</li>)}</ul>
+          </>
+        )}
+        {tour.goodToKnow && tour.goodToKnow.length > 0 && (
+          <>
+            <h2 class="h2">טוב לדעת</h2>
+            <ul class="bring">{tour.goodToKnow.map((x) => <li>{x}</li>)}</ul>
+          </>
+        )}
+        <div class="how">
+          <strong>איך זה עובד?</strong>
+          <span>{tour.guide
+            ? 'אני מתכנן ודואג לכל הפרטים, ובשטח מלווה אתכם מדריך מקומי שאני סומך עליו. לאורך כל היום אני זמין לכם בוואטסאפ.'
+            : 'אני דואג להזמנה ולכל הפרטים, ולאורך כל היום אני זמין לכם בוואטסאפ.'}</span>
+        </div>
         {hasTiers(tour) && (
           <>
             <h2 class="h2">מחירים לפי גודל הקבוצה</h2>
@@ -258,6 +283,12 @@ const booking = JSON.stringify({
   .inc li::before { flex: 0 0 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
   .inc li.yes::before { content: '✓'; background: #D9F7EF; color: #0F7A55; }
   .inc li.no::before { content: '✕'; background: #FFE1E1; color: var(--red); }
+  .pill-reco { background: var(--red); color: #fff; font-weight: 800; }
+  .highlights { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .highlights li { background: var(--sky); color: var(--ink); border-radius: 999px; padding: 6px 14px; font-size: 15px; font-weight: 600; }
+  .bring { margin: 0; padding-inline-start: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 17px; line-height: 1.6; }
+  .how { margin-top: 32px; background: var(--cream); border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; font-size: 16px; line-height: 1.6; }
+  .how strong { font-size: 18px; }
   .tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
   .tiers div { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
   .tiers strong { font-size: 20px; }

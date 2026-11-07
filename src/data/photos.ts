@@ -15,7 +15,7 @@ export const photoAlt: Record<string, string> = {
   'chiva-rumbera-party-bus': "מסיבה בתוך הצ'יבה רומברה במדיין",
   'medellin-restaurants-watermelon': "מדיין מסעדות – אבטיח מעוצב כפרצוף מחייך על רקע אורות העיר",
   'medellin-airport-transfer-van': "הסעות במדיין – ואן להסעה משדה התעופה למלון",
-  'israeli-guide-medellin-yonatan': "מדריך ישראלי במדיין – יונתן מילמן רוכב על סוס בהרי אנטיוקיה",
+  'israeli-guide-medellin-yonatan': "ישראלי במדיין – יונתן מילמן רוכב על סוס בהרי אנטיוקיה",
   'comuna-13-medellin': "קומונה 13 מדיין – פסל צבעוני עם כובע ומשקפיים מעל השכונה",
   'comuna-13-medellin-view': "קומונה 13 מדיין – נוף לשכונה מלמעלה ופסל בצבעי דגל קולומביה",
   'comuna-13-tour-que-chimba-medellin': "סיור בקומונה 13 – השלט הצבעוני Que Chimba Medellín",
@@ -83,6 +83,16 @@ export const photoAlt: Record<string, string> = {
   'coffee-valley-colombia-cocora': "עמק הקפה קולומביה – עמק קוקורה ודקלי השעווה ליד סלנטו",
   'salento-colombia-wax-palm': "סלנטו קולומביה – דקל שעווה בעמק ירוק בהרים",
   'san-andres-colombia': "סן אנדרס קולומביה – אי קטן עם דקלים, חוף לבן ומים טורקיז",
+  'san-pedro-trout-fishing-lunch': "טיול פרטי ממדיין – דייג פורל בבריכת דגים בסן פדרו דה לוס מילגרוס",
+  'san-pedro-de-los-milagros-cows': "פרות רועות על הגבעות הירוקות של סן פדרו דה לוס מילגרוס, אנטיוקיה",
+  'atletico-nacional-stadium-flags': "משחק של אתלטיקו נסיונל במדיין – יציע מלא דגלים ירוקים באצטדיון אטנסיו חירארדוט",
+  'caldas-river-day-trip-medellin': "טיול יום ממדיין – רחצה בנהר בקלדס, דרום עמק אבורה",
+  'caldas-antioquia-river-swim': "עומדים במים הצלולים של הנהר בקלדס, אנטיוקיה",
+  'caldas-river-waterfall-nature': "מפל קטן בנהר בין הג'ונגל בקלדס ליד מדיין",
+  'farm-day-trip-medellin-caldas': "הכניסה לחוות לה קלריטה (La Clarita Granja) בקלדס – טיול חווה ממדיין",
+  'horse-riding-caldas-antioquia': "רכיבה על סוסים בקלדס, אנטיוקיה – סוס מוכן לרכיבה בחווה",
+  'farm-animals-medellin-family-trip': "טיול משפחות במדיין – מלטפים פרד בחווה עם חיות בקלדס",
+  'river-near-medellin-nature-trip': "טיול בטבע ליד מדיין – הנהר והיער הירוק בקלדס",
 };
 
 /** Hebrew description of a photo, for alt text. */

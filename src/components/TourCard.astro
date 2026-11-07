@@ -9,6 +9,7 @@ const price = fromPrice(tour);
   <div class="media">
     <img class="zoom" src={thumb(tour.images[0])} alt={tour.title} loading={lazy ? 'lazy' : 'eager'} width="600" height="420" />
     <span class="pill">{kindLabel[tour.kind]}</span>
+    {tour.recommended && <span class="pill reco">★ מומלץ</span>}
   </div>
   <div class="body">
     <span class="place">{tour.place}, קולומביה</span>
@@ -21,3 +22,7 @@ const price = fromPrice(tour);
     </div>
   </div>
 </a>
+
+<style>
+  .media .pill.reco { right: auto; left: 12px; background: var(--red); color: #fff; font-weight: 800; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+</style>
