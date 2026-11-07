@@ -19,6 +19,7 @@ export const photoAlt: Record<string, string> = {
   'comuna-13-medellin': "קומונה 13 מדיין – פסל צבעוני עם כובע ומשקפיים מעל השכונה",
   'comuna-13-medellin-view': "קומונה 13 מדיין – נוף לשכונה מלמעלה ופסל בצבעי דגל קולומביה",
   'comuna-13-tour-que-chimba-medellin': "סיור בקומונה 13 – השלט הצבעוני Que Chimba Medellín",
+  'comuna-13-medellin-christ-statue': "סיור פבלו אסקובר וקומונה 13 – פסל ישו בצבעי דגל קולומביה מעל שכונת קומונה 13 במדיין",
   'comuna-13-street-art': "אמנות רחוב ופוסטרים צבעוניים בקומונה 13 במדיין",
   'comuna-13-crafts-market': "צמידים ומלאכות יד בדוכן בקומונה 13 במדיין",
   'pablo-escobar-tour-medellin': "סיור פבלו אסקובר במדיין – ציור קיר בשכונת ברריו פבלו אסקובר",
