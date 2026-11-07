@@ -205,7 +205,7 @@ const allTours: Tour[] = [
     tiers: [
       { min: 3, price: 179000, label: '3 משתתפים' },
       { min: 4, price: 169000, label: '4 משתתפים' },
-      { min: 5, price: 119000, label: '5 עד 8 משתתפים' },
+      { min: 5, price: 129000, label: '5 עד 8 משתתפים' },
     ],
     minPeople: 3,
     addOns: [],
@@ -273,7 +273,7 @@ const allTours: Tour[] = [
     bring: ['נעליים נוחות', 'קרם הגנה וכובע', 'מזומן'],
     tiers: [
       { min: 3, price: 199000, label: '3 משתתפים' },
-      { min: 4, price: 179000, label: '4 משתתפים' },
+      { min: 4, price: 189000, label: '4 משתתפים' },
       { min: 5, price: 149000, label: '5 עד 8 משתתפים' },
     ],
     minPeople: 3,
@@ -421,8 +421,7 @@ const allTours: Tour[] = [
       { min: 4, price: 409000, label: '4 משתתפים' },
       { min: 5, price: 329000, label: '5 משתתפים' },
       { min: 6, price: 279000, label: '6 משתתפים' },
-      { min: 7, price: 249000, label: '7 משתתפים' },
-      { min: 8, price: 219000, label: '8 משתתפים' },
+      { min: 7, price: 249000, label: '7 עד 8 משתתפים' },
     ],
     minPeople: 3,
     addOns: [],
