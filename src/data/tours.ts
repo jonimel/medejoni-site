@@ -156,10 +156,9 @@ const allTours: Tour[] = [
     ages: 'מתאים לכל הגילאים',
     bring: ['נעליים נוחות', 'בגד ים, אם אתם מוסיפים אטרקציה על המים', 'קרם הגנה וכובע', 'מזומן'],
     tiers: [
-      { min: 3, price: 309000, label: '3 משתתפים' },
-      { min: 4, price: 239000, label: '4 משתתפים' },
-      { min: 5, price: 199000, label: '5 משתתפים' },
-      { min: 6, price: 179000, label: '6 עד 8 משתתפים' },
+      { min: 3, price: 299000, label: '3 משתתפים' },
+      { min: 4, price: 279000, label: '4 משתתפים' },
+      { min: 5, price: 199000, label: '5 עד 8 משתתפים' },
     ],
     minPeople: 3,
     addOns: [
@@ -206,8 +205,7 @@ const allTours: Tour[] = [
     tiers: [
       { min: 3, price: 159000, label: '3 משתתפים' },
       { min: 4, price: 119000, label: '4 משתתפים' },
-      { min: 5, price: 99000, label: '5 משתתפים' },
-      { min: 6, price: 89000, label: '6 עד 8 משתתפים' },
+      { min: 5, price: 99000, label: '5 עד 8 משתתפים' },
     ],
     minPeople: 3,
     addOns: [],
@@ -276,8 +274,7 @@ const allTours: Tour[] = [
     tiers: [
       { min: 3, price: 199000, label: '3 משתתפים' },
       { min: 4, price: 159000, label: '4 משתתפים' },
-      { min: 5, price: 129000, label: '5 משתתפים' },
-      { min: 6, price: 129000, label: '6 עד 8 משתתפים' },
+      { min: 5, price: 129000, label: '5 עד 8 משתתפים' },
     ],
     minPeople: 3,
     addOns: [],
@@ -314,8 +311,8 @@ const allTours: Tour[] = [
     bring: ['נעליים סגורות', 'ז׳קט קל (בסן פדרו קריר)', 'קרם הגנה', 'מזומן'],
     tiers: [
       { min: 3, price: 249000, label: '3 משתתפים' },
-      { min: 4, price: 189000, label: '4 משתתפים' },
-      { min: 5, price: 149000, label: '5 משתתפים' },
+      { min: 4, price: 199000, label: '4 משתתפים' },
+      { min: 5, price: 179000, label: '5 משתתפים' },
       { min: 6, price: 149000, label: '6 עד 8 משתתפים' },
     ],
     minPeople: 3,
