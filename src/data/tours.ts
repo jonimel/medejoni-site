@@ -203,9 +203,9 @@ const allTours: Tour[] = [
     start: 'בשעה שנוחה לכם',
     guide: english,
     tiers: [
-      { min: 3, price: 159000, label: '3 משתתפים' },
-      { min: 4, price: 119000, label: '4 משתתפים' },
-      { min: 5, price: 99000, label: '5 עד 8 משתתפים' },
+      { min: 3, price: 179000, label: '3 משתתפים' },
+      { min: 4, price: 169000, label: '4 משתתפים' },
+      { min: 5, price: 119000, label: '5 עד 8 משתתפים' },
     ],
     minPeople: 3,
     addOns: [],
