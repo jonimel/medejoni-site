@@ -75,8 +75,10 @@ if (tour.video) {
     inLanguage: 'he',
   } as any);
 }
+const maxPeople = hasTiers(tour) ? 8 : 20;
 const booking = JSON.stringify({
   slug: tour.slug,
+  max: maxPeople,
   tiers: tour.tiers,
   min: tour.minPeople,
   addOns: tour.addOns,
@@ -223,6 +225,7 @@ const booking = JSON.stringify({
               <button type="button" aria-label="יותר משתתפים" data-inc>+</button>
             </div>
             {tour.minPeople > 1 && <small style="color:var(--muted)">מינימום {tour.minPeople} משתתפים</small>}
+            {maxPeople === 8 && <small style="color:var(--muted)">קבוצה של יותר מ־8? <a href={waLink(`היי יונתן, אנחנו קבוצה של יותר מ־8 ל"${tour.title}"`)} target="_blank" rel="noopener">דברו איתי בוואטסאפ</a></small>}
           </div>
           {tour.addOns.length > 0 && (
             <fieldset class="field addons">
@@ -359,7 +362,7 @@ const booking = JSON.stringify({
   type AddOn = { id: string; name: string; price?: number };
   const box = document.querySelector<HTMLElement>('[data-booking]');
   if (box) {
-    const cfg = JSON.parse(box.dataset.booking!) as { slug: string; tiers: Tier[]; min: number; addOns: AddOn[]; aheadHours: number; single?: boolean };
+    const cfg = JSON.parse(box.dataset.booking!) as { slug: string; tiers: Tier[]; min: number; max: number; addOns: AddOn[]; aheadHours: number; single?: boolean };
     const out = box.querySelector<HTMLOutputElement>('[data-people]')!;
     const dec = box.querySelector<HTMLButtonElement>('[data-dec]')!;
     const inc = box.querySelector<HTMLButtonElement>('[data-inc]')!;
@@ -378,12 +381,12 @@ const booking = JSON.stringify({
     const render = () => {
       out.textContent = String(people);
       dec.disabled = people <= cfg.min;
-      inc.disabled = people >= 20;
+      inc.disabled = people >= cfg.max;
       const extras = addons.filter((a) => a.checked).reduce((s, a) => s + (cfg.addOns.find((x) => x.id === a.value)?.price ?? 0), 0);
       total.textContent = ((perPerson(people) + extras) * people).toLocaleString('en-US') + ' COP';
     };
     dec.addEventListener('click', () => { people = Math.max(cfg.min, people - 1); render(); });
-    inc.addEventListener('click', () => { people = Math.min(20, people + 1); render(); });
+    inc.addEventListener('click', () => { people = Math.min(cfg.max, people + 1); render(); });
     addons.forEach((a) => a.addEventListener('change', () => {
       if (cfg.single && a.checked) addons.forEach((o) => { if (o !== a) o.checked = false; });
       render();
