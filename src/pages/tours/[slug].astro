@@ -197,7 +197,7 @@ const booking = JSON.stringify({
           </a>
         )}
 
-        <h2 class="h2">שאלות נפוצות</h2>
+        <h2 class="h2">שאלות נפוצות על {tour.title}</h2>
         <div class="faq">
           {tour.faq.map((f, i) => <details open={i === 0}><summary>{f.q}</summary><p>{f.a}</p></details>)}
         </div>

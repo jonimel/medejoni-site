@@ -140,7 +140,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
     <div class="top">
       <div class="wrap cols">
         <details class="col" open data-foot-group>
-          <summary><strong>הטיולים שלנו</strong></summary>
+          <summary><strong>הטיולים שלי</strong></summary>
           <div class="col-links">
             {footerTours.map((t) => <a href={`/tours/${t.slug}/`}>{t.title}</a>)}
             <a href="/tours/" style="color: var(--blue); font-weight: 600">לכל הטיולים ←</a>
