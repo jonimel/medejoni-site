@@ -67,7 +67,7 @@ const itemList = {
       <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px">
         <span style="font-size:17px" aria-live="polite"><strong data-count>{tours.length}</strong> טיולים</span>
         <label style="display:flex;align-items:center;gap:8px;font-size:15px">מיון
-          <select data-sort style="min-height:44px;border:1px solid #D1D5DB;border-radius:10px;padding:0 12px;font:inherit;background:#fff">
+          <select data-sort style="min-height:44px;border:1px solid var(--line-strong);border-radius:10px;padding:0 12px;font:inherit;background:#fff">
             <option value="rec">מומלצים</option>
             <option value="low">מחיר: מהנמוך לגבוה</option>
             <option value="high">מחיר: מהגבוה לנמוך</option>
@@ -82,7 +82,32 @@ const itemList = {
     </div>
   </div>
 
-  <section id="faq" style="background:var(--sky)">
+  <section class="bg-cream">
+    <div class="wrap section">
+      <h2 class="section-title" style="margin-bottom:8px">קבוצתי או פרטי?</h2>
+      <p style="margin:0 0 24px;text-align:center;font-size:18px;color:var(--text)">אפשר לטייל לבד, או להצטרף לקבוצה קיימת – בהתאם לסוג המטיילים שאתם!</p>
+      <div class="kind-grid">
+        <div class="kind-card">
+          <h3>טיולים קבוצתיים</h3>
+          <ul>
+            <li>יוצאים כל יום בשעות קבועות</li>
+            <li>אני דואג לרישום ולשריון המקומות, ונשאר זמין לכל שאלה</li>
+            <li>מזמינים לפחות 36 שעות מראש</li>
+          </ul>
+        </div>
+        <div class="kind-card">
+          <h3>טיולים פרטיים</h3>
+          <ul>
+            <li>מותאמים אליכם: מסלול, נהג ומדריך מקומי, ואני זמין לכם בוואטסאפ לאורך כל היום</li>
+            <li>המחיר לאדם יורד ככל שאתם יותר</li>
+            <li>מומלץ להזמין לפחות 48 שעות מראש</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
     <div class="wrap section" style="max-width:860px">
       <h2 class="section-title">שאלות נפוצות</h2>
       <div class="faq">
@@ -93,11 +118,16 @@ const itemList = {
 </Base>
 
 <style>
+  .kind-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .kind-card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
+  .kind-card h3 { font-size: 22px; margin-bottom: 10px; }
+  .kind-card ul { margin: 0; padding-inline-start: 20px; font-size: 17px; line-height: 1.8; color: var(--text); }
+  @media (max-width: 560px) { .kind-grid { grid-template-columns: minmax(0, 1fr); } }
   .tours-layout { display: grid; grid-template-columns: 280px 1fr; gap: 32px; align-items: start; }
   .filters { position: sticky; top: 90px; display: flex; flex-direction: column; gap: 14px; }
   .filter-box { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 0; display: flex; flex-direction: column; gap: 6px; }
   .filter-box legend { font-weight: 700; padding: 0 4px; }
-  .check { display: flex; align-items: center; gap: 10px; min-height: 36px; font-size: 16px; cursor: pointer; }
+  .check { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 16px; cursor: pointer; }
   .check input { width: 18px; height: 18px; accent-color: var(--blue); }
   .search-mini { display: flex; align-items: center; gap: 8px; color: var(--muted); }
   .search-mini input { border: 0; outline: none; font: inherit; font-size: 16px; min-height: 40px; flex: 1; min-width: 0; color: var(--ink); }

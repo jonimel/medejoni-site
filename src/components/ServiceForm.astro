@@ -11,7 +11,7 @@ const { id, title, fields } = Astro.props;
   <p hidden aria-hidden="true"><label>Leave empty <input name="hp_field" tabindex="-1" autocomplete="off" /></label></p>
   <h3>{title}</h3>
   <label>שם מלא<input name="name" required autocomplete="name" /></label>
-  <label>טלפון<input name="phone" type="tel" required autocomplete="tel" dir="ltr" /></label>
+  <label>טלפון<input name="phone" type="tel" inputmode="tel" required autocomplete="tel" dir="ltr" /></label>
   <label>כמה אנשים?<input name="people" type="number" min="1" max="50" value="2" required inputmode="numeric" /></label>
   {fields.map((f) => (
     <label class:list={{ full: f.full }}>

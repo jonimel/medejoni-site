@@ -23,8 +23,10 @@ interface Props {
   ogType?: 'website' | 'article';
   /** Short description of the share image (og:image:alt). */
   imageAlt?: string;
+  /** Hide the floating WhatsApp button (booking page, or pages with their own sticky booking bar). */
+  bodyClass?: string;
 }
-const { title, description, image = '/images/guatape-colombia-el-penol.jpg', jsonLd, nav, waText, noindex, ogType = 'website', imageAlt } = Astro.props;
+const { title, description, image = '/images/guatape-colombia-el-penol.jpg', jsonLd, nav, waText, noindex, ogType = 'website', imageAlt, bodyClass } = Astro.props;
 const fullTitle = title.includes(site.name) || title.includes("מדג'וני") ? title : `${title} | ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogPath = image.replace(/\.webp$/, '.jpg');
@@ -109,7 +111,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
     </>
   )}
 </head>
-<body>
+<body class={bodyClass}>
   <a href="#main" class="sr-only skip-link">דלג לתוכן הראשי</a>
   <header class="site-header">
     <div class="wrap">
@@ -137,26 +139,34 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
   <footer class="site-footer">
     <div class="top">
       <div class="wrap cols">
-        <div class="col">
-          <strong>הטיולים שלנו</strong>
-          {footerTours.map((t) => <a href={`/tours/${t.slug}/`}>{t.title}</a>)}
-          <a href="/tours/" style="color: var(--blue); font-weight: 600">לכל הטיולים ←</a>
-        </div>
-        <div class="col">
-          <strong>מאמרים</strong>
-          {guides.slice(0, 4).map((g) => <a href={`/guides/${g.slug}/`}>{g.seoTitle ?? g.title}</a>)}
-        </div>
-        <div class="col">
-          <strong>שירותים</strong>
-          {services.map((s) => <a href={`/services/#${s.id}`}>{s.title}</a>)}
-        </div>
-        <div class="col">
-          <strong>מידע</strong>
-          <a href="/about/">מי אני</a>
-          <a href="/tours/#faq">שאלות נפוצות</a>
-          <a href="/accessibility/">הצהרת נגישות</a>
-          <span style="color:var(--muted)">ביטול עד 12 שעות לפני הטיול</span>
-        </div>
+        <details class="col" open data-foot-group>
+          <summary><strong>הטיולים שלנו</strong></summary>
+          <div class="col-links">
+            {footerTours.map((t) => <a href={`/tours/${t.slug}/`}>{t.title}</a>)}
+            <a href="/tours/" style="color: var(--blue); font-weight: 600">לכל הטיולים ←</a>
+          </div>
+        </details>
+        <details class="col" open data-foot-group>
+          <summary><strong>מאמרים</strong></summary>
+          <div class="col-links">
+            {guides.slice(0, 4).map((g) => <a href={`/guides/${g.slug}/`}>{g.seoTitle ?? g.title}</a>)}
+          </div>
+        </details>
+        <details class="col" open data-foot-group>
+          <summary><strong>שירותים</strong></summary>
+          <div class="col-links">
+            {services.map((s) => <a href={`/services/#${s.id}`}>{s.title}</a>)}
+          </div>
+        </details>
+        <details class="col" open data-foot-group>
+          <summary><strong>מידע</strong></summary>
+          <div class="col-links">
+            <a href="/about/">מי אני</a>
+            <a href="/tours/#faq">שאלות נפוצות</a>
+            <a href="/accessibility/">הצהרת נגישות</a>
+            <span style="color:var(--muted)">ביטול עד 12 שעות לפני הטיול</span>
+          </div>
+        </details>
         <div class="col">
           <strong>דברו איתי</strong>
           <span style="color: var(--muted); line-height: 1.6">יונתן עונה לכם אישית בוואטסאפ.</span>
@@ -174,7 +184,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
         </span>
       </div>
     </div>
-    <a href={waLink('היי יונתן, יש לי שאלה')} class="wa-float" target="_blank" rel="noopener" aria-label="שאלות? דברו איתנו בוואטסאפ"><Icon name="whatsapp" size={24} />שאלות? דברו איתנו</a>
+    <a href={waLink('היי יונתן, יש לי שאלה')} class="wa-float" target="_blank" rel="noopener" aria-label="שאלות? דברו איתנו בוואטסאפ"><Icon name="whatsapp" size={28} /></a>
   </footer>
 
   <script>
@@ -293,11 +303,9 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
     const today = new Date().toISOString().slice(0, 10);
     document.querySelectorAll<HTMLInputElement>('form[data-lead] input[type=date]').forEach((d) => (d.min = today));
 
-    // Reveal-on-scroll
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
-    }, { threshold: 0, rootMargin: '0px 0px -10% 0px' }); // threshold 0 so very tall sections (long tour lists on phones) still appear
-    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+    // Footer: on phones the link groups start closed (tap a title to open it); on larger screens they stay open.
+    if (matchMedia('(max-width: 700px)').matches) document.querySelectorAll<HTMLDetailsElement>('[data-foot-group]').forEach((d) => (d.open = false));
+    else document.querySelectorAll<HTMLElement>('[data-foot-group] > summary').forEach((s) => { s.tabIndex = -1; s.addEventListener('click', (e) => e.preventDefault()); });
 
     // Carousels: arrow buttons scroll the track by one card
     document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
@@ -326,9 +334,9 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
       window.addEventListener('resize', update);
       update();
 
-      // Auto-advance (opt-in): every 4s, loops back to the start, pauses while the
-      // visitor hovers, touches or focuses it, or when it is off screen.
-      if (root.hasAttribute('data-auto') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Auto-advance (opt-in, larger screens only; on phones it's swipe only): every 4s, loops back to the start,
+      // pauses while the visitor hovers, touches or focuses it, or when it is off screen.
+      if (root.hasAttribute('data-auto') && matchMedia('(min-width: 901px)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
         let paused = false;
         let stopped = false;
         const pauseBtn = root.querySelector<HTMLButtonElement>('[data-carousel-pause]');
@@ -337,7 +345,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
           pauseBtn.addEventListener('click', () => {
             stopped = !stopped;
             pauseBtn.setAttribute('aria-pressed', String(stopped));
-            pauseBtn.querySelector('[data-label]')!.textContent = stopped ? 'הפעלת גלילה' : 'עצירת גלילה';
+            pauseBtn.setAttribute('aria-label', stopped ? 'הפעלת גלילה' : 'עצירת גלילה');
           });
         }
         let visible = false;

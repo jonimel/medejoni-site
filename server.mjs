@@ -10,6 +10,8 @@
 //                   after verifying a domain, use e.g. "Medejoni <leads@medejoni.com>")
 //   PORT            set by Railway automatically.
 //   SUPABASE_URL          optional, for partner referral tracking (supabase/referrals.sql).
+//   NOINDEX         set to 1 ONLY on a preview copy of the site (e.g. the V2 preview service),
+//                   so Google does not index it. Never set it on the live medejoni.com service.
 //   SUPABASE_SERVICE_KEY  optional, the "service_role" secret key. Server only, never sent to browsers.
 import { createServer } from 'node:http';
 import { randomUUID } from 'node:crypto';
@@ -274,8 +276,12 @@ async function serveFile(req, res, path, status = 200, extraHeaders = {}) {
   res.end(req.method === 'HEAD' ? undefined : body);
 }
 
+const noindex = process.env.NOINDEX === '1';
+if (noindex) console.log('NOINDEX is on: every page is sent with X-Robots-Tag: noindex (preview only).');
+
 createServer(async (req, res) => {
   try {
+    if (noindex) res.setHeader('X-Robots-Tag', 'noindex, nofollow');
     const url = new URL(req.url, 'http://x');
     // One address for Google: send www.medejoni.com to medejoni.com.
     if ((req.headers.host || '').startsWith('www.')) {
