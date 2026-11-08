@@ -48,7 +48,7 @@ const ld = [
       <nav class="crumbs" aria-label="פירורי לחם" style="padding:0"><a href="/">דף הבית</a> › <a href="/guides/">מאמרים</a> › {guide.title}</nav>
       <span class="pill pill-soft" style="align-self:flex-start">{guide.tag}</span>
       <h1 style="font-size:clamp(32px,5vw,46px);font-weight:800">{guide.title}</h1>
-      <p style="font-size:20px;line-height:1.6;color:#4B5563">{guide.description}</p>
+      <p style="font-size:20px;line-height:1.6;color:var(--text)">{guide.description}</p>
       <div style="display:flex;align-items:center;gap:12px">
         <img src={thumb('israeli-guide-medellin-yonatan')} alt="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:38% 45%" />
         <span style="font-size:15px">נכתב על ידי <strong>{site.owner}</strong></span>
@@ -112,7 +112,7 @@ const ld = [
   .toc { position: sticky; top: 90px; border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 10px; font-size: 15px; }
   .toc a { text-decoration: none; color: var(--text); border-inline-start: 3px solid transparent; padding-inline-start: 10px; transition: all 200ms ease; }
   .toc a.is-active { color: var(--blue); font-weight: 600; border-color: var(--yellow); }
-  .prose { font-size: 19px; line-height: 1.85; color: #1F2937; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .prose { font-size: 19px; line-height: 1.85; color: var(--ink); display: flex; flex-direction: column; gap: 18px; min-width: 0; }
   .prose section { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 90px; }
   .prose h2 { font-size: 30px; line-height: 1.3; margin-top: 12px; }
   .prose img { width: 100%; height: 360px; object-fit: cover; border-radius: 20px; border: 5px solid #fff; box-shadow: 0 6px 18px rgba(20, 27, 45, 0.12); }
@@ -122,7 +122,7 @@ const ld = [
   .embeds img { height: 150px; border-radius: 0; }
   .embeds div { padding: 14px; display: flex; flex-direction: column; gap: 4px; font-size: 16px; line-height: 1.4; }
   .embeds strong { font-size: 18px; }
-  .cta { background: linear-gradient(250deg, #FFF3C4 0%, #EEF3FC 100%); color: var(--ink); border-radius: 20px; padding: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; line-height: 1.5; margin-top: 12px; }
+  .cta { background: var(--cream); color: var(--ink); border-radius: 20px; padding: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; line-height: 1.5; margin-top: 12px; }
   .cta div { display: flex; flex-direction: column; gap: 4px; }
   .cta strong { font-size: 21px; }
   .cta span { font-size: 16px; color: var(--text); }
@@ -136,7 +136,7 @@ const ld = [
   .md :global(table) { width: 100%; border-collapse: collapse; font-size: 16px; line-height: 1.5; display: block; overflow-x: auto; }
   .md :global(th), .md :global(td) { border: 1px solid var(--line); padding: 10px 12px; text-align: start; vertical-align: top; }
   .md :global(th) { background: var(--cream); font-weight: 700; }
-  .md :global(tr:nth-child(even) td) { background: #FAFAF7; }
+  .md :global(tr:nth-child(even) td) { background: var(--cream); }
   @media (max-width: 900px) {
     .md :global(img) { height: 240px; }
     .a-layout { grid-template-columns: 1fr; }

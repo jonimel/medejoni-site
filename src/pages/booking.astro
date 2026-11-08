@@ -11,9 +11,9 @@ const data = JSON.stringify(tours.map((t) => ({
 })));
 import HeardFrom from '../components/HeardFrom.astro';
 ---
-<Base title="הזמנת טיול" description="השלמת הזמנה לטיול בקולומביה עם Medejoni." noindex>
-  <div class="wrap" style="padding-top:32px;padding-bottom:72px" data-booking-root data-tours={data} data-wa={site.whatsapp}>
-    <h1 style="font-size:clamp(28px,4vw,38px);font-weight:800;margin-bottom:24px">השלמת הזמנה</h1>
+<Base title="הזמנת טיול" description="השלמת הזמנה לטיול בקולומביה עם Medejoni." noindex bodyClass="no-wa-float">
+  <div class="wrap b-wrap" data-booking-root data-tours={data} data-wa={site.whatsapp}>
+    <h1 class="b-title">השלמת הזמנה</h1>
 
     <ol class="stepper" aria-label="שלבי ההזמנה">
       <li class="is-current" aria-current="step" data-step-ind="1"><span aria-hidden="true">1</span><span class="sr-only">שלב 1: </span>הטיול</li>
@@ -37,25 +37,25 @@ import HeardFrom from '../components/HeardFrom.astro';
           </label>
           <div class="row">
             <label class="f">תאריך<input type="date" name="date" required data-f-date /></label>
-            <label class="f">משתתפים<input type="number" name="people" min="1" max="20" required data-f-people inputmode="numeric" /></label>
+            <label class="f">משתתפים<input type="number" name="people" min="1" max="20" required data-f-people inputmode="numeric" pattern="[0-9]*" /></label>
           </div>
           <div data-f-addons></div>
-          <button type="button" class="btn btn-blue" data-next>המשך</button>
+          <button type="button" class="btn btn-yellow" data-next>המשך</button>
         </fieldset>
 
         <fieldset data-step="2" hidden>
           <legend tabindex="-1">הפרטים שלכם</legend>
           <div class="row">
             <label class="f">שם מלא<input name="name" required autocomplete="name" /></label>
-            <label class="f">טלפון (וואטסאפ)<input name="phone" type="tel" required autocomplete="tel" dir="ltr" placeholder="+972 50 000 0000" /></label>
+            <label class="f">טלפון (וואטסאפ)<input name="phone" type="tel" inputmode="tel" required autocomplete="tel" dir="ltr" placeholder="+972 50 000 0000" /></label>
           </div>
-          <label class="f">אימייל<input name="email" type="email" autocomplete="email" dir="ltr" /></label>
-          <label class="f" data-hotel-wrap>שם המלון או כתובת לאיסוף<input name="hotel" /></label>
+          <label class="f">אימייל<input name="email" type="email" inputmode="email" autocomplete="email" dir="ltr" /></label>
+          <label class="f" data-hotel-wrap>שם המלון או כתובת לאיסוף<input name="hotel" autocomplete="street-address" /></label>
           <HeardFrom class="f" />
           <label class="f">הערות<textarea name="notes" rows="3"></textarea></label>
           <div class="nav-row">
             <button type="button" class="btn btn-outline" data-back>חזרה</button>
-            <button type="button" class="btn btn-blue" data-next>המשך</button>
+            <button type="button" class="btn btn-yellow" data-next>המשך</button>
           </div>
         </fieldset>
 
@@ -92,7 +92,7 @@ import HeardFrom from '../components/HeardFrom.astro';
           <span data-s-meta style="color:var(--muted)"></span>
           <ul data-s-lines></ul>
           <div class="s-total" aria-live="polite"><span>סה״כ לתשלום</span><strong class="ltr" data-s-total></strong></div>
-          <small style="color:var(--muted)">המחירים בפסו קולומביאני (COP), לאדם.</small>
+          <small class="s-note" style="color:var(--muted)">המחירים בפסו קולומביאני (COP), לאדם.</small>
           <button type="button" class="s-edit" data-s-edit hidden>שינוי טיול, תאריך או משתתפים</button>
         </div>
       </aside>
@@ -101,26 +101,28 @@ import HeardFrom from '../components/HeardFrom.astro';
 </Base>
 
 <style>
+  .b-wrap { padding-top: 32px; padding-bottom: 72px; }
+  .b-title { font-size: clamp(26px, 4vw, 38px); font-weight: 800; margin-bottom: 24px; }
   .stepper { list-style: none; padding: 0; margin: 0 0 32px; display: flex; gap: 8px; counter-reset: s; }
-  .stepper li { flex: 1; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: #F3F4F6; color: var(--muted); font-weight: 600; transition: all 250ms ease; }
+  .stepper li { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: #fff; border: 1px solid var(--line); color: var(--muted); font-weight: 600; transition: all 250ms ease; }
   .stepper li span { width: 30px; height: 30px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
-  .stepper li.is-current { background: var(--blue); color: #fff; }
-  .stepper li.is-current span { color: var(--blue); }
-  .stepper li.is-done { background: var(--yellow-soft); color: var(--ink); }
+  .stepper li.is-current { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
+  .stepper li.is-current span { color: var(--ink); }
+  .stepper li.is-done { background: var(--cream); border-color: var(--cream); color: var(--ink); }
   .stepper li.is-done span { background: var(--yellow); }
   .b-layout { display: grid; grid-template-columns: 1fr 360px; gap: 40px; align-items: start; }
-  .b-form fieldset { border: 1px solid var(--line); border-radius: 20px; padding: 24px; margin: 0; display: flex; flex-direction: column; gap: 16px; animation: fade 300ms ease; }
+  .b-form fieldset { min-width: 0; border: 1px solid var(--line); border-radius: 20px; padding: 24px; margin: 0; display: flex; flex-direction: column; gap: 16px; animation: fade 300ms ease; }
   .b-form fieldset[hidden] { display: none; }
   .b-form legend { font-size: 22px; font-weight: 700; padding: 0 6px; }
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
   :global(.f) { display: flex; flex-direction: column; gap: 6px; font-weight: 600; flex: 1; min-width: 0; }
-  :global(.f input), :global(.f select), :global(.f textarea) { min-height: 48px; border: 1px solid #D1D5DB; border-radius: 12px; padding: 10px 12px; font: inherit; font-weight: 400; background: #fff; }
-  :global(.f input:focus), :global(.f select:focus), :global(.f textarea:focus) { border-color: var(--blue); outline: 2px solid rgba(0, 56, 147, 0.2); }
+  :global(.f input), :global(.f select), :global(.f textarea) { min-height: 48px; border: 1px solid var(--line-strong); border-radius: 12px; padding: 10px 12px; font: inherit; font-weight: 400; background: #fff; }
+  :global(.f input:focus), :global(.f select:focus), :global(.f textarea:focus) { border-color: var(--blue); outline: 2px solid var(--blue); outline-offset: 1px; }
   .f input[aria-invalid='true'] { border-color: var(--red); }
   .row { display: flex; gap: 16px; flex-wrap: wrap; }
   .row .f { flex: 1 1 200px; }
   .nav-row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 16px; cursor: pointer; }
+  .check { display: flex; gap: 10px; align-items: flex-start; min-height: 48px; font-size: 16px; cursor: pointer; }
   .check input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--blue); flex: 0 0 auto; }
   .note { background: var(--cream); border-inline-start: 5px solid var(--yellow); border-radius: 12px; padding: 14px 18px; display: flex; flex-direction: column; gap: 4px; line-height: 1.6; }
   .review { display: grid; grid-template-columns: auto 1fr; gap: 8px 20px; margin: 0; font-size: 16px; }
@@ -131,9 +133,9 @@ import HeardFrom from '../components/HeardFrom.astro';
   .done[hidden] { display: none; }
   .done h2 { font-size: 30px; }
   .done p { font-size: 18px; line-height: 1.6; color: var(--text); max-width: 460px; }
-  .done-icon { width: 72px; height: 72px; border-radius: 50%; background: #D9F7EF; color: #0F7A55; font-size: 36px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .done-icon { width: 72px; height: 72px; border-radius: 50%; background: var(--ok-bg); color: var(--ok); font-size: 36px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
   :global(.addon-list) { display: flex; flex-direction: column; gap: 4px; }
-  :global(.addon-list label) { display: flex; align-items: center; gap: 10px; min-height: 40px; cursor: pointer; }
+  :global(.addon-list label) { display: flex; align-items: center; gap: 10px; min-height: 48px; cursor: pointer; }
   :global(.addon-list input) { width: 18px; height: 18px; accent-color: var(--blue); }
   .summary { position: sticky; top: 90px; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-lg); }
   .summary img { width: 100%; height: 180px; object-fit: cover; }
@@ -145,10 +147,20 @@ import HeardFrom from '../components/HeardFrom.astro';
   .s-edit { align-self: flex-start; background: none; border: 0; padding: 4px 0; font: inherit; font-size: 15px; font-weight: 600; color: var(--blue); text-decoration: underline; cursor: pointer; }
   .s-edit[hidden] { display: none; }
   @media (max-width: 900px) {
-    .b-layout { grid-template-columns: 1fr; }
-    .summary { position: static; order: -1; }
-    .summary img { height: 140px; }
-    .stepper li { font-size: 14px; padding: 10px; }
+    .b-wrap { padding-top: 20px; padding-bottom: 48px; }
+    .b-title { margin-bottom: 14px; }
+    .stepper { margin-bottom: 16px; gap: 6px; }
+    .b-layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+    /* Small summary at the top on phones, so the form starts on the first screen. */
+    .summary { position: static; order: -1; box-shadow: none; display: flex; align-items: center; }
+    .summary img { width: 84px; height: auto; align-self: stretch; flex: 0 0 auto; }
+    .s-body { padding: 12px 14px; gap: 2px; flex: 1; min-width: 0; }
+    .s-body ul, .s-note { display: none; }
+    .s-total { margin-top: 4px; padding-top: 6px; }
+    .s-total strong { font-size: 19px; }
+    .b-form fieldset { padding: 18px 16px; }
+    .stepper li { font-size: 13px; padding: 8px; gap: 6px; }
+    .stepper li span { width: 24px; height: 24px; }
   }
 </style>
 
@@ -168,7 +180,8 @@ import HeardFrom from '../components/HeardFrom.astro';
   const fPeople = form.querySelector<HTMLInputElement>('[data-f-people]')!;
   const addonsBox = form.querySelector<HTMLElement>('[data-f-addons]')!;
   const fmt = (n: number) => n.toLocaleString('en-US') + ' COP';
-  const iso = (d: Date) => d.toISOString().slice(0, 10);
+  // Local date (not UTC), same as the tour page.
+  const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
   const q = new URLSearchParams(location.search);
   let selectedAddons = new Set((q.get('addons') ?? '').split(',').filter(Boolean));
@@ -181,8 +194,10 @@ import HeardFrom from '../components/HeardFrom.astro';
 
   function setupTour() {
     const t = tour();
-    fDate.min = iso(new Date(Date.now() + t.ahead * 3600 * 1000));
-    if (!fDate.value || fDate.value < fDate.min) fDate.value = fDate.min;
+    const earliest = new Date(Date.now() + t.ahead * 3600 * 1000);
+    fDate.min = iso(earliest);
+    // Same default day as the tour page (the day after the earliest bookable day).
+    if (!fDate.value || fDate.value < fDate.min) fDate.value = iso(new Date(earliest.getTime() + 24 * 3600 * 1000));
     fPeople.min = String(t.min);
     if (!fPeople.value || Number(fPeople.value) < t.min) fPeople.value = String(Math.max(2, t.min));
     selectedAddons = new Set([...selectedAddons].filter((id) => t.addOns.some((a) => a.id === id)));

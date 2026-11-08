@@ -17,26 +17,26 @@ const options = ['טיול', 'הסעה משדה התעופה', 'מעבר בין 
       <input type="hidden" name="source" value={source} />
       <p hidden aria-hidden="true"><label>Leave empty <input name="hp_field" tabindex="-1" autocomplete="off" /></label></p>
       <label>שם מלא<input name="name" required autocomplete="name" /></label>
-      <label>טלפון<input name="phone" type="tel" required autocomplete="tel" dir="ltr" /></label>
+      <label>טלפון (וואטסאפ)<input name="phone" type="tel" inputmode="tel" required autocomplete="tel" dir="ltr" /></label>
       <label>במה אפשר לעזור?
         <select name="interest">{options.map((o) => <option>{o}</option>)}</select>
       </label>
-      <label>מתי אתם בקולומביה?<input name="dates" placeholder="למשל: 10–20 בדצמבר" /></label>
+      <label>מתי אתם בקולומביה?<input name="dates" placeholder="תאריכים משוערים, למשל 10–20 בדצמבר" /></label>
       <HeardFrom full />
       <label class="full">הודעה<textarea name="message" rows="3"></textarea></label>
-      <button type="submit" class="btn btn-dark full">שליחה</button>
+      <button type="submit" class="btn btn-yellow full">שליחה</button>
       <p class="form-status full" role="status" data-status></p>
     </form>
   </div>
 </section>
 
 <style>
-  .lead-wrap { background: linear-gradient(250deg, #FFEFA6 0%, #FFF6D1 45%, #EAF0FB 100%); }
-  .lead { padding-top: 64px; padding-bottom: 64px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 48px; align-items: center; }
+  .lead-wrap { background: var(--cream); }
+  .lead { padding-top: 56px; padding-bottom: 56px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 48px; align-items: center; }
   .lead-text h2 { font-size: clamp(28px, 4vw, 38px); font-weight: 800; margin-bottom: 12px; }
   .lead-text p { font-size: 18px; line-height: 1.6; }
   .lead .form-card { border: 0; }
   @media (max-width: 900px) {
-    .lead { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .lead { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-top: 48px; padding-bottom: 48px; }
   }
 </style>

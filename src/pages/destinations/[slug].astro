@@ -56,7 +56,6 @@ const ld = [
       <p>{dest.intro}</p>
     </div>
   </section>
-  <div class="flag" aria-hidden="true"><span></span><span></span><span></span></div>
 
   <nav class="d-tabs" aria-label="בדף הזה">
     <div class="wrap">
@@ -70,7 +69,7 @@ const ld = [
   <section id="tours" class="wrap section">
     <h2 class="section-title">טיולים ב{dest.name}</h2>
     {list.length > 0 ? (
-      <div class="tour-grid">{list.map((t) => <TourCard tour={t} />)}</div>
+      <div class="tour-grid swipe-row">{list.map((t) => <TourCard tour={t} />)}</div>
     ) : (
       <div class="soon">
         <p><strong>טיולים ב{dest.name} יעלו לאתר בקרוב.</strong> בינתיים אפשר כבר עכשיו להזמין הסעה משדה התעופה או לבקש שנתכנן לכם את הטיול.</p>
@@ -88,7 +87,7 @@ const ld = [
         <h2 class="section-title">מה רואים ב{dest.name}</h2>
         <div class="hl">
           {dest.highlights.map((h, i) => (
-            <div class="reveal" style={`transition-delay:${i * 80}ms`}>
+            <div>
               <span class="num deco-num" aria-hidden="true" data-n={String(i + 1).padStart(2, '0')}></span>
               <strong>{h.title}</strong>
               {!h.text.startsWith('[') && <span>{h.text}</span>}
@@ -112,7 +111,7 @@ const ld = [
         <div>
           <h2 style="font-size:32px;margin-bottom:12px">מתי לטוס ל{dest.name}?</h2>
           <p style="font-size:18px;line-height:1.7;color:var(--text)">{dest.bestTime}</p>
-          <a href={waLink(`היי יונתן, אני מתכנן טיול ל${dest.name}`)} class="btn btn-blue" style="margin-top:20px" target="_blank" rel="noopener">תכננו איתי את הטיול</a>
+          <a href={waLink(`היי יונתן, אני מתכנן טיול ל${dest.name}`)} class="btn btn-yellow" style="margin-top:20px" target="_blank" rel="noopener">תכננו איתי את הטיול</a>
         </div>
         <img src={img(dest.image)} alt={alt(dest.image)} loading="lazy" sizes="(max-width: 900px) 100vw, 50vw" />
       </div>
@@ -120,7 +119,7 @@ const ld = [
   )}
 
   {related.length > 0 && (
-    <section id="guides" style="background:var(--sky)">
+    <section id="guides" class="bg-cream">
       <div class="wrap section">
         <h2 class="section-title">מאמרים על {dest.name}</h2>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px">
@@ -158,7 +157,7 @@ const ld = [
   .d-tabs a { flex: 0 0 auto; min-height: 56px; display: flex; align-items: center; font-weight: 600; color: var(--ink); text-decoration: none; border-bottom: 3px solid transparent; }
   .d-tabs a:hover { border-bottom-color: var(--yellow); }
   .hl { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-  .hl div { background: #fff; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 8px; }
+  .hl div { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; display: flex; flex-direction: column; gap: 8px; }
   .hl .num { font-size: 40px; font-weight: 800; color: var(--yellow); -webkit-text-stroke: 1px var(--ink); }
   .hl strong { font-size: 20px; }
   .hl span:last-child { color: var(--muted); }

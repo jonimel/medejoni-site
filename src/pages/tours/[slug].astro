@@ -84,7 +84,7 @@ const booking = JSON.stringify({
   aheadHours: tour.bookAheadHours,
 });
 ---
-<Base title={seo?.title ?? `${tour.title} – ${tour.place}`} description={`${seo?.description ?? tour.short} ${hasTiers(tour) ? 'החל מ־' : ''}${formatCOP(price)} לאדם.`} image={img(tour.images[0])} imageAlt={`${tour.title}, ${tour.place}`} nav="tours" jsonLd={ld} waText={`היי יונתן, אשמח לפרטים על "${tour.title}"`}>
+<Base title={seo?.title ?? `${tour.title} – ${tour.place}`} description={`${seo?.description ?? tour.short} ${hasTiers(tour) ? 'החל מ־' : ''}${formatCOP(price)} לאדם.`} image={img(tour.images[0])} imageAlt={`${tour.title}, ${tour.place}`} nav="tours" jsonLd={ld} bodyClass="has-book-bar" waText={`היי יונתן, אשמח לפרטים על "${tour.title}"`}>
   <div class="wrap">
     <nav class="crumbs" aria-label="פירורי לחם"><a href="/">דף הבית</a> › <a href="/tours/">טיולים</a> › <a href={`/destinations/${dest.slug}/`}>{dest.name}</a> › {tour.title}</nav>
 
@@ -124,8 +124,6 @@ const booking = JSON.stringify({
           <li><Icon name="users" /><span><strong>משתתפים</strong>{tour.minPeople > 1 ? `מינימום ${tour.minPeople}` : 'מאדם אחד'}</span></li>
           <li><Icon name="check" /><span><strong>ביטול</strong>עד 12 שעות לפני</span></li>
         </ul>
-
-        <a href="#book" class="btn btn-yellow btn-block jump" style="display:none">בחירת תאריך והזמנה</a>
 
         <h2 class="h2">על הטיול</h2>
         <p class="lead">{tour.intro}</p>
@@ -199,7 +197,7 @@ const booking = JSON.stringify({
           </a>
         )}
 
-        <h2 class="h2">שאלות נפוצות</h2>
+        <h2 class="h2">שאלות נפוצות על {tour.title}</h2>
         <div class="faq">
           {tour.faq.map((f, i) => <details open={i === 0}><summary>{f.q}</summary><p>{f.a}</p></details>)}
         </div>
@@ -244,7 +242,7 @@ const booking = JSON.stringify({
     </div>
   </div>
 
-  <section style="background:var(--sky)">
+  <section class="bg-cream">
     <div class="wrap section">
       <h2 class="section-title">טיולים נוספים שאולי תאהבו</h2>
       <Carousel label="טיולים דומים">
@@ -252,6 +250,10 @@ const booking = JSON.stringify({
       </Carousel>
     </div>
   </section>
+  <div class="book-bar" data-book-bar>
+    <span class="price-line">{hasTiers(tour) ? 'החל מ־' : ''}<span class="ltr">{formatCOP(price)}</span><small>/ לאדם</small></span>
+    <a href="#book" class="btn btn-yellow" data-book-bar-btn>להזמנה</a>
+  </div>
 </Base>
 
 <style>
@@ -270,22 +272,22 @@ const booking = JSON.stringify({
   .g-thumbs button.is-active, .g-thumbs button:hover { border-color: var(--yellow); opacity: 1; }
   .g-thumbs img { width: 100%; height: 100%; object-fit: cover; }
   .tour-layout { display: grid; grid-template-columns: 1fr 380px; gap: 48px; align-items: start; padding-bottom: 72px; }
-  .facts { list-style: none; padding: 0; margin: 28px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
-  .facts li { display: flex; gap: 12px; align-items: flex-start; background: var(--cream); border-radius: 14px; padding: 14px; color: var(--blue); }
-  .facts span { display: flex; flex-direction: column; color: var(--text); font-size: 15px; }
-  .facts strong { color: var(--ink); font-size: 15px; }
+  .facts { list-style: none; padding: 16px; margin: 24px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+  .facts li { display: flex; gap: 10px; align-items: flex-start; color: var(--blue); min-width: 0; }
+  .facts li :global(svg) { flex: 0 0 auto; margin-top: 2px; }
+  .facts span { display: flex; flex-direction: column; color: var(--text); font-size: 14px; line-height: 1.4; min-width: 0; }
+  .facts strong { color: var(--muted); font-size: 13px; font-weight: 600; }
   .h2 { font-size: 28px; font-weight: 700; margin: 40px 0 14px; }
-  .lead { font-size: 19px; line-height: 1.8; color: #1F2937; }
+  .lead { font-size: 18px; line-height: 1.75; color: var(--ink); }
   .inc { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 28px; }
   .inc h3 { font-size: 20px; margin-bottom: 10px; }
   .inc ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; font-size: 17px; }
   .inc li { display: flex; gap: 10px; align-items: center; }
   .inc li::before { flex: 0 0 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
-  .inc li.yes::before { content: '✓'; background: #D9F7EF; color: #0F7A55; }
-  .inc li.no::before { content: '✕'; background: #FFE1E1; color: var(--red); }
-  .pill-reco { background: var(--red); color: #fff; font-weight: 800; }
+  .inc li.yes::before { content: '✓'; background: var(--cream); color: var(--blue); }
+  .inc li.no::before { content: '✕'; background: var(--line); color: var(--muted); }
   .highlights { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
-  .highlights li { background: var(--sky); color: var(--ink); border-radius: 999px; padding: 6px 14px; font-size: 15px; font-weight: 600; }
+  .highlights li { background: var(--cream); color: var(--ink); border-radius: 999px; padding: 6px 14px; font-size: 15px; font-weight: 600; }
   .bring { margin: 0; padding-inline-start: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 17px; line-height: 1.6; }
   .how { margin-top: 32px; background: var(--cream); border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; font-size: 16px; line-height: 1.6; }
   .how strong { font-size: 18px; }
@@ -293,20 +295,20 @@ const booking = JSON.stringify({
   .tiers div { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
   .tiers strong { font-size: 20px; }
   .tiers small { color: var(--muted); }
-  .upsell { margin-top: 40px; display: flex; gap: 18px; align-items: center; text-decoration: none; color: inherit; background: var(--yellow); border-radius: 18px; padding: 14px; }
+  .upsell { margin-top: 40px; display: flex; gap: 18px; align-items: center; text-decoration: none; color: inherit; background: #fff; border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: var(--radius); padding: 14px; }
   .upsell img { width: 140px; height: 110px; object-fit: cover; border-radius: 12px; flex: 0 0 auto; }
   .upsell div { display: flex; flex-direction: column; gap: 6px; font-size: 16px; }
   .upsell strong { font-size: 20px; }
   .book { position: sticky; top: 90px; }
   .book-card { border: 1px solid var(--line); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; gap: 16px; background: #fff; }
   .field { display: flex; flex-direction: column; gap: 6px; font-weight: 600; border: 0; padding: 0; margin: 0; }
-  .field input[type='date'] { min-height: 48px; border: 1px solid #D1D5DB; border-radius: 12px; padding: 0 12px; font: inherit; font-weight: 400; }
-  .counter { display: flex; align-items: center; justify-content: space-between; border: 1px solid #D1D5DB; border-radius: 12px; padding: 4px; }
-  .counter button { width: 44px; height: 44px; border-radius: 10px; border: 0; background: var(--sky); font-size: 22px; cursor: pointer; color: var(--blue); }
+  .field input[type='date'] { min-height: 48px; border: 1px solid var(--line-strong); border-radius: 12px; padding: 0 12px; font: inherit; font-weight: 400; }
+  .counter { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--line-strong); border-radius: 12px; padding: 4px; }
+  .counter button { width: 44px; height: 44px; border-radius: 10px; border: 0; background: var(--cream); font-size: 22px; cursor: pointer; color: var(--blue); }
   .counter button:disabled { opacity: 0.4; cursor: not-allowed; }
   .counter output { font-size: 20px; font-weight: 700; }
   .addons legend { font-weight: 600; margin-bottom: 6px; }
-  .addons label { display: flex; align-items: center; gap: 10px; min-height: 40px; font-weight: 400; cursor: pointer; }
+  .addons label { display: flex; align-items: center; gap: 10px; min-height: 48px; font-weight: 400; cursor: pointer; }
   .addons input { width: 18px; height: 18px; accent-color: var(--blue); }
   .total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed var(--line); padding-top: 14px; font-size: 17px; }
   .total strong { font-size: 24px; }
@@ -317,8 +319,17 @@ const booking = JSON.stringify({
     .g-thumbs button { flex: 0 0 110px; height: 80px; }
     .tour-layout { grid-template-columns: 1fr; gap: 24px; }
     .book { position: static; scroll-margin-top: 80px; }
-    .jump { display: flex !important; }
     .upsell img { width: 96px; height: 80px; }
+  }
+  .book-bar { display: none; }
+  @media (max-width: 900px) {
+    /* Sticky booking bar: always visible on phones, hidden while the booking box itself is on screen. */
+    .book-bar { display: flex; position: fixed; inset-inline: 0; bottom: 0; z-index: 55; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid var(--line); box-shadow: 0 -6px 18px rgba(17, 24, 39, 0.08); transition: transform 250ms ease; }
+    .book-bar.is-hidden { transform: translateY(110%); }
+    .book-bar .btn { min-height: 48px; padding: 0 28px; }
+    :global(.has-book-bar .wa-float) { display: none; }
+    :global(.has-book-bar .site-footer) { padding-bottom: 76px; }
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 14px; gap: 12px; }
   }
   .more-links { margin-top: 20px; color: var(--muted); line-height: 1.8; }
   .more-links a { color: var(--link); font-weight: 600; }
@@ -358,7 +369,8 @@ const booking = JSON.stringify({
     let people = Number(out.textContent);
 
     const earliest = new Date(Date.now() + cfg.aheadHours * 3600 * 1000);
-    const iso = (d: Date) => d.toISOString().slice(0, 10);
+    // Local date (not UTC), so the day shown here is the day the booking page receives.
+    const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     date.min = iso(earliest);
     date.value = iso(new Date(earliest.getTime() + 24 * 3600 * 1000));
 
@@ -384,5 +396,15 @@ const booking = JSON.stringify({
       location.href = `/booking/?${p}`;
     });
     render();
+  }
+
+  // Sticky booking bar (phones): hide it while the booking box is on screen.
+  const bar = document.querySelector<HTMLElement>('[data-book-bar]');
+  const bookBox = document.getElementById('book');
+  if (bar && bookBox) {
+    new IntersectionObserver(([e]) => bar.classList.toggle('is-hidden', e.isIntersecting), { threshold: 0.15 }).observe(bookBox);
+    bar.querySelector('[data-book-bar-btn]')?.addEventListener('click', () => {
+      setTimeout(() => bookBox.querySelector<HTMLInputElement>('[data-date]')?.focus({ preventScroll: true }), 400);
+    });
   }
 </script>

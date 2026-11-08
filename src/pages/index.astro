@@ -17,11 +17,11 @@ const slides = [
   { kicker: 'חוויה של פעם בחיים', title: 'משחק של אתלטיקו נסיונל', sub: 'כרטיס, הסעה, מדריך, והבירה הראשונה עלינו', img: 'atletico-nacional-fans-medellin' },
 ];
 const why = [
-  { icon: 'י', blob: '#FDE2EC', title: 'ליווי אישי וזמינות', text: "גר במדג'ין, קולומביה, וזמין לתת שירות לאורך כל הדרך." },
-  { icon: '$', blob: '#FFE1E1', title: 'מחירים מקומיים – לכל כיס', text: 'מחירים של מקומי, בלי תיווך של סוכנות. בטיולים פרטיים המחיר לאדם יורד ככל שאתם יותר.' },
-  { icon: '★', blob: '#FFF3B0', title: 'אותנטיות', text: 'חוויות מקומיות ואותנטיות, לא מה שכולם עושים.' },
-  { icon: '✓', blob: '#D9F7EF', title: 'ניסיון', text: 'מעל שנתיים של ניסיון והיכרות עם העיר.' },
-];
+  { icon: 'heart', title: 'ליווי אישי וזמינות', text: "גר במדג'ין, קולומביה, וזמין לתת שירות לאורך כל הדרך." },
+  { icon: 'wallet', title: 'מחירים מקומיים – לכל כיס', text: 'מחירים של מקומי, בלי תיווך של סוכנות. בטיולים פרטיים המחיר לאדם יורד ככל שאתם יותר.' },
+  { icon: 'star', title: 'אותנטיות', text: 'חוויות מקומיות ואותנטיות, לא מה שכולם עושים.' },
+  { icon: 'award', title: 'ניסיון', text: 'מעל שנתיים של ניסיון והיכרות עם העיר.' },
+] as const;
 const countFor = (slug: string) => {
   const n = tours.filter((t) => t.destination === slug).length;
   return n === 0 ? 'בקרוב' : n === 1 ? 'טיול אחד' : `${n} טיולים`;
@@ -33,10 +33,13 @@ const cats = [
   ['couples', 'טיולים לזוגות'],
   ['evening', 'חוויות ערב'],
 ];
-const moments = ['tayrona-park-beach-rocks', 'guatape-wakeboard-el-penol', 'cartagena-palenquera-fruit', 'chiva-rumbera-party-bus', 'guatape-helicopter-view-el-penol', 'cartagena-old-city-street', 'medellin-restaurants-watermelon', 'guatape-colorful-streets', 'jardin-cave-waterfall', 'guatape-horse-riding', 'cartagena-attractions-fort', 'medellin-tours-viewpoint-evening', 'guatape-lake-wakeboarding', 'jardin-horseback-riding', 'antioquia-farm-cow'];
+// "Moments" strip: 4 still photos linking to Instagram (no moving strip).
+const moments = ['guatape-wakeboard-el-penol', 'chiva-rumbera-party-bus', 'jardin-cave-waterfall', 'antioquia-farm-cow'];
+// Article cards on the home page use a photo that is not already shown in the destinations row above.
+const homeGuides = guides.slice(0, 2).map((g, i) => ({ ...g, card: ['coffee-valley-colombia-cocora', 'tayrona-park-beach-rocks'][i] ?? g.image }));
 ---
 <Base
-  title="מדג'וני - חוויה אותנטית בקולומביה"
+  title="סיורים וטיולים בקולומביה עם ישראלי ממדג'ין"
   description="קולומביה אותנטית עם יונתן מילמן, ישראלי שגר במדג'ין: טיול לגואטפה, סיור קומונה 13 ואסקובר, חרדין, פארק טאירונה והסעות משדה התעופה. איסוף מהמלון."
   imageAlt="סלע אל פניול והאגם בגואטפה, קולומביה"
   jsonLd={{
@@ -58,8 +61,8 @@ const moments = ['tayrona-park-beach-rocks', 'guatape-wakeboard-el-penol', 'cart
     ))}
     <div class="hero-body">
       <div class="hero-text" data-hero-text style="display:flex;flex-direction:column;align-items:center;gap:18px">
-        <span class="pill" style="font-size:14px;padding:6px 14px" data-k>{slides[0].kicker}</span>
-        <h1 data-t>{slides[0].title}</h1>
+        <h1>סיורים וטיולים בקולומביה, עם יונתן</h1>
+        <p class="hero-slide-title" data-t>{slides[0].title}</p>
         <p data-s>{slides[0].sub}</p>
       </div>
       <form class="search" role="search" action="/tours/" method="get">
@@ -73,16 +76,27 @@ const moments = ['tayrona-park-beach-rocks', 'guatape-wakeboard-el-penol', 'cart
     </div>
     <div class="dots">
       {slides.map((_, i) => <button type="button" class:list={['dot', { 'is-active': i === 0 }]} aria-label={`שקופית ${i + 1} מתוך ${slides.length}`} aria-current={i === 0 ? 'true' : undefined} data-dot={i}></button>)}
-      <button type="button" class="pause-btn" aria-pressed="false" data-hero-pause hidden>
-        <span class="ico-pause" aria-hidden="true">❚❚</span><span class="ico-play" aria-hidden="true">▶</span>
-        <span data-label>עצירה</span>
-      </button>
     </div>
+    <button type="button" class="pause-btn" aria-pressed="false" aria-label="עצירת הסליידר" data-hero-pause hidden>
+      <span class="ico-pause"><Icon name="pause" size={18} /></span><span class="ico-play"><Icon name="play" size={16} /></span>
+    </button>
   </section>
-  <div class="flag" aria-hidden="true"><span></span><span></span><span></span></div>
 
-  <section class="section wrap reveal" style="padding-bottom:40px">
-    <h2 class="section-title">היעדים שלנו</h2>
+  <section class="section wrap" data-filter-root>
+    <h2 class="section-title">טיולים וסיורים ממדג'ין</h2>
+    <div class="chips" role="group" aria-label="סינון לפי סוג טיול">
+      {cats.map(([k, label], i) => <button type="button" class="chip" aria-pressed={i === 0 ? 'true' : 'false'} data-cat={k}>{label}</button>)}
+    </div>
+    <p class="couples-note" data-couples-note hidden>זמן לשניים, בלי לחץ ובלי קבוצה: נופים, שקיעות, חופים צלולים וחוויות שבונים סביבכם. אני מתאים לכם את הקצב, ודואג לכל השאר.</p>
+    <div class="tour-grid swipe-row">
+      {tours.map((t) => <TourCard tour={t} />)}
+    </div>
+    <div style="text-align:center;margin-top:24px"><a href="/tours/" class="btn btn-outline">לכל הטיולים</a></div>
+  </section>
+
+
+  <section class="section-tight wrap">
+    <h2 class="section-title">יעדים בקולומביה</h2>
     <Carousel label="יעדים" auto>
       {destinations.map((d) => (
         d.comingSoon && d.link ? (
@@ -91,7 +105,7 @@ const moments = ['tayrona-park-beach-rocks', 'guatape-wakeboard-el-penol', 'cart
             <div class="cap"><strong>{d.name}</strong><span>{d.linkLabel}</span></div>
           </a>
         ) : d.comingSoon ? (
-          <div class="dest-card" style={`background:${d.color}`}>
+          <div class="dest-card">
             {d.image && <img src={thumb(d.image)} alt={d.name} loading="lazy" />}<div class="cap"><strong>{d.name}</strong><span>בקרוב</span></div>
           </div>
         ) : (
@@ -104,89 +118,36 @@ const moments = ['tayrona-park-beach-rocks', 'guatape-wakeboard-el-penol', 'cart
     </Carousel>
   </section>
 
-  <section class="section reveal" style="padding-top:40px;padding-bottom:56px">
-    <div class="wrap">
-      <h2 class="section-title">למה לטייל איתי?</h2>
-      <Carousel label="למה אנחנו">
-        {why.map((w) => (
-          <div class="why-card">
-            <span class="blob" aria-hidden="true" style={`background:${w.blob}`}>{w.icon}</span>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <strong style="font-size:20px">{w.title}</strong>
-              <span style="font-size:16px;line-height:1.55;color:#4B5563">{w.text}</span>
-            </div>
-          </div>
-        ))}
-      </Carousel>
-    </div>
-  </section>
 
-  <section class="wrap reveal" style="padding:24px 24px 72px" data-filter-root>
-    <h2 class="section-title" style="margin-bottom:20px">הטיולים שלנו</h2>
-    <div class="chips" role="group" aria-label="סינון לפי סוג טיול">
-      {cats.map(([k, label], i) => <button type="button" class="chip" aria-pressed={i === 0 ? 'true' : 'false'} data-cat={k}>{label}</button>)}
-    </div>
-    <p class="couples-note" data-couples-note hidden>זמן לשניים, בלי לחץ ובלי קבוצה: נופים, שקיעות, חופים צלולים וחוויות שבונים סביבכם. אני מתאים לכם את הקצב, ודואג לכל השאר.</p>
-    <div class="tour-grid tour-swipe">
-      {tours.map((t) => <TourCard tour={t} />)}
-    </div>
-    <div style="text-align:center;margin-top:36px"><a href="/tours/" class="btn btn-outline">לכל הטיולים</a></div>
-  </section>
-
-  <section class="wrap reveal" style="padding-bottom:72px">
-    <h2 class="section-title" style="margin-bottom:8px">השירותים שלנו</h2>
-    <p style="margin:0 0 32px;text-align:center;font-size:18px;color:#4B5563">מהנחיתה ועד הטיסה הבאה, אני דואג לכם לכל הדרך.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px">
-      {services.map((s) => (
-        <a href={`/services/#${s.id}`} class="card" style="text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;gap:12px;background:#fff;padding-bottom:22px;position:relative">
-          <div style="height:170px;overflow:hidden"><img class="zoom" src={thumb(s.image)} alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover" /></div>
-          <span class="blob" aria-hidden="true" style={`background:${s.blob};position:absolute;top:142px;right:20px;border:3px solid #fff;z-index:1`}>{s.icon}</span>
-          <div style="padding:14px 22px 0;display:flex;flex-direction:column;gap:10px;flex:1">
-          <strong style="font-size:21px">{s.title}</strong>
-          <span style="font-size:16px;line-height:1.6;color:#4B5563">{s.short}</span>
-          <span style="margin-top:auto;color:var(--link);font-weight:600">לפרטים ←</span>
-          </div>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <section style="background:var(--sky)" class="reveal">
+  <section class="bg-cream">
     <div class="wrap section">
-      <h2 class="section-title" style="margin-bottom:8px">קבוצתי או פרטי?</h2>
-      <p style="margin:0 0 32px;text-align:center;font-size:18px;color:#4B5563">אפשר לטייל לבד, או להצטרף לקבוצה קיימת – בהתאם לסוג המטיילים שאתם!</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px">
-        <div style="background:#fff;border-radius:20px;padding:28px;border-top:6px solid var(--blue)">
-          <h3 style="font-size:24px;color:var(--blue);margin-bottom:12px">טיולים קבוצתיים</h3>
-          <ul style="margin:0;padding-inline-start:20px;font-size:17px;line-height:1.9;color:var(--text)">
-            <li>יוצאים כל יום בשעות קבועות</li>
-            <li>אני דואג לרישום ולשריון המקומות, ונשאר זמין לכל שאלה</li>
-            <li>מזמינים לפחות 36 שעות מראש</li>
-          </ul>
-        </div>
-        <div style="background:#fff;border-radius:20px;padding:28px;border-top:6px solid var(--yellow)">
-          <h3 style="font-size:24px;margin-bottom:12px">טיולים פרטיים</h3>
-          <ul style="margin:0;padding-inline-start:20px;font-size:17px;line-height:1.9;color:var(--text)">
-            <li>מותאמים אליכם: מסלול, נהג ומדריך מקומי, ואני זמין לכם בוואטסאפ לאורך כל היום</li>
-            <li>המחיר לאדם יורד ככל שאתם יותר</li>
-            <li>מומלץ להזמין לפחות 48 שעות מראש</li>
-          </ul>
-        </div>
-      </div>
+      <h2 class="section-title">למה לטייל איתי?</h2>
+      <ul class="why-list">
+        {why.map((w) => (
+          <li>
+            <span class="ico-circle" aria-hidden="true"><Icon name={w.icon} size={24} /></span>
+            <span><strong>{w.title}</strong><span class="t">{w.text}</span></span>
+          </li>
+        ))}
+      </ul>
+      <nav class="svc-row" aria-label="הסעות, טיסות ותכנון טיולים">
+        {services.map((s) => (
+          <a href={`/services/#${s.id}`}>
+            <span class="ico-circle" aria-hidden="true"><Icon name={s.icon} size={22} /></span>
+            <span>{s.title}</span>
+          </a>
+        ))}
+      </nav>
     </div>
   </section>
 
-  <section class="wrap section reveal">
-    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:40px">
-      <div style="flex:0 0 260px;position:relative">
-        <img src={thumb('israeli-guide-medellin-yonatan')} alt="יונתן מילמן רוכב על סוס בהרי אנטיוקיה" loading="lazy" style="width:260px;height:300px;object-fit:cover;object-position:40% 55%;border-radius:24px;border:6px solid var(--yellow)" />
-        <span class="pill pill-blue" style="position:absolute;bottom:-14px;left:20px;font-size:14px;padding:6px 12px">גר במדג'ין</span>
-      </div>
-      <div style="flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:14px">
-        <h2 style="font-size:36px">היי, אני יונתן מילמן</h2>
-        <p style="font-size:18px;line-height:1.7;color:var(--text)">אני גר במדג'ין כבר שנתיים, וקולומביה היא הבית השני שלי. אני מכיר לכם את קולומביה שאני חי: השכונות, האנשים, האוכל והמקומות שתיירים בדרך כלל לא מגיעים אליהם.</p>
-        <p style="font-size:18px;line-height:1.7;color:var(--text)">כל טיול עובר דרכי: אני בונה אותו איתכם, בוחר את האנשים שילוו אתכם, ונשאר איתכם לאורך כל הדרך.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px">
+  <section class="wrap section">
+    <div class="about-strip">
+      <img src={thumb('israeli-guide-medellin-yonatan')} alt="יונתן מילמן רוכב על סוס בהרי אנטיוקיה" loading="lazy" width="160" height="160" />
+      <div class="about-text">
+        <h2>היי, אני יונתן מילמן</h2>
+        <p>אני גר במדג'ין כבר שנתיים, וקולומביה היא הבית השני שלי. כל טיול עובר דרכי: אני בונה אותו איתכם ובוחר את האנשים שילוו אתכם.</p>
+        <div class="about-btns">
           <a href={waLink()} class="btn btn-yellow" target="_blank" rel="noopener">דברו איתי בוואטסאפ</a>
           <a href="/about/" class="btn btn-outline">עוד עליי</a>
         </div>
@@ -194,39 +155,33 @@ const moments = ['tayrona-park-beach-rocks', 'guatape-wakeboard-el-penol', 'cart
     </div>
   </section>
 
-  <section aria-label="רגעים מהשטח" style="padding:8px 0 72px;overflow:hidden">
-    <div class="wrap" style="margin-bottom:24px;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:12px">
-      <h2 style="font-size:32px">רגעים מהשטח</h2>
-      <span style="display:flex;gap:16px;font-weight:600"><a href={site.instagram} target="_blank" rel="noopener">אינסטגרם</a><a href={site.tiktok} target="_blank" rel="noopener">טיקטוק</a></span>
-    </div>
-    <div class="wrap" style="display:flex;justify-content:flex-end;margin:-12px auto 12px">
-      <button type="button" class="pause-btn on-light" aria-pressed="false" data-marquee-pause>
-        <span class="ico-pause" aria-hidden="true">❚❚</span><span class="ico-play" aria-hidden="true">▶</span>
-        <span data-label>עצירת תמונות</span>
-      </button>
-    </div>
-    <div class="marquee" data-marquee>
-      {moments.concat(moments).map((m, i) => <img src={thumb(m)} alt={i >= moments.length ? '' : alt(m)} loading="lazy" aria-hidden={i >= moments.length ? 'true' : undefined} />)}
-    </div>
-  </section>
-
-  <section style="background:var(--cream)" class="reveal">
+  <section class="bg-cream">
     <div class="wrap section">
       <h2 class="section-title">מאמרים לפני שטסים</h2>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px">
-        {guides.slice(0, 3).map((g) => (
-          <a href={`/guides/${g.slug}/`} class="card" style="text-decoration:none;color:inherit;border-radius:16px;overflow:hidden;background:#fff;display:flex;flex-direction:column">
-            <div style="height:210px;overflow:hidden"><img class="zoom" src={thumb(g.image)} alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover" /></div>
-            <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:8px">
-              <h3 style="font-size:21px;font-weight:600;line-height:1.4">{g.title}</h3>
-              <span style="font-size:15px;color:var(--muted)">{g.sub}</span>
-              <span style="font-size:15px;color:var(--link);font-weight:600">לקריאה ←</span>
+      <div class="post-grid swipe-row">
+        {homeGuides.map((g) => (
+          <a href={`/guides/${g.slug}/`} class="post-card card">
+            <div class="media"><img class="zoom" src={thumb(g.card)} alt="" loading="lazy" width="600" height="450" /></div>
+            <div class="body">
+              <h3>{g.title}</h3>
+              <span class="sub">{g.sub}</span>
+              <span class="more">לקריאה ←</span>
             </div>
           </a>
         ))}
       </div>
-      <div style="text-align:center;margin-top:28px"><a href="/guides/" class="btn btn-outline">לכל המאמרים</a></div>
+      <div style="text-align:center;margin-top:24px"><a href="/guides/" class="btn btn-outline">לכל המאמרים</a></div>
     </div>
+  </section>
+
+  <section class="wrap section-tight" aria-labelledby="moments-title">
+    <div class="moments-head">
+      <h2 id="moments-title">רגעים מהשטח</h2>
+      <span><a href={site.instagram} target="_blank" rel="noopener">אינסטגרם</a> · <a href={site.tiktok} target="_blank" rel="noopener">טיקטוק</a></span>
+    </div>
+    <a href={site.instagram} class="moments" target="_blank" rel="noopener" aria-label="עוד רגעים מהשטח באינסטגרם">
+      {moments.map((m) => <img src={thumb(m)} alt={alt(m)} loading="lazy" width="300" height="400" />)}
+    </a>
   </section>
   <LeadForm source="home" />
 </Base>
@@ -247,7 +202,6 @@ const moments = ['tayrona-park-beach-rocks', 'guatape-wakeboard-el-penol', 'cart
       text.classList.add('is-changing');
       setTimeout(() => {
         const s = slides[i].dataset;
-        text.querySelector('[data-k]')!.textContent = s.kicker ?? '';
         text.querySelector('[data-t]')!.textContent = s.title ?? '';
         text.querySelector('[data-s]')!.textContent = s.sub ?? '';
         text.classList.remove('is-changing');
@@ -268,21 +222,12 @@ const moments = ['tayrona-park-beach-rocks', 'guatape-wakeboard-el-penol', 'cart
       pauseBtn.addEventListener('click', () => {
         stopped = !stopped;
         pauseBtn.setAttribute('aria-pressed', String(stopped));
-        pauseBtn.querySelector('[data-label]')!.textContent = stopped ? 'הפעלה' : 'עצירה';
+        pauseBtn.setAttribute('aria-label', stopped ? 'הפעלת הסליידר' : 'עצירת הסליידר');
         start();
       });
     }
     start();
   }
-
-  // "Moments" photo strip: pause / play button.
-  const mq = document.querySelector<HTMLElement>('[data-marquee]');
-  const mqBtn = document.querySelector<HTMLButtonElement>('[data-marquee-pause]');
-  mqBtn?.addEventListener('click', () => {
-    const p = !!mq?.classList.toggle('is-paused');
-    mqBtn.setAttribute('aria-pressed', String(p));
-    mqBtn.querySelector('[data-label]')!.textContent = p ? 'הפעלת תמונות' : 'עצירת תמונות';
-  });
 
   // Tour category chips
   document.querySelectorAll<HTMLElement>('[data-filter-root]').forEach((root) => {
@@ -294,7 +239,35 @@ const moments = ['tayrona-park-beach-rocks', 'guatape-wakeboard-el-penol', 'cart
       cards.forEach((card) => { card.hidden = cat === 'couples' ? !card.hasAttribute('data-couples') : cat !== 'all' && card.dataset.kind !== cat; });
       const note = root.querySelector<HTMLElement>('[data-couples-note]');
       if (note) note.hidden = cat !== 'couples';
-      root.querySelector('.tour-swipe')?.scrollTo({ left: 0 });
+      root.querySelector('.swipe-row')?.scrollTo({ left: 0 });
     }));
   });
 </script>
+
+<style>
+  .hero-slide-title { font-size: clamp(22px, 3vw, 30px) !important; font-weight: 700; }
+  .section-tight { padding-top: 8px; padding-bottom: 48px; }
+  .svc-row { margin: 32px auto 0; max-width: 1000px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .svc-row a { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 14px 8px; border-radius: var(--radius); background: #fff; border: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: 14px; font-weight: 600; line-height: 1.3; }
+  .svc-row a:hover { border-color: var(--blue); color: var(--blue); }
+  .about-strip { display: flex; align-items: center; gap: 28px; max-width: 900px; margin: 0 auto; }
+  .about-strip img { width: 160px; height: 160px; flex: 0 0 auto; object-fit: cover; object-position: 40% 55%; border-radius: 50%; border: 4px solid var(--yellow); }
+  .about-text { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .about-text h2 { font-size: clamp(24px, 3.5vw, 32px); }
+  .about-text p { font-size: 17px; line-height: 1.65; color: var(--text); }
+  .about-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+  .post-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; max-width: 1000px; margin: 0 auto; }
+  .moments-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 14px; }
+  .moments-head h2 { font-size: clamp(22px, 3vw, 28px); }
+  .moments-head span { font-weight: 600; }
+  .moments { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .moments img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 12px; }
+  @media (max-width: 700px) {
+    .svc-row { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 24px; }
+    .about-strip { flex-direction: column; text-align: center; gap: 16px; }
+    .about-strip img { width: 120px; height: 120px; }
+    .about-btns { justify-content: center; }
+    .moments { gap: 6px; }
+    .moments img { border-radius: 8px; }
+  }
+</style>

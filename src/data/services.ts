@@ -18,8 +18,8 @@ export interface Service {
   intro: string;
   points: string[];
   image: string;
-  icon: string;
-  blob: string;
+  /** Icon name from components/Icon.astro */
+  icon: 'plane' | 'swap' | 'ticket' | 'map';
   formTitle: string;
   routes?: { from: string; to: string; image: string; note: string }[];
   fields: FormField[];
@@ -34,8 +34,7 @@ export const services: Service[] = [
       'נוחתים בקולומביה? נהג מחכה לכם ביציאה עם שלט, ומסיע אתכם ישר למלון. בלי מוניות, בלי מיקוח ובלי לחץ אחרי טיסה ארוכה.',
     points: ['נהג מחכה ביציאה עם שלט', 'מעקב אחרי הטיסה, גם כשהיא מתעכבת', "מדג'ין, קרטחנה ובוגוטה", 'רכבים לזוגות, למשפחות ולקבוצות'],
     image: 'medellin-airport-transfer-van',
-    icon: '✈',
-    blob: '#DCE7FF',
+    icon: 'plane',
     formTitle: 'הזמנת הסעה משדה התעופה',
     fields: [
       { name: 'landing_date', label: 'מתי נוחתים?', type: 'date' },
@@ -51,8 +50,7 @@ export const services: Service[] = [
       'עוברים עיר? נסיעה פרטית מדלת לדלת, עם נהג מקומי שמכיר את הדרך. אפשר לעצור בדרך לנוף, לאוכל או לאטרקציה.',
     points: ['מדלת לדלת, מהמלון למלון', 'עצירות בדרך לפי בקשה', 'מחיר סגור מראש', 'תיאום אישי מול יונתן'],
     image: 'coffee-valley-colombia-cocora',
-    icon: '⇄',
-    blob: '#D9F7EF',
+    icon: 'swap',
     formTitle: 'הזמנת מעבר בין ערים',
     routes: [{ from: "מדג'ין", to: 'סלנטו', image: 'salento-colombia-wax-palm', note: 'עמק קוקורה ודקלי השעווה, כ־6–7 שעות נסיעה' }],
     fields: [
@@ -69,8 +67,7 @@ export const services: Service[] = [
       'צריכים טיסה בתוך קולומביה או טיסה לחו"ל? אנחנו מוצאים את הטיסה שמתאימה למסלול שלכם, משווים מחירים ושעות, וסוגרים אותה בשבילכם.',
     points: ['טיסות פנים וטיסות לחו"ל', 'השוואת חברות, מחירים ושעות', 'התאמה למסלול ולטיולים שהזמנתם', 'עזרה עם כבודה ושינויים'],
     image: 'domestic-flights-colombia-medellin-airport',
-    icon: '✓',
-    blob: '#FFF3B0',
+    icon: 'ticket',
     formTitle: 'בקשה לסגירת טיסה',
     fields: [
       { name: 'from', label: 'מאיפה ממריאים?', type: 'text', placeholder: "למשל: מדג'ין" },
@@ -86,8 +83,7 @@ export const services: Service[] = [
       'מבולבלים? לא יודעים איפה להתחיל? בשביל זה אנחנו כאן! דברו איתי, ואבנה לכם מסלול שמתאים בדיוק לכם: יעדים, סדר, לינה, טיולים, הסעות וטיסות.',
     points: ['מסלול אישי לפי הזמן והתקציב', 'המלצות שאני באמת מכיר', 'סידור הסעות, טיסות וטיולים', 'ליווי אישי שלי בוואטסאפ לאורך כל הטיול'],
     image: 'day-trips-from-medellin-guatape-lake',
-    icon: '★',
-    blob: '#FDE2EC',
+    icon: 'map',
     formTitle: 'בואו נתכנן לכם טיול',
     fields: [
       { name: 'arrival_date', label: 'מתי מגיעים?', type: 'date' },

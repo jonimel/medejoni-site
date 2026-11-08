@@ -2,6 +2,7 @@
 import { alt } from '../data/photos';
 import Base from '../layouts/Base.astro';
 import ServiceForm from '../components/ServiceForm.astro';
+import Icon from '../components/Icon.astro';
 import { services } from '../data/services';
 import { img, thumb } from '../data/site';
 
@@ -18,19 +19,19 @@ const ld = services.map((s) => ({
   <section class="page-top">
     <div class="wrap" style="padding-top:40px;padding-bottom:40px">
       <nav class="crumbs" aria-label="פירורי לחם" style="padding-top:0;color:var(--ink)"><a href="/" style="color:var(--ink)">דף הבית</a> › הסעות וטיסות</nav>
-      <h1 style="font-size:clamp(34px,5vw,52px);font-weight:800">הסעות, טיסות ותכנון טיולים</h1>
+      <h1 style="font-size:clamp(34px,5vw,52px);font-weight:800">הסעות, טיסות ותכנון טיולים בקולומביה</h1>
       <p style="font-size:19px;margin-top:10px">מהנחיתה ועד הטיסה הבאה, אני דואג לכם. ממלאים טופס קצר ומקבלים ממני הצעת מחיר.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:20px">
-        {services.map((s) => <a href={`#${s.id}`} class="chip" style="display:inline-flex;align-items:center;text-decoration:none">{s.title}</a>)}
+      <div class="chips" style="justify-content:flex-start;margin:20px 0 0">
+        {services.map((s) => <a href={`#${s.id}`} class="chip">{s.title}</a>)}
       </div>
     </div>
   </section>
 
   {services.map((s, i) => (
-    <section id={s.id} class="svc" style={i % 2 ? 'background:var(--sky)' : ''}>
+    <section id={s.id} class:list={['svc', { 'bg-cream': i % 2 }]}>
       <div class="wrap section svc-grid">
         <div class="svc-text">
-          <span class="blob" aria-hidden="true" style={`background:${s.blob}`}>{s.icon}</span>
+          <span class="ico-circle" aria-hidden="true"><Icon name={s.icon} size={24} /></span>
           <h2 style="font-size:clamp(28px,4vw,36px)">{s.title}</h2>
           <p style="font-size:18px;line-height:1.7;color:var(--text)">{s.intro}</p>
           <ul class="svc-points">{s.points.map((p) => <li>{p}</li>)}</ul>
@@ -54,13 +55,13 @@ const ld = services.map((s) => ({
 </Base>
 
 <style>
-  .svc { scroll-margin-top: 70px; }
+  .svc { scroll-margin-top: calc(var(--header-h) + 16px); }
   .svc-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: start; }
   .svc-text { display: flex; flex-direction: column; gap: 16px; }
   .svc-text img { width: 100%; height: 240px; object-fit: cover; border-radius: 20px; margin-top: 8px; }
   .svc-points { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; font-size: 17px; }
   .svc-points li { display: flex; gap: 10px; align-items: center; }
-  .svc-points li::before { content: '✓'; flex: 0 0 24px; height: 24px; border-radius: 50%; background: #D9F7EF; color: #0F7A55; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
+  .svc-points li::before { content: '✓'; flex: 0 0 24px; height: 24px; border-radius: 50%; background: var(--cream); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; }
   .routes { display: flex; flex-direction: column; gap: 10px; }
   .route { display: flex; gap: 14px; align-items: center; text-align: right; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 10px; cursor: pointer; font: inherit; color: inherit; }
   .route img { width: 96px; height: 96px; object-fit: cover; border-radius: 12px; flex: 0 0 auto; margin: 0; }
