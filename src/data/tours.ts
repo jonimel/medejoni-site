@@ -158,7 +158,10 @@ const allTours: Tour[] = [
     tiers: [
       { min: 3, price: 299000, label: '3 משתתפים' },
       { min: 4, price: 279000, label: '4 משתתפים' },
-      { min: 5, price: 199000, label: '5 עד 8 משתתפים' },
+      { min: 5, price: 229000, label: '5 משתתפים' },
+      { min: 6, price: 199000, label: '6 משתתפים' },
+      { min: 7, price: 179000, label: '7 משתתפים' },
+      { min: 8, price: 159000, label: '8 משתתפים' },
     ],
     minPeople: 3,
     addOns: [
@@ -205,7 +208,7 @@ const allTours: Tour[] = [
     tiers: [
       { min: 3, price: 179000, label: '3 משתתפים' },
       { min: 4, price: 169000, label: '4 משתתפים' },
-      { min: 5, price: 129000, label: '5 עד 8 משתתפים' },
+      { min: 5, price: 139000, label: '5 עד 8 משתתפים' },
     ],
     minPeople: 3,
     addOns: [],
@@ -239,7 +242,8 @@ const allTours: Tour[] = [
     tiers: [
       { min: 3, price: 119000, label: '3 משתתפים' },
       { min: 4, price: 99000, label: '4 עד 6 משתתפים' },
-      { min: 7, price: 59000, label: '7 עד 8 משתתפים' },
+      { min: 7, price: 89000, label: '7 משתתפים' },
+      { min: 8, price: 79000, label: '8 משתתפים' },
     ],
     minPeople: 3,
     addOns: [],
@@ -274,7 +278,7 @@ const allTours: Tour[] = [
     tiers: [
       { min: 3, price: 199000, label: '3 משתתפים' },
       { min: 4, price: 189000, label: '4 משתתפים' },
-      { min: 5, price: 149000, label: '5 עד 8 משתתפים' },
+      { min: 5, price: 159000, label: '5 עד 8 משתתפים' },
     ],
     minPeople: 3,
     addOns: [],
@@ -313,7 +317,8 @@ const allTours: Tour[] = [
       { min: 3, price: 249000, label: '3 משתתפים' },
       { min: 4, price: 199000, label: '4 משתתפים' },
       { min: 5, price: 179000, label: '5 משתתפים' },
-      { min: 6, price: 149000, label: '6 עד 8 משתתפים' },
+      { min: 6, price: 159000, label: '6 משתתפים' },
+      { min: 7, price: 149000, label: '7 עד 8 משתתפים' },
     ],
     minPeople: 3,
     addOns: [
@@ -387,7 +392,8 @@ const allTours: Tour[] = [
     bring: ['ז׳קט קל (בערב קריר למעלה)', 'מצלמה או טלפון טעון'],
     tiers: [
       { min: 3, price: 149000, label: '3 משתתפים' },
-      { min: 4, price: 119000, label: '4 עד 6 משתתפים' },
+      { min: 4, price: 119000, label: '4 עד 5 משתתפים' },
+      { min: 6, price: 109000, label: '6 משתתפים' },
       { min: 7, price: 99000, label: '7 עד 8 משתתפים' },
     ],
     minPeople: 3,
@@ -503,11 +509,12 @@ const allTours: Tour[] = [
     ages: 'מתאים לכל הגילאים',
     bring: ['בגד ים ומגבת', 'נעליים שמותר להן להירטב', 'קרם הגנה', 'מזומן לארוחה ולרכיבה'],
     tiers: [
+      { min: 3, price: 229000, label: '3 משתתפים' },
       { min: 4, price: 189000, label: '4 משתתפים' },
       { min: 5, price: 179000, label: '5 עד 6 משתתפים' },
-      { min: 7, price: 149000, label: '7 עד 8 משתתפים' },
+      { min: 7, price: 159000, label: '7 עד 8 משתתפים' },
     ],
-    minPeople: 4,
+    minPeople: 3,
     addOns: [{ id: 'horses', name: 'רכיבה על סוסים' }],
     addOnsNote: 'מחיר הרכיבה לפי משך הזמן, בתיאום מראש.',
     pickup: pickupHotel,
