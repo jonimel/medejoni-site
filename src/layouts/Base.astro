@@ -164,6 +164,8 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
             <a href="/about/">מי אני</a>
             <a href="/tours/#faq">שאלות נפוצות</a>
             <a href="/accessibility/">הצהרת נגישות</a>
+            <a href="/terms/">תנאי הזמנה וביטולים</a>
+            <a href="/privacy/">מדיניות פרטיות</a>
             <span style="color:var(--muted)">ביטול עד 12 שעות לפני הטיול</span>
           </div>
         </details>
@@ -177,7 +179,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
     <div class="bottom">
       <div class="wrap">
         <img class="footer-logo" src="/images/logo-224.webp" width="96" height="96" alt="Medejoni – חוויה אותנטית בקולומביה" loading="lazy" decoding="async" />
-        <span>© {new Date().getFullYear()} Medejoni · {site.owner}. כל הזכויות שמורות.</span>
+        <span>© {new Date().getFullYear()} Medejoni · {site.owner}. כל הזכויות שמורות.<br /><span class="ltr" lang="es">{site.company.name} · NIT {site.company.nit} · {site.company.address}</span></span>
         <span class="social">
           <a href={site.instagram} aria-label="אינסטגרם" target="_blank" rel="noopener"><Icon name="instagram" size={24} /></a>
           <a href={site.tiktok} aria-label="טיקטוק" target="_blank" rel="noopener"><Icon name="tiktok" size={24} /></a>
