@@ -8,6 +8,9 @@ export const site = {
   whatsapp: '573135090957',
   instagram: 'https://www.instagram.com/medejoni_col/',
   tiktok: 'https://www.tiktok.com/@medejoni',
+  // Google Business Profile (Maps listing) and its "write a review" link.
+  googleBusiness: 'https://g.page/r/Cb8UUo1JtLKTEBM',
+  googleReview: 'https://g.page/r/Cb8UUo1JtLKTEBM/review',
   email: 'yonimelmel@gmail.com',
   currency: 'COP',
   cancelHours: 12,
