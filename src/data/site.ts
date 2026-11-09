@@ -14,6 +14,9 @@ export const site = {
   email: 'yonimelmel@gmail.com',
   currency: 'COP',
   cancelHours: 12,
+  // COP per 1 ILS, for the "≈ ₪..." hint on the Hebrew booking page. Only a fallback: the page uses the live
+  // market rate from /api/rate (server.mjs). Market rate on 2026-11-09 was about 1,036.
+  ilsRate: 1036,
   // Legal details of Jonathan's Colombian company (footer, /terms/, /privacy/). Required by Bold (payments).
   company: {
     name: 'JM Servicios Digitales S.A.S.',

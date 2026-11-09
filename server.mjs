@@ -46,7 +46,7 @@ const labels = {
   addons: 'תוספות', total: 'סה״כ', landing_date: 'תאריך נחיתה', landing_airport: 'שדה נחיתה', destination: 'יעד',
   from: 'מאיפה', to: 'לאן', tour: 'קוד טיול', email: 'אימייל', hotel: 'איסוף מ', notes: 'הערות',
   interest: 'מתעניין ב', dates: 'מתי בקולומביה', arrival_date: 'תאריך הגעה', days: 'כמה ימים', message: 'הודעה', source: 'מקור', partner: 'הגיע דרך שותף', heard_from: 'איך הגיע אלינו', lang: 'שפת האתר',
-  deposit: 'מקדמה ב-Bold', remainder: 'יתרה לתשלום בקולומביה', pay_link: 'לינק תשלום', pay_id: 'מזהה תשלום ב-Bold',
+  deposit: 'תשלום ב-Bold', remainder: 'יתרה לתשלום בקולומביה', pay_link: 'לינק תשלום', pay_id: 'מזהה תשלום ב-Bold',
 };
 const formTitles = {
   booking: 'הזמנת טיול', lead: 'השארת פרטים', 'airport-transfer': 'הסעה משדה התעופה',
@@ -183,13 +183,15 @@ async function createDepositLink(fields) {
   if (!boldOn()) return null;
   const tour = prices.find((t) => t.slug === fields.tour);
   if (!tour) return null;
-  const q = quote(tour, fields.people, String(fields.addon_ids || '').split(',').filter(Boolean));
+  const q = quote(tour, fields.people, String(fields.addon_ids || '').split(',').filter(Boolean), fields.pay_option === 'full' ? 'full' : 'deposit');
   const body = {
     amount_type: 'CLOSE',
     amount: { currency: 'COP', total_amount: q.charge, tip_amount: 0, taxes: [] },
     // Letters, digits, _ and - only, at most 60 characters.
     reference: `MJ-${tour.slug.slice(0, 32)}-${Date.now()}`,
-    description: (fields.lang === 'English' ? `Deposit: ${tour.slug.replace(/-/g, ' ')}` : `מקדמה ${tour.title}`).slice(0, 100),
+    description: (fields.lang === 'English'
+      ? `${q.full ? 'Full payment' : 'Deposit'}: ${tour.slug.replace(/-/g, ' ')}`
+      : `${q.full ? 'תשלום מלא' : 'מקדמה'} ${tour.title}`).slice(0, 100),
     callback_url: fields.lang === 'English' ? 'https://medejoni.com/en/payment/' : 'https://medejoni.com/payment/',
   };
   if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email || '')) body.payer_email = fields.email;
@@ -209,6 +211,24 @@ async function createDepositLink(fields) {
     console.error('Bold link failed:', e.message);
     return null;
   }
+}
+
+// ---- Shekel rate, so the Hebrew booking page can show "≈ ₪..." next to peso prices ----
+// Market rate (COP per 1 ILS) from open.er-api.com (free, no key, updated daily), cached for 6 hours.
+// If it can't be fetched, the page keeps the fixed fallback rate (site.ilsRate).
+let ilsRate = { cop: 0, at: 0 };
+async function copPerIls() {
+  if (ilsRate.cop && Date.now() - ilsRate.at < 6 * 3600_000) return ilsRate.cop;
+  try {
+    const res = await fetch('https://open.er-api.com/v6/latest/ILS', { signal: AbortSignal.timeout(4000) });
+    const data = await res.json();
+    const cop = Number(data?.rates?.COP);
+    if (res.ok && data?.result === 'success' && cop > 100 && cop < 10000) ilsRate = { cop, at: Date.now() };
+    else console.error('Shekel rate: unexpected answer', res.status);
+  } catch (e) {
+    console.error('Shekel rate failed:', e.message);
+  }
+  return ilsRate.cop; // 0 = unknown (an old rate is still used if a refresh fails)
 }
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -344,6 +364,12 @@ createServer(async (req, res) => {
       res.writeHead(204, setCookie.length ? { 'Set-Cookie': setCookie } : {}).end();
       return;
     }
+    if (req.method === 'GET' && url.pathname === '/api/rate') {
+      const cop = await copPerIls();
+      res.writeHead(cop ? 200 : 503, { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600' })
+        .end(JSON.stringify(cop ? { copPerIls: cop } : { error: 'unavailable' }));
+      return;
+    }
     if (req.method === 'POST' && url.pathname === '/api/wa-click') {
       await trackWhatsAppClick(req);
       res.writeHead(204).end();
@@ -369,20 +395,22 @@ createServer(async (req, res) => {
         const pay = fields['form-name'] === 'booking' ? await createDepositLink(fields) : null;
         if (pay) {
           Object.assign(fields, {
-            deposit: `${fmtCOP(pay.deposit)} + עמלת אשראי ${fmtCOP(pay.fee)} = ${fmtCOP(pay.charge)}`,
+            deposit: `${pay.full ? 'תשלום מלא' : 'מקדמה 40%'}: ${fmtCOP(pay.deposit)} + עמלת אשראי ${fmtCOP(pay.fee)} = ${fmtCOP(pay.charge)}`,
             total: fmtCOP(pay.total),
             remainder: fmtCOP(pay.remainder),
             pay_link: pay.url,
             pay_id: `${pay.id} (${pay.reference})`,
           });
         } else if (fields['form-name'] === 'booking' && boldOn()) {
+          if (fields.pay_option) fields.deposit = fields.pay_option === 'full' ? 'הלקוח בחר תשלום מלא' : 'הלקוח בחר מקדמה';
           fields.pay_link = 'לא נוצר לינק תשלום (תקלה ב-Bold). צריך לשלוח ללקוח לינק ידני.';
         }
         delete fields.addon_ids;
+        delete fields.pay_option;
         await sendLead(fields);
         if (pay) {
           res.writeHead(200, { 'Content-Type': 'application/json' })
-            .end(JSON.stringify({ pay: { url: pay.url, deposit: pay.deposit, fee: pay.fee, charge: pay.charge, remainder: pay.remainder, total: pay.total } }));
+            .end(JSON.stringify({ pay: { url: pay.url, deposit: pay.deposit, fee: pay.fee, charge: pay.charge, remainder: pay.remainder, total: pay.total, full: pay.full } }));
         } else {
           res.writeHead(200).end('ok');
         }
