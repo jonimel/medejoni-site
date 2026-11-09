@@ -428,7 +428,7 @@ const allTours: Tour[] = [
       { title: 'מצפה אל פיקאצו (El Picacho)', text: 'המצפה הכי גבוה במדג׳ין, עם נוף על כל העיר ועל בייו.' },
       { title: 'חזרה למלון בסביבות 23:00' },
     ],
-    badge: '🔥 לאמיצים בלבד',
+    badge: '🔥 למשוגעים בלבד',
     highlights: ['באריוס בהרי מדג׳ין', 'פאב שכונתי', 'אוכל רחוב', 'המצפה הכי גבוה בעיר'],
     start: 'בסביבות 17:00',
     end: 'בסביבות 23:00',
@@ -457,7 +457,7 @@ const allTours: Tour[] = [
     pickup: pickupHotel,
     bookAheadHours: 48,
     duration: '5 עד 6 שעות',
-    tags: ['17:00 עד 23:00', 'כולל בירה', 'לאמיצים'],
+    tags: ['17:00 עד 23:00', 'כולל בירה', 'למשוגעים בלבד'],
     images: [
       'israeloco-medellin-barrio-street-party',
       'israeloco-el-picacho-viewpoint-medellin-night',

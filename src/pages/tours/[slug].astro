@@ -108,7 +108,7 @@ const booking = JSON.stringify({
       <article>
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
           {tour.recommended && <span class="pill pill-reco">★ מומלץ</span>}
-          {tour.badge && <span class="pill pill-dark">{tour.badge}</span>}
+          {tour.badge && <span class="pill pill-reco">{tour.badge}</span>}
           <span class="pill">{kindLabel[tour.kind]}</span>
           <span class="pill pill-soft">{tour.duration}</span>
         </div>
