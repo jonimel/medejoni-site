@@ -6,7 +6,7 @@ import Base from '../layouts/Base.astro';
 import { site } from '../data/site';
 
 const updated = 'נובמבר 2026';
-const phone = site.whatsapp ? `+${site.whatsapp.slice(0, 3)}-${site.whatsapp.slice(3, 5)}-${site.whatsapp.slice(5)}` : '';
+const phone = site.whatsapp ? `+${site.whatsapp.slice(0, 2)} ${site.whatsapp.slice(2, 5)} ${site.whatsapp.slice(5, 8)} ${site.whatsapp.slice(8)}` : '';
 const done = [
   'כל האתר כתוב בעברית, מוגדר כשפה עברית ובכיוון ימין לשמאל, כך שקוראי מסך מקריאים אותו נכון.',
   'אפשר לנווט בכל האתר בעזרת המקלדת בלבד (Tab, Shift+Tab, Enter, רווח), ויש מסגרת ברורה סביב הרכיב שנמצא בפוקוס.',
