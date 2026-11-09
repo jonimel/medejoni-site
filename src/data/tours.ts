@@ -61,6 +61,10 @@ export interface Tour {
   bring?: string[];
   /** "טוב לדעת" list. */
   goodToKnow?: string[];
+  /** Extra badge on the card and page, e.g. "לאמיצים בלבד". */
+  badge?: string;
+  /** Dark "before you book" box with strict rules (for edgier tours). */
+  warning?: { title: string; text: string; rules: string[]; note: string };
 }
 
 export const kindLabel: Record<TourKind, string> = {
@@ -404,6 +408,73 @@ const allTours: Tour[] = [
     tags: ['17:00 עד 22:00', 'כולל כניסה', 'שקיעה'],
     images: ['medellin-attractions-viewpoint-night', 'medellin-nightlife-city-lights', 'medellin-tours-viewpoint-evening'],
     faq: [{ q: 'יש מינימום משתתפים?', a: 'כן, מינימום שלושה משתתפים.' }, ...commonFaq],
+  },
+  {
+    slug: 'israeloco-medellin-barrio-tour',
+    title: "IsraeLoco: מדג'ין האמיתית, לאמיצים שבינינו",
+    kind: 'evening',
+    destination: 'medellin',
+    place: "מדג'ין",
+    short: 'ערב בשכונות הכי פנימיות בהרי מדג׳ין: פאב שכונתי, אוכל רחוב ונוף מהמצפה הכי גבוה בעיר.',
+    intro:
+      "יש את מדג'ין שכולם רואים, ויש את מדג'ין שרק המקומיים מכירים. בטיול הזה נכנסים עם מדריך צמוד לבאריוס, השכונות הכי פנימיות בהרים שמעל העיר: מוזיקה ברחוב, פאב שכונתי, אוכל של דוכנים, ובסוף הערב כל העיר מתחתיכם מהמצפה הכי גבוה במדג'ין. זה טיול לא לכולם, וזה בדיוק מה שמיוחד בו.",
+    includes: ['איסוף מהמלון וחזרה', 'מדריך מקומי צמוד דובר אנגלית', 'כניסה למצפה אל פיקאצו', 'בירה ראשונה בפאב'],
+    excludes: ['אוכל בדוכני הרחוב (כל אחד קונה לעצמו)'],
+    schedule: [
+      { title: 'איסוף מהמלון בסביבות 17:00' },
+      { title: 'סיבוב בבאריו', text: 'ברכב וברגל, בשכונות שבהרי מדג׳ין.' },
+      { title: 'פאב שכונתי', text: 'שעה עם המקומיים, הבירה הראשונה עלינו.' },
+      { title: 'ארוחת ערב בדוכני רחוב', text: 'האוכל שהשכונה באמת אוכלת.' },
+      { title: 'מצפה אל פיקאצו (El Picacho)', text: 'המצפה הכי גבוה במדג׳ין, עם נוף על כל העיר ועל בייו.' },
+      { title: 'חזרה למלון בסביבות 23:00' },
+    ],
+    badge: '🔥 למשוגעים בלבד',
+    highlights: ['באריוס בהרי מדג׳ין', 'פאב שכונתי', 'אוכל רחוב', 'המצפה הכי גבוה בעיר'],
+    start: 'בסביבות 17:00',
+    end: 'בסביבות 23:00',
+    guide: 'מדריך מקומי צמוד דובר אנגלית',
+    ages: 'מבוגרים בלבד, למי שמוכן לשמור על הכללים',
+    bring: ['בגדים פשוטים ונוחים', 'מזומן קטן לאוכל ברחוב', 'ז׳קט קל (במצפה קריר)'],
+    warning: {
+      title: 'לפני שמזמינים: זה לא טיול לכולם',
+      text: 'הטיול לוקח אתכם לאזורים שתיירים בדרך כלל לא מגיעים אליהם. כדי שהחוויה תהיה טובה ובטוחה, יש כמה כללים ברורים:',
+      rules: [
+        'בלי תכשיטים יקרים',
+        'נשארים צמודים למדריך לאורך כל הטיול',
+        'לא מוציאים טלפון ולא מצלמים ברחוב, רק בנקודות שהמדריך מראה',
+        'לבוש פשוט, פרופיל נמוך והתנהגות מכבדת',
+      ],
+      note: 'בטיול יש סיכון מסוים, וחשוב לקחת את זה בחשבון לפני ההזמנה. מי שמוכן לשמור על הכללים יראה צד של קולומביה שרוב המטיילים לא יראו לעולם.',
+    },
+    tiers: [
+      { min: 3, price: 149000, label: '3 משתתפים' },
+      { min: 4, price: 139000, label: '4 משתתפים' },
+      { min: 5, price: 129000, label: '5 עד 6 משתתפים' },
+      { min: 7, price: 119000, label: '7 עד 8 משתתפים' },
+    ],
+    minPeople: 3,
+    addOns: [],
+    pickup: pickupHotel,
+    bookAheadHours: 48,
+    duration: '5 עד 6 שעות',
+    tags: ['17:00 עד 23:00', 'כולל בירה', 'למשוגעים בלבד'],
+    images: [
+      'israeloco-medellin-barrio-street-party',
+      'israeloco-el-picacho-viewpoint-medellin-night',
+      'israeloco-barrio-medellin-hills',
+      'israeloco-medellin-street-food-arepas',
+      'israeloco-barrio-christmas-street-medellin',
+      'israeloco-medellin-street-horse-night',
+      'israeloco-barrio-street-cooking-fire',
+      'israeloco-medellin-neighborhood-bar-night',
+      'israeloco-medellin-night-motorbike',
+    ],
+    video: { name: 'israeloco-medellin-street-party-video', poster: 'israeloco-medellin-barrio-street-party', title: 'מסיבת רחוב בבאריו במדג׳ין – וידאו' },
+    faq: [
+      { q: 'הטיול בטוח?', a: 'הולכים עם מדריך מקומי שמכיר את השכונות ואת האנשים. יש בטיול סיכון מסוים, ולכן חשוב לשמור על הכללים שלו.' },
+      { q: 'אפשר לצלם?', a: 'כן, בנקודות שהמדריך מראה. ברחוב עצמו לא מוציאים טלפון.' },
+      ...commonFaq,
+    ],
   },
   {
     slug: 'jardin-day-trip',
