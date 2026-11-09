@@ -1,0 +1,95 @@
+---
+// Booking terms, deposit and cancellation policy (Hebrew + Spanish).
+// Keep these in sync with what is charged (Bold deposit: 40% of the booking + 5% card fee on the deposit).
+import LegalPage from '../components/LegalPage.astro';
+import { site } from '../data/site';
+
+const c = site.company;
+const dep = 40;
+const fee = 5;
+const h = site.cancelHours;
+const updatedHe = 'נובמבר 2026';
+const updatedEs = 'noviembre de 2026';
+---
+<LegalPage title="תנאי הזמנה וביטולים" crumb="תנאי הזמנה וביטולים" description="תנאי ההזמנה של Medejoni: מקדמה, תשלום, ביטולים והחזרים לטיולים ולשירותים בקולומביה." intro="כל מה שחשוב לדעת לפני שמזמינים: איך משלמים, מה קורה בביטול ומה האחריות של כל צד.">
+  <h2>מי אנחנו</h2>
+  <p>האתר medejoni.com מופעל על ידי <span lang="es">{c.name}</span>, חברה רשומה בקולומביה (<span class="ltr">NIT {c.nit}</span>), בניהולו של {site.owner}. כתובת: <span lang="es">{c.address}</span>. אימייל: <a href={`mailto:${site.email}`} class="ltr">{site.email}</a>. וואטסאפ: <span class="ltr">+{site.whatsapp}</span>.</p>
+  <p>אנחנו מארגנים טיולים, הסעות ושירותי תיירות בקולומביה, ומבצעים אותם יחד עם נהגים ומדריכים מקומיים.</p>
+
+  <h2>מחירים</h2>
+  <ul>
+    <li>המחירים באתר הם בפסו קולומביאני (COP), לאדם, ותלויים בגודל הקבוצה. המחיר הסופי מוצג בטופס ההזמנה לפני השליחה.</li>
+    <li>מה כלול ומה לא כלול מפורט בדף של כל טיול. תוספות שמחירן "בתיאום" מתומחרות בנפרד לפני הטיול.</li>
+  </ul>
+
+  <h2>הזמנה ותשלום</h2>
+  <ul>
+    <li>לשריון התאריך משלמים מקדמה של {dep}% ממחיר ההזמנה, בכרטיס אשראי, בדף התשלום המאובטח של Bold. פרטי הכרטיס מוקלדים אצל Bold בלבד ולא נשמרים אצלנו.</li>
+    <li>על המקדמה נוספת עמלת סליקה של {fee}%, שמוצגת לפני התשלום.</li>
+    <li>החיוב בפסו קולומביאני. ההמרה לשקלים נעשית על ידי חברת האשראי שלכם, לפי השער והעמלות שלה.</li>
+    <li>את יתרת המחיר משלמים בקולומביה, במזומן או למדריך, ביום הטיול.</li>
+    <li>ההזמנה מאושרת סופית אחרי שאנחנו מאשרים זמינות בוואטסאפ או באימייל. אם אין זמינות בתאריך שבחרתם, נציע תאריך אחר, או שהמקדמה תוחזר במלואה.</li>
+  </ul>
+
+  <h2>ביטול על ידי הלקוח</h2>
+  <div class="legal-box">
+    <ul>
+      <li><strong>ביטול עד {h} שעות לפני תחילת הטיול:</strong> המקדמה מוחזרת במלואה, פרט לעמלת הסליקה ({fee}%).</li>
+      <li><strong>ביטול פחות מ-{h} שעות לפני הטיול, או אי הגעה:</strong> המקדמה אינה מוחזרת.</li>
+      <li>אפשר להעביר את ההזמנה לתאריך אחר בלי עלות, לפי זמינות, אם מבקשים עד {h} שעות לפני הטיול.</li>
+    </ul>
+  </div>
+  <p>ביטול נעשה בהודעה בוואטסאפ או באימייל. מועד הביטול הוא מועד קבלת ההודעה.</p>
+
+  <h2>ביטול או שינוי מצדנו</h2>
+  <p>אם נבטל טיול בגלל מזג אוויר, בטיחות, סגירת אתר או כל סיבה אחרת שבשליטתנו או מחוצה לה, תוכלו לבחור בין העברה לתאריך אחר לבין החזר מלא של כל מה ששילמתם, כולל עמלת הסליקה. אנחנו רשאים לשנות את סדר התחנות או את שעות הטיול בגלל תנאי הדרך, מזג האוויר או הוראות הרשויות.</p>
+
+  <h2>החזרים</h2>
+  <p>החזר כספי נעשה לאותו כרטיס אשראי שבו שולם, תוך עד 10 ימים מאישור הביטול. זמן ההופעה בחשבון תלוי בחברת האשראי.</p>
+
+  <h2>אחריות הלקוח</h2>
+  <ul>
+    <li>להגיע בזמן לנקודת האיסוף. איחור עלול לקצר את הטיול, בלי החזר.</li>
+    <li>לעדכן מראש על מגבלה רפואית, הריון, מוגבלות או צורך מיוחד, כדי שנתאים את הטיול.</li>
+    <li>לשאת דרכון ולשמור על חפצים אישיים. מומלץ ביטוח נסיעות בתוקף.</li>
+    <li>חלק מהפעילויות (רכיבה, רחצה בנהר, מצנחי רחיפה ועוד) מבוצעות על ידי ספקים מקומיים ובאחריותם. ההשתתפות בהן היא באחריות המשתתף.</li>
+  </ul>
+
+  <h2>שירות ופניות</h2>
+  <p>לכל שאלה, שינוי או תלונה: וואטסאפ <span class="ltr">+{site.whatsapp}</span> או <a href={`mailto:${site.email}`} class="ltr">{site.email}</a>. נחזור אליכם תוך יום עסקים.</p>
+  <p>על התנאים חלים דיני קולומביה, כולל חוק הגנת הצרכן (Ley 1480 de 2011).</p>
+  <p class="updated">עודכן לאחרונה: {updatedHe}.</p>
+
+  <Fragment slot="es">
+    <h2>Términos de reserva y política de cancelación</h2>
+    <p>El sitio medejoni.com es operado por {c.name}, sociedad registrada en Colombia, NIT {c.nit}, dirección {c.address}. Correo: <a href={`mailto:${site.email}`}>{site.email}</a>. WhatsApp: +{site.whatsapp}. Organizamos tours, traslados y servicios turísticos en Colombia, con conductores y guías locales.</p>
+
+    <h2>Precios</h2>
+    <p>Los precios están en pesos colombianos (COP), por persona, y dependen del tamaño del grupo. El precio final se muestra en el formulario de reserva antes de enviarlo. Lo que incluye y no incluye cada tour se detalla en su página.</p>
+
+    <h2>Reserva y pago</h2>
+    <ul>
+      <li>Para reservar la fecha se paga un anticipo del {dep}% del valor de la reserva con tarjeta de crédito, en la pasarela segura de Bold. Los datos de la tarjeta se ingresan solo en Bold y no se guardan en nuestro sitio.</li>
+      <li>Al anticipo se le suma un cargo por procesamiento del {fee}%, que se muestra antes del pago.</li>
+      <li>El saldo se paga en Colombia, en efectivo o al guía, el día del tour.</li>
+      <li>La reserva queda confirmada cuando confirmamos disponibilidad por WhatsApp o correo. Si no hay disponibilidad, ofrecemos otra fecha o devolvemos el anticipo completo.</li>
+    </ul>
+
+    <h2>Cancelación por parte del cliente</h2>
+    <ul>
+      <li>Hasta {h} horas antes del inicio del tour: se devuelve el anticipo completo, excepto el cargo por procesamiento ({fee}%).</li>
+      <li>Con menos de {h} horas de anticipación o si el cliente no se presenta: el anticipo no es reembolsable.</li>
+      <li>Se puede cambiar la fecha sin costo, según disponibilidad, si se solicita hasta {h} horas antes.</li>
+    </ul>
+
+    <h2>Cancelación por parte de Medejoni</h2>
+    <p>Si cancelamos un tour por clima, seguridad, cierre de un sitio u otra causa, el cliente puede elegir otra fecha o el reembolso total de lo pagado, incluido el cargo por procesamiento.</p>
+
+    <h2>Reembolsos</h2>
+    <p>Los reembolsos se hacen a la misma tarjeta con la que se pagó, dentro de los 10 días siguientes a la confirmación de la cancelación.</p>
+
+    <h2>Atención al cliente y ley aplicable</h2>
+    <p>Para preguntas, cambios o reclamos: WhatsApp +{site.whatsapp} o {site.email}. Estos términos se rigen por las leyes de Colombia, incluido el Estatuto del Consumidor (Ley 1480 de 2011).</p>
+    <p class="updated">Última actualización: {updatedEs}.</p>
+  </Fragment>
+</LegalPage>

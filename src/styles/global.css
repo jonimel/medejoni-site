@@ -331,3 +331,22 @@ main:focus { outline: none; }
 }
 @media (min-width: 701px) { .site-footer details.col summary { cursor: default; } }
 .pause-btn .ico-pause, .pause-btn[aria-pressed='true'] .ico-play { display: inline-flex; }
+
+/* Language link in the header (English ⇄ עברית). */
+.lang-switch { flex: none; font-size: 14px; font-weight: 700; color: var(--blue); text-decoration: none; border: 1px solid var(--line-strong); border-radius: 999px; padding: 6px 14px; line-height: 1.2; }
+.lang-switch:hover { border-color: var(--blue); }
+@media (min-width: 901px) { .main-nav { padding-inline-end: 80px; } }
+@media (max-width: 900px) { .lang-switch { margin-inline-start: auto; } }
+
+/* English pages (left to right): mirror the few things placed with left/right. */
+[dir='ltr'] .skip-link:focus { right: auto; left: 12px; }
+[dir='ltr'] .hero .pause-btn { left: auto; right: 14px; }
+[dir='ltr'] .carousel-btn.prev { right: auto; left: -18px; }
+[dir='ltr'] .carousel-btn.next { left: auto; right: -18px; }
+@media (max-width: 1340px) { [dir='ltr'] .carousel-btn.prev { left: 4px; } [dir='ltr'] .carousel-btn.next { right: 4px; } }
+[dir='ltr'] .tour-card .media .pill { right: auto; left: 12px; }
+[dir='ltr'] .wa-float { left: auto; right: 16px; }
+[dir='ltr'] .schedule li { padding: 0 0 18px 30px; }
+[dir='ltr'] .schedule li::before { right: auto; left: 5px; }
+[dir='ltr'] .schedule li::after { right: auto; left: 10px; }
+[dir='ltr'] .carousel-pause { left: auto; right: 0; }

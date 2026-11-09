@@ -45,7 +45,7 @@ const labels = {
   'form-name': 'טופס', name: 'שם', phone: 'טלפון', people: 'כמה אנשים', date: 'תאריך', tour_title: 'טיול',
   addons: 'תוספות', total: 'סה״כ', landing_date: 'תאריך נחיתה', landing_airport: 'שדה נחיתה', destination: 'יעד',
   from: 'מאיפה', to: 'לאן', tour: 'קוד טיול', email: 'אימייל', hotel: 'איסוף מ', notes: 'הערות',
-  interest: 'מתעניין ב', dates: 'מתי בקולומביה', arrival_date: 'תאריך הגעה', days: 'כמה ימים', message: 'הודעה', source: 'מקור', partner: 'הגיע דרך שותף', heard_from: 'איך הגיע אלינו',
+  interest: 'מתעניין ב', dates: 'מתי בקולומביה', arrival_date: 'תאריך הגעה', days: 'כמה ימים', message: 'הודעה', source: 'מקור', partner: 'הגיע דרך שותף', heard_from: 'איך הגיע אלינו', lang: 'שפת האתר',
   deposit: 'מקדמה ב-Bold', remainder: 'יתרה לתשלום בקולומביה', pay_link: 'לינק תשלום', pay_id: 'מזהה תשלום ב-Bold',
 };
 const formTitles = {
@@ -189,8 +189,8 @@ async function createDepositLink(fields) {
     amount: { currency: 'COP', total_amount: q.charge, tip_amount: 0, taxes: [] },
     // Letters, digits, _ and - only, at most 60 characters.
     reference: `MJ-${tour.slug.slice(0, 32)}-${Date.now()}`,
-    description: `מקדמה ${tour.title}`.slice(0, 100),
-    callback_url: 'https://medejoni.com/payment/',
+    description: (fields.lang === 'English' ? `Deposit: ${tour.slug.replace(/-/g, ' ')}` : `מקדמה ${tour.title}`).slice(0, 100),
+    callback_url: fields.lang === 'English' ? 'https://medejoni.com/en/payment/' : 'https://medejoni.com/payment/',
   };
   if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email || '')) body.payer_email = fields.email;
   try {

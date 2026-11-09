@@ -1,0 +1,447 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { tours } from '../data/tours';
+import { toursEn, hotelPickup } from '../data/tours.en';
+import { site } from '../data/site';
+import { lp, type Lang } from '../i18n';
+import HeardFrom from '../components/HeardFrom.astro';
+
+// The booking page, in Hebrew (/booking/) or English (/en/booking/).
+interface Props { lang?: Lang }
+const { lang = 'he' } = Astro.props;
+const en = lang === 'en';
+const list = en ? toursEn : tours;
+// Minimal tour data for the client-side booking flow.
+const data = JSON.stringify(list.map((t) => ({
+  slug: t.slug, title: t.title, image: `/images/${t.images[0]}.webp`, tiers: t.tiers, min: t.minPeople,
+  addOns: t.addOns, single: !!t.singleAddOn, hotel: hotelPickup(t.slug), ahead: t.bookAheadHours,
+})));
+const L = en
+  ? {
+      title: 'Book a tour', desc: 'Complete your tour booking in Colombia with Medejoni.', h1: 'Complete your booking', steps: 'Booking steps',
+      s1: 'The tour', s2: 'Your details', s3: 'Confirm', step: (n: number) => `Step ${n}: `,
+      chosen: 'Your tour', tour: 'Tour', date: 'Date', people: 'People', cont: 'Continue', back: 'Back',
+      details: 'Your details', name: 'Full name', phone: 'Phone (WhatsApp)', phonePh: '+1 555 000 0000', email: 'Email',
+      hotel: 'Hotel name or pickup address', notes: 'Notes', confirm: 'Confirm and send',
+      howT: 'How does it work?', howX: 'After sending, you can pay a 40% deposit by credit card on Bold’s secure payment page (plus a 5% card fee on the deposit). The rest is paid in Colombia, in cash or to the guide. Yonatan gets back to you to confirm availability, usually the same day.',
+      agree1: 'I have read and agree to the ', terms: 'booking and cancellation terms', and: ' and the ', privacy: 'privacy policy', agree2: '. Cancellation up to 12 hours before the tour.',
+      send: 'Send booking', doneT: 'Booking received!', thanks: 'Thank you', doneX: '. Yonatan will get back to you soon to confirm the booking.',
+      payT: 'To hold your date, pay the deposit:', payDep: 'Deposit (40%)', payFee: 'Card fee (5%)', payNow: 'To pay now', payRest: 'Balance in Colombia (cash or to the guide)',
+      payBtn: 'Pay the deposit by card', payNote: 'Payment is made on Bold’s secure page. You are charged in Colombian pesos and your bank converts the amount.',
+      moreTours: 'More tours', fastWa: 'Want a quick answer? WhatsApp', summary: 'Booking summary', totalPay: 'Total', copNote: 'Prices in Colombian pesos (COP). 40% deposit by card (+5% card fee), the rest in cash in Colombia.',
+      edit: 'Change tour, date or people',
+    }
+  : {
+      title: 'הזמנת טיול', desc: 'השלמת הזמנה לטיול בקולומביה עם Medejoni.', h1: 'השלמת הזמנה', steps: 'שלבי ההזמנה',
+      s1: 'הטיול', s2: 'הפרטים שלכם', s3: 'אישור', step: (n: number) => `שלב ${n}: `,
+      chosen: 'הטיול שבחרתם', tour: 'טיול', date: 'תאריך', people: 'משתתפים', cont: 'המשך', back: 'חזרה',
+      details: 'הפרטים שלכם', name: 'שם מלא', phone: 'טלפון (וואטסאפ)', phonePh: '+972 50 000 0000', email: 'אימייל',
+      hotel: 'שם המלון או כתובת לאיסוף', notes: 'הערות', confirm: 'אישור ושליחה',
+      howT: 'איך זה עובד?', howX: 'אחרי השליחה תוכלו לשלם מקדמה של 40% בכרטיס אשראי, בדף התשלום המאובטח של Bold (בתוספת 5% עמלת אשראי על המקדמה). את היתרה משלמים בקולומביה, במזומן או למדריך. יונתן חוזר אליכם לאישור זמינות, בדרך כלל באותו יום.',
+      agree1: 'קראתי ואני מסכים/ה ל', terms: 'תנאי ההזמנה והביטול', and: ' ול', privacy: 'מדיניות הפרטיות', agree2: '. ביטול עד 12 שעות לפני הטיול.',
+      send: 'שליחת ההזמנה', doneT: 'ההזמנה התקבלה!', thanks: 'תודה', doneX: '. יונתן יחזור אליכם בהקדם לאישור ההזמנה.',
+      payT: 'כדי לשריין את התאריך, משלמים מקדמה:', payDep: 'מקדמה (40%)', payFee: 'עמלת אשראי (5%)', payNow: 'לתשלום עכשיו', payRest: 'יתרה בקולומביה (מזומן או למדריך)',
+      payBtn: 'לתשלום המקדמה באשראי', payNote: 'התשלום מתבצע בדף המאובטח של Bold. החיוב בפסו קולומביאני, והבנק שלכם ימיר לשקלים.',
+      moreTours: 'לעוד טיולים', fastWa: 'רוצים תשובה מהירה? וואטסאפ', summary: 'סיכום הזמנה', totalPay: 'סה״כ לתשלום', copNote: 'המחירים בפסו (COP). מקדמה של 40% באשראי (+5% עמלת אשראי), היתרה במזומן בקולומביה.',
+      edit: 'שינוי טיול, תאריך או משתתפים',
+    };
+---
+<Base lang={lang} title={L.title} description={L.desc} noindex bodyClass="no-wa-float">
+  <div class="wrap b-wrap" data-booking-root data-tours={data} data-wa={site.whatsapp} data-lang={lang}>
+    <h1 class="b-title">{L.h1}</h1>
+
+    <ol class="stepper" aria-label={L.steps}>
+      <li class="is-current" aria-current="step" data-step-ind="1"><span aria-hidden="true">1</span><span class="sr-only">{L.step(1)}</span>{L.s1}</li>
+      <li data-step-ind="2"><span aria-hidden="true">2</span><span class="sr-only">{L.step(2)}</span>{L.s2}</li>
+      <li data-step-ind="3"><span aria-hidden="true">3</span><span class="sr-only">{L.step(3)}</span>{L.s3}</li>
+    </ol>
+
+    <div class="b-layout">
+      <form class="b-form" name="booking" method="POST" data-netlify="true" netlify-honeypot="hp_field" novalidate data-form>
+        <input type="hidden" name="form-name" value="booking" />
+        <input type="hidden" name="addons" data-h-addons />
+        <input type="hidden" name="total" data-h-total />
+        <input type="hidden" name="tour_title" data-h-title />
+        <input type="hidden" name="addon_ids" data-h-addon-ids />
+        {en && <input type="hidden" name="lang" value="English" />}
+        <p hidden aria-hidden="true"><label>Leave empty <input name="hp_field" tabindex="-1" autocomplete="off" /></label></p>
+        <fieldset data-step="1">
+          <legend tabindex="-1">{L.chosen}</legend>
+          <label class="f">{L.tour}
+            <select name="tour" required data-f-tour>
+              {list.map((t) => <option value={t.slug}>{t.title}</option>)}
+            </select>
+          </label>
+          <div class="row">
+            <label class="f">{L.date}<input type="date" name="date" required data-f-date /></label>
+            <label class="f">{L.people}<input type="number" name="people" min="1" max="20" required data-f-people inputmode="numeric" pattern="[0-9]*" /></label>
+          </div>
+          <div data-f-addons></div>
+          <button type="button" class="btn btn-yellow" data-next>{L.cont}</button>
+        </fieldset>
+
+        <fieldset data-step="2" hidden>
+          <legend tabindex="-1">{L.details}</legend>
+          <div class="row">
+            <label class="f">{L.name}<input name="name" required autocomplete="name" /></label>
+            <label class="f">{L.phone}<input name="phone" type="tel" inputmode="tel" required autocomplete="tel" dir="ltr" placeholder={L.phonePh} /></label>
+          </div>
+          <label class="f">{L.email}<input name="email" type="email" inputmode="email" autocomplete="email" dir="ltr" /></label>
+          <label class="f" data-hotel-wrap>{L.hotel}<input name="hotel" autocomplete="street-address" /></label>
+          <HeardFrom class="f" lang={lang} />
+          <label class="f">{L.notes}<textarea name="notes" rows="3"></textarea></label>
+          <div class="nav-row">
+            <button type="button" class="btn btn-outline" data-back>{L.back}</button>
+            <button type="button" class="btn btn-yellow" data-next>{L.cont}</button>
+          </div>
+        </fieldset>
+
+        <fieldset data-step="3" hidden>
+          <legend tabindex="-1">{L.confirm}</legend>
+          <div class="note">
+            <strong>{L.howT}</strong>
+            <span>{L.howX}</span>
+          </div>
+          <dl class="review" data-review></dl>
+          <label class="check"><input type="checkbox" required data-terms /> {L.agree1}<a href={lp(lang, '/terms/')} target="_blank" rel="noopener">{L.terms}</a>{L.and}<a href={lp(lang, '/privacy/')} target="_blank" rel="noopener">{L.privacy}</a>{L.agree2}</label>
+          <div class="nav-row">
+            <button type="button" class="btn btn-outline" data-back>{L.back}</button>
+            <button type="submit" class="btn btn-yellow" data-submit>{L.send}</button>
+          </div>
+          <p class="err" data-err role="alert" hidden></p>
+        </fieldset>
+
+        <div class="done" data-done hidden tabindex="-1">
+          <span class="done-icon" aria-hidden="true">✓</span>
+          <h2>{L.doneT}</h2>
+          <p>{L.thanks} <span data-done-name></span>{L.doneX}</p>
+          <div class="pay" data-pay hidden>
+            <strong>{L.payT}</strong>
+            <dl class="pay-lines">
+              <dt>{L.payDep}</dt><dd class="ltr" data-pay-deposit></dd>
+              <dt>{L.payFee}</dt><dd class="ltr" data-pay-fee></dd>
+              <dt><strong>{L.payNow}</strong></dt><dd class="ltr"><strong data-pay-charge></strong></dd>
+              <dt>{L.payRest}</dt><dd class="ltr" data-pay-rest></dd>
+            </dl>
+            <a class="btn btn-yellow pay-btn" data-pay-link rel="noopener">{L.payBtn}</a>
+            <small>{L.payNote}</small>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+            <a href={lp(lang, '/tours/')} class="btn btn-outline">{L.moreTours}</a>
+            <a class="btn btn-yellow" target="_blank" rel="noopener" data-done-wa><Icon name="whatsapp" size={18} />{L.fastWa}</a>
+          </div>
+        </div>
+      </form>
+
+      <aside class="summary" aria-label={L.summary}>
+        <img data-s-img alt="" />
+        <div class="s-body">
+          <strong data-s-title style="font-size:19px"></strong>
+          <span data-s-meta style="color:var(--muted)"></span>
+          <ul data-s-lines></ul>
+          <div class="s-total" aria-live="polite"><span>{L.totalPay}</span><strong class="ltr" data-s-total></strong></div>
+          <small class="s-note" style="color:var(--muted)">{L.copNote}</small>
+          <button type="button" class="s-edit" data-s-edit hidden>{L.edit}</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .pay { display: flex; flex-direction: column; gap: 12px; border: 2px solid var(--yellow); border-radius: 16px; padding: 18px; margin: 8px auto 4px; max-width: 460px; text-align: start; }
+  .pay[hidden] { display: none; }
+  .pay-lines { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 0; }
+  .pay-lines dd { margin: 0; text-align: end; }
+  .pay-btn { justify-content: center; }
+  .pay small { color: var(--muted); }
+  .b-wrap { padding-top: 32px; padding-bottom: 72px; }
+  .b-title { font-size: clamp(26px, 4vw, 38px); font-weight: 800; margin-bottom: 24px; }
+  .stepper { list-style: none; padding: 0; margin: 0 0 32px; display: flex; gap: 8px; counter-reset: s; }
+  .stepper li { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: #fff; border: 1px solid var(--line); color: var(--muted); font-weight: 600; transition: all 250ms ease; }
+  .stepper li span { width: 30px; height: 30px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+  .stepper li.is-current { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
+  .stepper li.is-current span { color: var(--ink); }
+  .stepper li.is-done { background: var(--cream); border-color: var(--cream); color: var(--ink); }
+  .stepper li.is-done span { background: var(--yellow); }
+  .b-layout { display: grid; grid-template-columns: 1fr 360px; gap: 40px; align-items: start; }
+  .b-form fieldset { min-width: 0; border: 1px solid var(--line); border-radius: 20px; padding: 24px; margin: 0; display: flex; flex-direction: column; gap: 16px; animation: fade 300ms ease; }
+  .b-form fieldset[hidden] { display: none; }
+  .b-form legend { font-size: 22px; font-weight: 700; padding: 0 6px; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  :global(.f) { display: flex; flex-direction: column; gap: 6px; font-weight: 600; flex: 1; min-width: 0; }
+  :global(.f input), :global(.f select), :global(.f textarea) { min-height: 48px; border: 1px solid var(--line-strong); border-radius: 12px; padding: 10px 12px; font: inherit; font-weight: 400; background: #fff; }
+  :global(.f input:focus), :global(.f select:focus), :global(.f textarea:focus) { border-color: var(--blue); outline: 2px solid var(--blue); outline-offset: 1px; }
+  .f input[aria-invalid='true'] { border-color: var(--red); }
+  .row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .row .f { flex: 1 1 200px; }
+  .nav-row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .check { display: flex; gap: 10px; align-items: flex-start; min-height: 48px; font-size: 16px; cursor: pointer; }
+  .check input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--blue); flex: 0 0 auto; }
+  .note { background: var(--cream); border-inline-start: 5px solid var(--yellow); border-radius: 12px; padding: 14px 18px; display: flex; flex-direction: column; gap: 4px; line-height: 1.6; }
+  .review { display: grid; grid-template-columns: auto 1fr; gap: 8px 20px; margin: 0; font-size: 16px; }
+  .review :global(dt) { color: var(--muted); }
+  .review :global(dd) { margin: 0; font-weight: 600; }
+  .err { color: var(--red); font-weight: 600; }
+  .done { border: 1px solid var(--line); border-radius: 20px; padding: 40px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 14px; animation: fade 300ms ease; }
+  .done[hidden] { display: none; }
+  .done h2 { font-size: 30px; }
+  .done p { font-size: 18px; line-height: 1.6; color: var(--text); max-width: 460px; }
+  .done-icon { width: 72px; height: 72px; border-radius: 50%; background: var(--ok-bg); color: var(--ok); font-size: 36px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  :global(.addon-list) { display: flex; flex-direction: column; gap: 4px; }
+  :global(.addon-list label) { display: flex; align-items: center; gap: 10px; min-height: 48px; cursor: pointer; }
+  :global(.addon-list input) { width: 18px; height: 18px; accent-color: var(--blue); }
+  .summary { position: sticky; top: 90px; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-lg); }
+  .summary img { width: 100%; height: 180px; object-fit: cover; }
+  .s-body { padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .s-body ul { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-direction: column; gap: 6px; font-size: 15px; }
+  .s-body :global(li) { display: flex; justify-content: space-between; gap: 12px; }
+  .s-total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px dashed var(--line); padding-top: 12px; margin-top: 6px; }
+  .s-total strong { font-size: 24px; }
+  .s-edit { align-self: flex-start; background: none; border: 0; padding: 4px 0; font: inherit; font-size: 15px; font-weight: 600; color: var(--blue); text-decoration: underline; cursor: pointer; }
+  .s-edit[hidden] { display: none; }
+  @media (max-width: 900px) {
+    .b-wrap { padding-top: 20px; padding-bottom: 48px; }
+    .b-title { margin-bottom: 14px; }
+    .stepper { margin-bottom: 16px; gap: 6px; }
+    .b-layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+    /* Small summary at the top on phones, so the form starts on the first screen. */
+    .summary { position: static; order: -1; box-shadow: none; display: flex; align-items: center; }
+    .summary img { width: 84px; height: auto; align-self: stretch; flex: 0 0 auto; }
+    .s-body { padding: 12px 14px; gap: 2px; flex: 1; min-width: 0; }
+    .s-body ul, .s-note { display: none; }
+    .s-total { margin-top: 4px; padding-top: 6px; }
+    .s-total strong { font-size: 19px; }
+    .b-form fieldset { padding: 18px 16px; }
+    .stepper li { font-size: 13px; padding: 8px; gap: 6px; }
+    .stepper li span { width: 24px; height: 24px; }
+  }
+</style>
+
+<script>
+  type Tier = { min: number; price: number };
+  type AddOn = { id: string; name: string; price?: number };
+  import { quote } from '../lib/deposit.mjs';
+  type T = { slug: string; title: string; image: string; tiers: Tier[]; min: number; addOns: AddOn[]; single?: boolean; hotel: boolean; ahead: number };
+
+  const root = document.querySelector<HTMLElement>('[data-booking-root]')!;
+  const tours = JSON.parse(root.dataset.tours!) as T[];
+  const waNumber = root.dataset.wa ?? '';
+  const EN = root.dataset.lang === 'en';
+  const form = root.querySelector<HTMLFormElement>('[data-form]')!;
+  const steps = [...form.querySelectorAll<HTMLFieldSetElement>('[data-step]')];
+  const inds = [...root.querySelectorAll<HTMLElement>('[data-step-ind]')];
+  const fTour = form.querySelector<HTMLSelectElement>('[data-f-tour]')!;
+  const fDate = form.querySelector<HTMLInputElement>('[data-f-date]')!;
+  const fPeople = form.querySelector<HTMLInputElement>('[data-f-people]')!;
+  const addonsBox = form.querySelector<HTMLElement>('[data-f-addons]')!;
+  const fmt = (n: number) => n.toLocaleString('en-US') + ' COP';
+  // Local date (not UTC), same as the tour page.
+  const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  const q = new URLSearchParams(location.search);
+  let selectedAddons = new Set((q.get('addons') ?? '').split(',').filter(Boolean));
+  if (q.get('tour') && tours.some((t) => t.slug === q.get('tour'))) fTour.value = q.get('tour')!;
+  if (q.get('date')) fDate.value = q.get('date')!;
+  if (q.get('people')) fPeople.value = q.get('people')!;
+
+  const tour = () => tours.find((t) => t.slug === fTour.value)!;
+  const perPerson = (t: T, n: number) => [...t.tiers].sort((a, b) => b.min - a.min).find((x) => n >= x.min)?.price ?? t.tiers[0].price;
+
+  function setupTour() {
+    const t = tour();
+    const earliest = new Date(Date.now() + t.ahead * 3600 * 1000);
+    fDate.min = iso(earliest);
+    // Same default day as the tour page (the day after the earliest bookable day).
+    if (!fDate.value || fDate.value < fDate.min) fDate.value = iso(new Date(earliest.getTime() + 24 * 3600 * 1000));
+    fPeople.min = String(t.min);
+    if (!fPeople.value || Number(fPeople.value) < t.min) fPeople.value = String(Math.max(2, t.min));
+    selectedAddons = new Set([...selectedAddons].filter((id) => t.addOns.some((a) => a.id === id)));
+    addonsBox.innerHTML = '';
+    if (t.addOns.length) {
+      const fs = document.createElement('div');
+      fs.className = 'addon-list';
+      fs.innerHTML = EN ? (t.single ? '<strong>Add-ons (choose one)</strong>' : '<strong>Add-ons</strong>') : t.single ? '<strong>תוספות (אחת לבחירה)</strong>' : '<strong>תוספות</strong>';
+      t.addOns.forEach((a) => {
+        const l = document.createElement('label');
+        const cb = document.createElement('input');
+        cb.type = 'checkbox'; cb.value = a.id; cb.checked = selectedAddons.has(a.id);
+        cb.addEventListener('change', () => {
+          if (cb.checked && t.single) { selectedAddons.clear(); fs.querySelectorAll<HTMLInputElement>('input').forEach((o) => { if (o !== cb) o.checked = false; }); }
+          cb.checked ? selectedAddons.add(a.id) : selectedAddons.delete(a.id); render();
+        });
+        l.append(cb, ` ${a.name} `);
+        const s = document.createElement('span');
+        s.style.cssText = 'margin-inline-start:auto;color:var(--muted);font-size:14px';
+        s.textContent = a.price ? `+${a.price.toLocaleString('en-US')} ${EN ? 'per person' : 'לאדם'}` : EN ? 'Price on request' : 'מחיר בתיאום';
+        l.append(s);
+        fs.append(l);
+      });
+      addonsBox.append(fs);
+    }
+    const hotel = form.querySelector<HTMLElement>('[data-hotel-wrap]')!;
+    hotel.hidden = !t.hotel;
+    render();
+  }
+
+  function totals() {
+    const t = tour();
+    const n = Math.max(t.min, Number(fPeople.value) || t.min);
+    const pp = perPerson(t, n);
+    const extras = t.addOns.filter((a) => selectedAddons.has(a.id));
+    const total = (pp + extras.reduce((s, a) => s + (a.price ?? 0), 0)) * n;
+    return { t, n, pp, extras, total };
+  }
+
+  function render() {
+    const { t, n, pp, extras, total } = totals();
+    root.querySelector<HTMLImageElement>('[data-s-img]')!.src = t.image;
+    root.querySelector('[data-s-title]')!.textContent = t.title;
+    root.querySelector('[data-s-meta]')!.textContent = `${fDate.value ? new Date(fDate.value + 'T12:00').toLocaleDateString(EN ? 'en-US' : 'he-IL', { weekday: 'long', day: 'numeric', month: 'long' }) : ''} · ${n} ${EN ? 'people' : 'משתתפים'}`;
+    const lines = root.querySelector('[data-s-lines]')!;
+    lines.innerHTML = '';
+    const add = (a: string, b: string) => { const li = document.createElement('li'); li.innerHTML = `<span></span><span class="ltr"></span>`; li.children[0].textContent = a; li.children[1].textContent = b; lines.append(li); };
+    add(`${n} × ${pp.toLocaleString('en-US')}`, fmt(pp * n));
+    extras.forEach((e) => add(e.name, e.price ? fmt(e.price * n) : EN ? 'On request' : 'בתיאום'));
+    root.querySelector('[data-s-total]')!.textContent = fmt(total);
+  }
+
+  const editBtn = root.querySelector<HTMLButtonElement>('[data-s-edit]')!;
+  function go(n: number, scroll = true) {
+    cur = n;
+    editBtn.hidden = n === 0;
+    steps.forEach((s, i) => (s.hidden = i !== n));
+    inds.forEach((el, i) => { el.classList.toggle('is-current', i === n); el.classList.toggle('is-done', i < n); el.toggleAttribute('aria-current', i === n); if (i === n) el.setAttribute('aria-current', 'step'); });
+    if (n === 2) fillReview();
+    if (!scroll) return;
+    root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Keyboard and screen-reader users land on the new step's title.
+    steps[n]?.querySelector<HTMLElement>('legend')?.focus({ preventScroll: true });
+  }
+  function valid(step: HTMLFieldSetElement) {
+    let ok = true;
+    step.querySelectorAll<HTMLInputElement>('input[required],select[required]').forEach((el) => {
+      if (el.closest('[hidden]')) return;
+      const good = el.checkValidity();
+      el.setAttribute('aria-invalid', String(!good));
+      if (!good && ok) { el.reportValidity(); ok = false; }
+    });
+    return ok;
+  }
+  function fillReview() {
+    const { t, n, extras, total } = totals();
+    const fd = new FormData(form);
+    const k = EN
+      ? ['Tour', 'Date', 'People', 'Add-ons', 'None', 'Name', 'Phone', 'Total', 'Deposit now (40% + 5% fee)', 'Balance in Colombia']
+      : ['טיול', 'תאריך', 'משתתפים', 'תוספות', 'ללא', 'שם', 'טלפון', 'סה״כ', 'מקדמה עכשיו (40% + 5% עמלה)', 'יתרה בקולומביה'];
+    const rows: [string, string][] = [
+      [k[0], t.title], [k[1], fDate.value], [k[2], String(n)],
+      [k[3], extras.map((e) => e.name).join(', ') || k[4]],
+      [k[5], String(fd.get('name') ?? '')], [k[6], String(fd.get('phone') ?? '')],
+      [k[7], fmt(total)],
+    ];
+    const dq = quote(t, n, extras.map((e) => e.id));
+    rows.push([k[8], fmt(dq.charge)], [k[9], fmt(dq.remainder)]);
+    const dl = root.querySelector('[data-review]')!;
+    dl.innerHTML = '';
+    rows.forEach(([k, v]) => { const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dl.append(dt, dd); });
+  }
+
+  let cur = 0;
+  form.querySelectorAll('[data-next]').forEach((b) => b.addEventListener('click', () => { if (valid(steps[cur])) go(cur + 1); }));
+  form.querySelectorAll('[data-back]').forEach((b) => b.addEventListener('click', () => go(cur - 1)));
+  editBtn.addEventListener('click', () => go(0));
+  fTour.addEventListener('change', setupTour);
+  [fDate, fPeople].forEach((el) => el.addEventListener('input', render));
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const terms = form.querySelector<HTMLInputElement>('[data-terms]')!;
+    if (!terms.checked) { terms.reportValidity(); return; }
+    const { t, n, extras, total } = totals();
+    const fd = new FormData(form);
+    const w = EN
+      ? ['Hi Yonatan, I would like to book:', 'Tour', 'Date', 'People', 'Add-ons', 'Estimated total', 'Name', 'Phone', 'Email', 'Pickup from', 'Notes']
+      : ['היי יונתן, אני רוצה להזמין:', 'טיול', 'תאריך', 'משתתפים', 'תוספות', 'סה״כ משוער', 'שם', 'טלפון', 'אימייל', 'איסוף מ', 'הערות'];
+    const msg = [
+      w[0],
+      `${w[1]}: ${t.title}`,
+      `${w[2]}: ${fDate.value}`,
+      `${w[3]}: ${n}`,
+      extras.length ? `${w[4]}: ${extras.map((x) => x.name).join(', ')}` : '',
+      `${w[5]}: ${fmt(total)}`,
+      `${w[6]}: ${fd.get('name')}`,
+      `${w[7]}: ${fd.get('phone')}`,
+      fd.get('email') ? `${w[8]}: ${fd.get('email')}` : '',
+      fd.get('hotel') ? `${w[9]}: ${fd.get('hotel')}` : '',
+      fd.get('notes') ? `${w[10]}: ${fd.get('notes')}` : '',
+    ].filter(Boolean).join('\n');
+    // Send the booking to Netlify Forms, which emails it to Jonathan.
+    form.querySelector<HTMLInputElement>('[data-h-addons]')!.value = extras.map((x) => x.name).join(', ');
+    form.querySelector<HTMLInputElement>('[data-h-total]')!.value = fmt(total);
+    form.querySelector<HTMLInputElement>('[data-h-title]')!.value = t.title;
+    form.querySelector<HTMLInputElement>('[data-h-addon-ids]')!.value = extras.map((x) => x.id).join(',');
+    const btn = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const err = form.querySelector<HTMLElement>('[data-err]')!;
+    btn.disabled = true;
+    btn.textContent = EN ? 'Sending...' : 'שולח...';
+    err.hidden = true;
+    try {
+      const res = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: (() => {
+          const data = new URLSearchParams(new FormData(form) as any);
+          // Partner who referred this visitor (set by the site layout from ?utm_source=..., kept 30 days).
+          try {
+            const saved = JSON.parse(localStorage.getItem('mj_partner') || 'null');
+            if (saved && saved.until > Date.now()) data.set('partner', saved.code);
+          } catch { /* storage blocked */ }
+          return data.toString();
+        })(),
+      });
+      if (res.status === 429) {
+        // Spam guard: more than 3 sends in 30 minutes from this address.
+        (window as any).mjTooMany(err);
+        err.hidden = false;
+        return;
+      }
+      if (!res.ok) throw new Error(String(res.status));
+      // When Bold is connected, the server answers with the deposit payment link.
+      let pay: { url: string; deposit: number; fee: number; charge: number; remainder: number } | null = null;
+      try { pay = (JSON.parse(await res.text()) as any).pay ?? null; } catch { /* plain "ok": no online payment */ }
+      // Google Analytics: count the booking request (only when analytics is on).
+      (window as any).gtag?.('event', 'generate_lead', { form_name: 'booking' });
+      steps.forEach((s) => (s.hidden = true));
+      inds.forEach((el) => { el.classList.remove('is-current'); el.classList.add('is-done'); el.removeAttribute('aria-current'); });
+      const done = form.querySelector<HTMLElement>('[data-done]')!;
+      done.querySelector('[data-done-name]')!.textContent = String(fd.get('name') ?? '');
+      done.querySelector<HTMLAnchorElement>('[data-done-wa]')!.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
+      if (pay && /^https:\/\/checkout\.bold\.co\//.test(pay.url)) {
+        const box = done.querySelector<HTMLElement>('[data-pay]')!;
+        box.querySelector('[data-pay-deposit]')!.textContent = fmt(pay.deposit);
+        box.querySelector('[data-pay-fee]')!.textContent = fmt(pay.fee);
+        box.querySelector('[data-pay-charge]')!.textContent = fmt(pay.charge);
+        box.querySelector('[data-pay-rest]')!.textContent = fmt(pay.remainder);
+        box.querySelector<HTMLAnchorElement>('[data-pay-link]')!.href = pay.url;
+        box.hidden = false;
+        (window as any).gtag?.('event', 'begin_checkout', { value: pay.charge, currency: 'COP' });
+      }
+      done.hidden = false;
+      done.focus();
+      root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch {
+      err.textContent = EN ? 'Something went wrong. Please try again, or message Yonatan on WhatsApp.' : 'משהו השתבש בשליחה. נסו שוב, או כתבו ליונתן בוואטסאפ.';
+      err.hidden = false;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = EN ? 'Send booking' : 'שליחת ההזמנה';
+    }
+  });
+
+  setupTour();
+  // Coming from a tour page ("להזמנה") with the trip, date and people already chosen: go straight to
+  // "הפרטים שלכם". Step 1 is shown only when the trip has add-ons to pick. The summary shows the choice.
+  if (q.get('tour') === fTour.value && q.get('date') && q.get('people') && !tour().addOns.length) go(1, false);
+</script>

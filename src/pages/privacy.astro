@@ -1,0 +1,72 @@
+---
+// Privacy policy (Hebrew + Spanish). In Colombia: Ley 1581 de 2012 (Habeas Data) and Decreto 1377 de 2013.
+// Keep the "what we collect" list in sync with the forms and with server.mjs (Resend, Supabase, Bold, GA4).
+import LegalPage from '../components/LegalPage.astro';
+import { site } from '../data/site';
+
+const c = site.company;
+---
+<LegalPage title="מדיניות פרטיות" crumb="מדיניות פרטיות" description="מדיניות הפרטיות של Medejoni: איזה מידע נאסף באתר, למה, עם מי הוא משותף ואיך מבקשים לעיין בו או למחוק אותו." intro="איזה מידע אנחנו אוספים כשאתם משתמשים באתר או מזמינים, ומה אנחנו עושים איתו.">
+  <h2>האחראי על המידע</h2>
+  <p><span lang="es">{c.name}</span> (<span class="ltr">NIT {c.nit}</span>), <span lang="es">{c.address}</span>. אימייל: <a href={`mailto:${site.email}`} class="ltr">{site.email}</a>. וואטסאפ: <span class="ltr">+{site.whatsapp}</span>.</p>
+
+  <h2>איזה מידע אנחנו אוספים</h2>
+  <ul>
+    <li><strong>מה שאתם ממלאים בטפסים:</strong> שם, טלפון, אימייל, תאריכים, מספר משתתפים, מלון לאיסוף, הערות ו"איך הגעתם אלינו".</li>
+    <li><strong>תשלום:</strong> פרטי כרטיס האשראי מוקלדים רק בדף התשלום של Bold ולא מגיעים אלינו. אנחנו מקבלים מ-Bold רק את סטטוס התשלום והסכום.</li>
+    <li><strong>שימוש באתר:</strong> Google Analytics אוסף נתונים סטטיסטיים (עמודים שנצפו, סוג מכשיר, מדינה) בעזרת עוגיות.</li>
+    <li><strong>הפניות משותפים:</strong> אם הגעתם דרך קישור של שותף, נשמרים מזהה אקראי ואנונימי בעוגייה, קוד השותף ולחיצות על וואטסאפ. לא נשמרים שם, טלפון או כתובת IP.</li>
+  </ul>
+
+  <h2>למה אנחנו משתמשים במידע</h2>
+  <ul>
+    <li>לטפל בהזמנה: לאשר זמינות, לתאם איסוף, לגבות מקדמה ולחזור אליכם.</li>
+    <li>לשירות לקוחות, ולעמידה בחובות חשבונאיות וחוקיות.</li>
+    <li>לשפר את האתר ולמדוד מאיפה מגיעים מבקרים.</li>
+  </ul>
+  <p>אנחנו לא מוכרים מידע אישי ולא שולחים דיוור שיווקי בלי הסכמה.</p>
+
+  <h2>עם מי המידע משותף</h2>
+  <ul>
+    <li>הנהג או המדריך של הטיול: רק שם, טלפון ומקום איסוף.</li>
+    <li>ספקי שירות שעובדים בשבילנו: Bold (תשלומים), Resend (שליחת מיילים), Railway (אחסון האתר), Supabase (סטטיסטיקה של הפניות), Google (סטטיסטיקה). חלקם שומרים מידע מחוץ לקולומביה.</li>
+    <li>רשויות, רק אם החוק מחייב.</li>
+  </ul>
+
+  <h2>כמה זמן שומרים</h2>
+  <p>פרטי הזמנה נשמרים כל עוד צריך לטיפול בהזמנה ולחובות חשבונאיות וחוקיות. אחר כך הם נמחקים.</p>
+
+  <h2>הזכויות שלכם</h2>
+  <p>לפי החוק הקולומביאני (Ley 1581 de 2012) אתם יכולים לבקש לעיין במידע שלכם, לעדכן או לתקן אותו, למחוק אותו ולבטל הסכמה. שלחו בקשה ל-<a href={`mailto:${site.email}`} class="ltr">{site.email}</a> ונענה תוך 10 ימי עסקים (שאלה) או 15 ימי עסקים (תלונה או בקשת תיקון). אפשר גם לפנות לרשות הקולומביאנית Superintendencia de Industria y Comercio.</p>
+
+  <h2>עוגיות</h2>
+  <p>האתר משתמש בעוגיות של Google Analytics ובעוגיות אנונימיות של הפניות משותפים. אפשר לחסום או למחוק עוגיות בהגדרות הדפדפן, והאתר ימשיך לעבוד.</p>
+  <p>שליחת טופס באתר מהווה הסכמה לשימוש במידע לפי המדיניות הזו.</p>
+  <p class="updated">עודכן לאחרונה: נובמבר 2026.</p>
+
+  <Fragment slot="es">
+    <h2>Política de tratamiento de datos personales</h2>
+    <p><strong>Responsable:</strong> {c.name}, NIT {c.nit}, {c.address}. Correo: <a href={`mailto:${site.email}`}>{site.email}</a>. WhatsApp: +{site.whatsapp}. Esta política se adopta conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013.</p>
+
+    <h2>Datos que recolectamos</h2>
+    <ul>
+      <li>Datos de los formularios: nombre, teléfono, correo, fechas, número de personas, hotel de recogida, notas y cómo nos conoció.</li>
+      <li>Pagos: los datos de la tarjeta se ingresan solo en la pasarela de Bold y no llegan a nosotros. Bold nos informa solo el estado y el valor del pago.</li>
+      <li>Navegación: Google Analytics recoge datos estadísticos mediante cookies.</li>
+      <li>Referidos: si llega por un enlace de un aliado, se guarda un identificador anónimo en una cookie, el código del aliado y los clics en WhatsApp, sin nombre, teléfono ni IP.</li>
+    </ul>
+
+    <h2>Finalidades</h2>
+    <p>Gestionar reservas (confirmar disponibilidad, coordinar recogida, cobrar el anticipo y contactarlo), atención al cliente, cumplimiento de obligaciones contables y legales, y mejora del sitio. No vendemos datos personales ni enviamos publicidad sin autorización.</p>
+
+    <h2>Transmisión y transferencia</h2>
+    <p>Compartimos los datos necesarios con el conductor o guía del tour y con proveedores que actúan por nuestra cuenta: Bold (pagos), Resend (correo), Railway (hosting), Supabase (estadísticas de referidos) y Google (analítica). Algunos almacenan datos fuera de Colombia.</p>
+
+    <h2>Derechos del titular</h2>
+    <p>Usted puede conocer, actualizar, rectificar y suprimir sus datos, y revocar la autorización, escribiendo a {site.email}. Las consultas se responden en máximo 10 días hábiles y los reclamos en máximo 15 días hábiles. También puede acudir a la Superintendencia de Industria y Comercio.</p>
+
+    <h2>Cookies y autorización</h2>
+    <p>Usamos cookies de Google Analytics y cookies anónimas de referidos; puede bloquearlas en su navegador. Al enviar un formulario en el sitio, usted autoriza el tratamiento de sus datos según esta política.</p>
+    <p class="updated">Última actualización: noviembre de 2026.</p>
+  </Fragment>
+</LegalPage>

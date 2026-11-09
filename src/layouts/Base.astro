@@ -4,10 +4,14 @@ import '../styles/global.css';
 // The font is served from our own site (no extra trip to Google); the Hebrew part is preloaded.
 import rubikHebrew from '@fontsource-variable/rubik/files/rubik-hebrew-wght-normal.woff2?url';
 import Icon from '../components/Icon.astro';
+import PromoPopup from '../components/PromoPopup.astro';
 import { site, waLink } from '../data/site';
 import { tours } from '../data/tours';
 import { guides } from '../data/guides';
 import { services } from '../data/services';
+import { toursEn } from '../data/tours.en';
+import { servicesEn } from '../data/services.en';
+import { ui, lp, translated, type Lang } from '../i18n';
 import { imageSize } from '../lib/image-size.mjs';
 import { join } from 'node:path';
 
@@ -25,23 +29,40 @@ interface Props {
   imageAlt?: string;
   /** Hide the floating WhatsApp button (booking page, or pages with their own sticky booking bar). */
   bodyClass?: string;
+  /** Page language. Hebrew is the main site; English pages live under /en/. */
+  lang?: Lang;
 }
-const { title, description, image = '/images/guatape-colombia-el-penol.jpg', jsonLd, nav, waText, noindex, ogType = 'website', imageAlt, bodyClass } = Astro.props;
+const { title, description, image = '/images/guatape-colombia-el-penol.jpg', jsonLd, nav, waText, noindex, ogType = 'website', imageAlt, bodyClass, lang = 'he' } = Astro.props;
+const t = ui[lang];
+const en = lang === 'en';
 const fullTitle = title.includes(site.name) || title.includes("מדג'וני") ? title : `${title} | ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogPath = image.replace(/\.webp$/, '.jpg');
 const ogImage = new URL(ogPath, Astro.site);
 const ogSize = imageSize(join(process.cwd(), 'public', ogPath));
 const siteUrl = new URL('/', Astro.site).toString();
-const wa = waLink(waText);
+const wa = waLink(waText ?? t.waDefault);
+// The same page in the other language (hreflang + the language link in the header).
+const path = Astro.url.pathname;
+const hasTwin = !noindex && translated(path);
+const hePath = path.replace(/^\/en\//, '/');
+const enPath = lp('en', hePath);
+const heUrl = new URL(hePath, Astro.site);
+const enUrl = new URL(enPath, Astro.site);
+// The switch keeps the visitor on the same page (on booking, the script below also carries over the ?tour= choice); hreflang only on indexed pages.
+const twinForSwitch = translated(path) || /^\/(en\/)?booking\/$/.test(path);
+const switchHref = (en ? (twinForSwitch ? hePath : '/') : twinForSwitch ? enPath : '/en/');
+// The English site has no destination or article pages (yet).
 const navItems = [
-  { key: 'home', href: '/', label: 'דף הבית' },
-  { key: 'destinations', href: '/destinations/', label: 'יעדים' },
-  { key: 'tours', href: '/tours/', label: 'טיולים' },
-  { key: 'services', href: '/services/', label: 'הסעות וטיסות' },
-  { key: 'guides', href: '/guides/', label: 'מאמרים' },
-  { key: 'about', href: '/about/', label: 'מי אני' },
-];
+  { key: 'home', href: '/' },
+  { key: 'destinations', href: '/destinations/' },
+  { key: 'tours', href: '/tours/' },
+  { key: 'services', href: '/services/' },
+  { key: 'guides', href: '/guides/' },
+  { key: 'about', href: '/about/' },
+]
+  .filter((n) => !en || (n.key !== 'destinations' && n.key !== 'guides'))
+  .map((n) => ({ ...n, href: lp(lang, n.href), label: t.nav[n.key as keyof typeof t.nav] }));
 // The business, once per page. Other schema (tours, articles) points to it by @id.
 const orgLd = {
   '@context': 'https://schema.org',
@@ -55,28 +76,31 @@ const orgLd = {
   image: new URL('/images/israeli-guide-medellin-yonatan.jpg', Astro.site).toString(),
   email: site.email,
   telephone: site.whatsapp ? `+${site.whatsapp}` : undefined,
-  founder: { '@type': 'Person', '@id': `${siteUrl}#yonatan`, name: 'Yonatan Milman', alternateName: site.owner, url: new URL('/about/', Astro.site).toString() },
+  founder: { '@type': 'Person', '@id': `${siteUrl}#yonatan`, name: 'Yonatan Milman', alternateName: ui.he.owner, url: new URL('/about/', Astro.site).toString() },
   address: { '@type': 'PostalAddress', addressLocality: 'Medellín', addressRegion: 'Antioquia', addressCountry: 'CO' },
   areaServed: { '@type': 'Country', name: 'Colombia' },
   currenciesAccepted: 'COP',
   knowsLanguage: ['he', 'es', 'en'],
-  sameAs: [site.instagram, site.tiktok].filter((u) => !/\.com\/?$/.test(u)),
+  sameAs: [site.instagram, site.tiktok, site.googleBusiness].filter((u) => !/\.com\/?$/.test(u)),
 };
-const footerTours = tours.filter((t) => t.featured).slice(0, 4);
+const footerTours = (en ? toursEn : tours).filter((x) => x.featured).slice(0, 4);
+const footerServices = en ? servicesEn : services;
 ---
 <!doctype html>
-<html lang="he" dir="rtl">
+<html lang={lang} dir={t.dir}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{fullTitle}</title>
   <meta name="description" content={description} />
   {noindex ? <meta name="robots" content="noindex, follow" /> : <link rel="canonical" href={canonical} />}
-  {!noindex && <link rel="alternate" hreflang="he" href={canonical} />}
-  {!noindex && <link rel="alternate" hreflang="x-default" href={canonical} />}
+  {!noindex && <link rel="alternate" hreflang="he" href={hasTwin ? heUrl : canonical} />}
+  {hasTwin && <link rel="alternate" hreflang="en" href={enUrl} />}
+  {!noindex && <link rel="alternate" hreflang="x-default" href={hasTwin ? heUrl : canonical} />}
   {site.gscVerification && <meta name="google-site-verification" content={site.gscVerification} />}
+  {site.bingVerification && <meta name="msvalidate.01" content={site.bingVerification} />}
   <meta property="og:type" content={ogType} />
-  <meta property="og:locale" content="he_IL" />
+  <meta property="og:locale" content={t.locale} />
   <meta property="og:site_name" content={site.name} />
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
@@ -112,23 +136,24 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
   )}
 </head>
 <body class={bodyClass}>
-  <a href="#main" class="sr-only skip-link">דלג לתוכן הראשי</a>
+  <a href="#main" class="sr-only skip-link">{t.skip}</a>
   <header class="site-header">
     <div class="wrap">
-      <a href="/" class="logo">
+      <a href={lp(lang, '/')} class="logo">
         <img class="logo-img" src="/images/logo-112.webp" srcset="/images/logo-112.webp 1x, /images/logo-224.webp 2x" width="56" height="56" alt="" />
         <span class="logo-text">
           <span class="logo-name">Medejoni</span>
-          <span class="logo-sub">{site.tagline}</span>
+          <span class="logo-sub">{t.tagline}</span>
         </span>
-        <span class="sr-only">, לדף הבית</span>
+        <span class="sr-only">{t.toHome}</span>
       </a>
-      <nav class="main-nav" aria-label="ניווט ראשי">
-        {navItems.map((n) => <a href={n.href} aria-current={(nav ?? (Astro.url.pathname === '/' ? 'home' : undefined)) === n.key ? 'page' : undefined}>{n.label}</a>)}
+      <nav class="main-nav" aria-label={t.mainNav}>
+        {navItems.map((n) => <a href={n.href} aria-current={(nav ?? (Astro.url.pathname === lp(lang, '/') ? 'home' : undefined)) === n.key ? 'page' : undefined}>{n.label}</a>)}
       </nav>
-      <button class="menu-btn" type="button" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="mobile-nav" data-menu-btn><Icon name="menu" size={26} /></button>
+      <a href={switchHref} class="lang-switch" lang={en ? 'he' : 'en'} hreflang={en ? 'he' : 'en'} aria-label={t.switchAria}>{t.switchLabel}</a>
+      <button class="menu-btn" type="button" aria-label={t.openMenu} aria-expanded="false" aria-controls="mobile-nav" data-menu-btn><Icon name="menu" size={26} /></button>
     </div>
-    <nav id="mobile-nav" class="mobile-nav" aria-label="תפריט נייד">
+    <nav id="mobile-nav" class="mobile-nav" aria-label={t.mobileNav}>
       {[...navItems.filter((n) => n.key === 'home' || n.key === 'about'), ...navItems.filter((n) => n.key !== 'home' && n.key !== 'about')].map((n) => <a href={n.href}>{n.label}</a>)}
     </nav>
     <div class="flag flag-thin" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -140,61 +165,71 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
     <div class="top">
       <div class="wrap cols">
         <details class="col" open data-foot-group>
-          <summary><strong>הטיולים שלי</strong></summary>
+          <summary><strong>{t.myTours}</strong></summary>
           <div class="col-links">
-            {footerTours.map((t) => <a href={`/tours/${t.slug}/`}>{t.title}</a>)}
-            <a href="/tours/" style="color: var(--blue); font-weight: 600">לכל הטיולים ←</a>
+            {footerTours.map((x) => <a href={lp(lang, `/tours/${x.slug}/`)}>{x.title}</a>)}
+            <a href={lp(lang, '/tours/')} style="color: var(--blue); font-weight: 600">{t.allToursArrow}</a>
+          </div>
+        </details>
+        {!en && (
+          <details class="col" open data-foot-group>
+            <summary><strong>{t.articles}</strong></summary>
+            <div class="col-links">
+              {guides.slice(0, 4).map((g) => <a href={`/guides/${g.slug}/`}>{g.seoTitle ?? g.title}</a>)}
+            </div>
+          </details>
+        )}
+        <details class="col" open data-foot-group>
+          <summary><strong>{t.servicesTitle}</strong></summary>
+          <div class="col-links">
+            {footerServices.map((x) => <a href={lp(lang, `/services/#${x.id}`)}>{x.title}</a>)}
           </div>
         </details>
         <details class="col" open data-foot-group>
-          <summary><strong>מאמרים</strong></summary>
+          <summary><strong>{t.info}</strong></summary>
           <div class="col-links">
-            {guides.slice(0, 4).map((g) => <a href={`/guides/${g.slug}/`}>{g.seoTitle ?? g.title}</a>)}
-          </div>
-        </details>
-        <details class="col" open data-foot-group>
-          <summary><strong>שירותים</strong></summary>
-          <div class="col-links">
-            {services.map((s) => <a href={`/services/#${s.id}`}>{s.title}</a>)}
-          </div>
-        </details>
-        <details class="col" open data-foot-group>
-          <summary><strong>מידע</strong></summary>
-          <div class="col-links">
-            <a href="/about/">מי אני</a>
-            <a href="/tours/#faq">שאלות נפוצות</a>
-            <a href="/accessibility/">הצהרת נגישות</a>
-            <span style="color:var(--muted)">ביטול עד 12 שעות לפני הטיול</span>
+            <a href={lp(lang, '/about/')}>{t.nav.about}</a>
+            <a href={lp(lang, '/tours/#faq')}>{t.faq}</a>
+            {!en && <a href="/accessibility/">{t.accessibility}</a>}
+            <a href={lp(lang, '/terms/')}>{t.terms}</a>
+            <a href={lp(lang, '/privacy/')}>{t.privacy}</a>
+            <span style="color:var(--muted)">{t.cancelNote}</span>
           </div>
         </details>
         <div class="col">
-          <strong>דברו איתי</strong>
-          <span style="color: var(--muted); line-height: 1.6">יונתן עונה לכם אישית בוואטסאפ.</span>
-          <a href={wa} class="btn btn-yellow btn-pill" style="align-self: flex-start; color: var(--ink)" target="_blank" rel="noopener">וואטסאפ</a>
+          <strong>{t.talkToMe}</strong>
+          <span style="color: var(--muted); line-height: 1.6">{t.talkToMeSub}</span>
+          <a href={wa} class="btn btn-yellow btn-pill" style="align-self: flex-start; color: var(--ink)" target="_blank" rel="noopener">{t.whatsapp}</a>
         </div>
       </div>
     </div>
     <div class="bottom">
       <div class="wrap">
-        <img class="footer-logo" src="/images/logo-224.webp" width="96" height="96" alt="Medejoni – חוויה אותנטית בקולומביה" loading="lazy" decoding="async" />
-        <span>© {new Date().getFullYear()} Medejoni · {site.owner}. כל הזכויות שמורות.</span>
+        <img class="footer-logo" src="/images/logo-224.webp" width="96" height="96" alt={t.logoAlt} loading="lazy" decoding="async" />
+        <span>© {new Date().getFullYear()} Medejoni · {t.owner}. {t.rights}<br /><span class="ltr" lang="es">{site.company.name} · NIT {site.company.nit} · {site.company.address}</span></span>
         <span class="social">
-          <a href={site.instagram} aria-label="אינסטגרם" target="_blank" rel="noopener"><Icon name="instagram" size={24} /></a>
-          <a href={site.tiktok} aria-label="טיקטוק" target="_blank" rel="noopener"><Icon name="tiktok" size={24} /></a>
+          <a href={site.instagram} aria-label={t.instagram} target="_blank" rel="noopener"><Icon name="instagram" size={24} /></a>
+          <a href={site.tiktok} aria-label={t.tiktok} target="_blank" rel="noopener"><Icon name="tiktok" size={24} /></a>
         </span>
       </div>
     </div>
-    <a href={waLink('היי יונתן, יש לי שאלה')} class="wa-float" target="_blank" rel="noopener" aria-label="שאלות? דברו איתנו בוואטסאפ"><Icon name="whatsapp" size={28} /></a>
+    <a href={waLink(t.waQuestion)} class="wa-float" target="_blank" rel="noopener" aria-label={t.waFloat}><Icon name="whatsapp" size={28} /></a>
   </footer>
+  {!en && <PromoPopup />}
 
   <script>
+    // English pages (/en/) use English messages in these scripts.
+    const EN = document.documentElement.lang === 'en';
+    // Language switch on the booking page: keep the chosen tour and group size.
+    const sw = document.querySelector<HTMLAnchorElement>('.lang-switch');
+    if (sw && location.search && /\/booking\/$/.test(sw.pathname)) sw.search = location.search;
     // Mobile menu
     const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
     const menu = document.getElementById('mobile-nav');
     const setMenu = (open: boolean) => {
       menu?.classList.toggle('is-open', open);
       btn?.setAttribute('aria-expanded', String(open));
-      btn?.setAttribute('aria-label', open ? 'סגירת תפריט' : 'פתיחת תפריט');
+      btn?.setAttribute('aria-label', open ? (EN ? 'Close menu' : 'סגירת תפריט') : (EN ? 'Open menu' : 'פתיחת תפריט'));
     };
     btn?.addEventListener('click', () => setMenu(!menu?.classList.contains('is-open')));
     // Escape closes the mobile menu and returns focus to its button.
@@ -246,12 +281,12 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
 
     // Message for a visitor who sent more than 3 forms in 30 minutes (the server answers 429), with a WhatsApp link.
     (window as any).mjTooMany = (el: HTMLElement) => {
-      el.textContent = 'כבר קיבלנו את הפנייה שלכם 🙏 אפשר לשלוח שוב בעוד חצי שעה, או ';
+      el.textContent = EN ? 'We already received your message 🙏 You can send again in half an hour, or ' : 'כבר קיבלנו את הפנייה שלכם 🙏 אפשר לשלוח שוב בעוד חצי שעה, או ';
       const a = document.createElement('a');
       a.href = document.querySelector<HTMLAnchorElement>('.wa-float')?.href || 'https://wa.me/';
       a.target = '_blank';
       a.rel = 'noopener';
-      a.textContent = 'לכתוב לי עכשיו בוואטסאפ';
+      a.textContent = EN ? 'message me on WhatsApp now' : 'לכתוב לי עכשיו בוואטסאפ';
       a.style.textDecoration = 'underline';
       el.append(a);
     };
@@ -265,7 +300,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
         const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
         const label = btn.textContent;
         btn.disabled = true;
-        btn.textContent = 'שולח...';
+        btn.textContent = EN ? 'Sending...' : 'שולח...';
         status.className = 'form-status full';
         status.textContent = '';
         try {
@@ -289,10 +324,10 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
           (window as any).gtag?.('event', 'generate_lead', { form_name: form.getAttribute('name') || 'lead' });
           form.reset();
           status.classList.add('ok');
-          status.textContent = 'תודה! קיבלנו את הפרטים, ויונתן יחזור אליכם בהקדם.';
+          status.textContent = EN ? 'Thank you! We got your details, and Yonatan will get back to you soon.' : 'תודה! קיבלנו את הפרטים, ויונתן יחזור אליכם בהקדם.';
         } catch {
           status.classList.add('err');
-          status.textContent = 'משהו השתבש בשליחה. נסו שוב בעוד רגע.';
+          status.textContent = EN ? 'Something went wrong. Please try again in a moment.' : 'משהו השתבש בשליחה. נסו שוב בעוד רגע.';
         } finally {
           btn.disabled = false;
           btn.textContent = label;
@@ -321,15 +356,16 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
         const first = track.firstElementChild as HTMLElement | null;
         return first ? first.getBoundingClientRect().width + 24 : 300;
       };
-      // RTL: scrollLeft is 0 at start and negative going forward.
+      // RTL: scrollLeft is 0 at start and negative going forward. LTR (English): positive going forward.
+      const fwd = EN ? 1 : -1;
       const update = () => {
         const max = track.scrollWidth - track.clientWidth;
         const pos = Math.abs(track.scrollLeft);
         if (prev) prev.disabled = pos < 4;
         if (next) next.disabled = pos > max - 4;
       };
-      prev?.addEventListener('click', () => track.scrollBy({ left: step() }));
-      next?.addEventListener('click', () => track.scrollBy({ left: -step() }));
+      prev?.addEventListener('click', () => track.scrollBy({ left: -fwd * step() }));
+      next?.addEventListener('click', () => track.scrollBy({ left: fwd * step() }));
       track.addEventListener('scroll', update, { passive: true });
       window.addEventListener('resize', update);
       update();
@@ -345,7 +381,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
           pauseBtn.addEventListener('click', () => {
             stopped = !stopped;
             pauseBtn.setAttribute('aria-pressed', String(stopped));
-            pauseBtn.setAttribute('aria-label', stopped ? 'הפעלת גלילה' : 'עצירת גלילה');
+            pauseBtn.setAttribute('aria-label', stopped ? (EN ? 'Resume scrolling' : 'הפעלת גלילה') : (EN ? 'Pause scrolling' : 'עצירת גלילה'));
           });
         }
         let visible = false;
@@ -364,7 +400,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
           const max = track.scrollWidth - track.clientWidth;
           if (max < 4) return;
           if (Math.abs(track.scrollLeft) >= max - 4) track.scrollTo({ left: 0 });
-          else track.scrollBy({ left: -step() });
+          else track.scrollBy({ left: fwd * step() });
         }, 4000);
       }
     });

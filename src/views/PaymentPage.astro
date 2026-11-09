@@ -1,0 +1,63 @@
+---
+// Where Bold sends the customer back after paying the deposit (callback_url in server.mjs),
+// with ?bold-order-id=...&bold-tx-status=approved | rejected | failed | pending.
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { waLink } from '../data/site';
+import { lp, type Lang } from '../i18n';
+
+interface Props { lang?: Lang }
+const { lang = 'he' } = Astro.props;
+const en = lang === 'en';
+const L = en
+  ? {
+      title: 'Deposit payment', desc: 'Status of your Medejoni deposit payment.',
+      okT: 'Thank you! Your deposit was received', okX: 'Your date is held. Yonatan will message you on WhatsApp with all the details before the tour. The balance is paid in Colombia, in cash or to the guide.',
+      pendT: 'Payment being checked', pendX: 'Bold is still confirming the payment. Once it is approved, Yonatan will be notified and get back to you.',
+      badT: 'The payment did not go through', badX: 'You were not charged. You can try again from the link you received, with another card, or message Yonatan on WhatsApp and we will sort it out.',
+      more: 'More tours', wa: 'WhatsApp Yonatan', waText: 'Hi Yonatan, I paid a deposit on the site for a tour',
+    }
+  : {
+      title: 'תשלום המקדמה', desc: 'סטטוס תשלום המקדמה ב-Medejoni.',
+      okT: 'תודה! המקדמה התקבלה', okX: 'התאריך שלכם שמור. יונתן יחזור אליכם בוואטסאפ עם כל הפרטים לפני הטיול. את היתרה משלמים בקולומביה, במזומן או למדריך.',
+      pendT: 'התשלום בבדיקה', pendX: 'Bold עדיין מאשרת את התשלום. ברגע שהוא יאושר יונתן יקבל עדכון ויחזור אליכם.',
+      badT: 'התשלום לא עבר', badX: 'לא חויבתם. אפשר לנסות שוב מהלינק שקיבלתם, עם כרטיס אחר, או לכתוב ליונתן בוואטסאפ ונסדר את זה.',
+      more: 'לעוד טיולים', wa: 'וואטסאפ ליונתן', waText: 'היי יונתן, שילמתי מקדמה באתר על טיול',
+    };
+---
+<Base lang={lang} title={L.title} description={L.desc} noindex>
+  <section class="wrap section pay-back" data-pay-back data-pend-t={L.pendT} data-pend-x={L.pendX} data-bad-t={L.badT} data-bad-x={L.badX}>
+    <span class="pb-icon" aria-hidden="true" data-pb-icon>✓</span>
+    <h1 data-pb-title>{L.okT}</h1>
+    <p data-pb-text>{L.okX}</p>
+    <div class="pb-actions">
+      <a href={lp(lang, '/tours/')} class="btn btn-outline">{L.more}</a>
+      <a href={waLink(L.waText)} class="btn btn-yellow" target="_blank" rel="noopener"><Icon name="whatsapp" size={18} />{L.wa}</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pay-back { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 18px; min-height: 50vh; justify-content: center; }
+  .pay-back h1 { font-size: 32px; }
+  .pay-back p { font-size: 18px; line-height: 1.6; color: var(--muted); max-width: 520px; }
+  .pb-icon { width: 72px; height: 72px; border-radius: 50%; background: var(--ok-bg); color: var(--ok); font-size: 36px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .pb-icon.is-bad { background: #fde8e8; color: #b42318; }
+  .pb-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+</style>
+
+<script>
+  const status = (new URLSearchParams(location.search).get('bold-tx-status') || 'approved').toLowerCase();
+  const box = document.querySelector<HTMLElement>('[data-pay-back]')!;
+  const set = (icon: string, title: string, text: string, bad = false) => {
+    const i = box.querySelector<HTMLElement>('[data-pb-icon]')!;
+    i.textContent = icon;
+    i.classList.toggle('is-bad', bad);
+    box.querySelector('[data-pb-title]')!.textContent = title;
+    box.querySelector('[data-pb-text]')!.textContent = text;
+  };
+  const d = box.dataset;
+  if (status === 'pending' || status === 'processing') set('…', d.pendT!, d.pendX!);
+  else if (status !== 'approved') set('!', d.badT!, d.badX!, true);
+  else (window as any).gtag?.('event', 'purchase', { currency: 'COP' });
+</script>
