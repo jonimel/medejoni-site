@@ -20,6 +20,18 @@ export const site = {
   // Google Analytics 4 "Measurement ID" (looks like G-XXXXXXXXXX). Empty = no analytics.
   gaId: 'G-2PCH4ZRZKL',
   // Google Search Console HTML-tag verification code (only if not verifying through DNS).
+  // Tour promotion popup (small card, once per visitor per week). To promote another tour, change `tour` to its slug
+  // from tours.ts (e.g. 'israeloco-medellin-barrio-tour'). enabled: false turns it off.
+  promo: {
+    enabled: true,
+    tour: 'colombian-for-a-day',
+    label: '★ הטיול הכי מומלץ שלנו',
+    text: 'מצנח רחיפה, כפר הררי, דגים את ארוחת הצהריים בעצמכם ושקיעה מעל מדג׳ין.',
+    image: 'paragliding-medellin-tandem-flight',
+    button: 'לפרטים והזמנה',
+    delaySeconds: 15, // or once the visitor scrolled half the page, whichever comes first
+    hideDays: 7, // after it was shown, don't show it again to the same visitor for this many days
+  },
   gscVerification: 'nDcN8UFi78rtWutRJ-orbP2TN-MdSRLeYE2bxJkod-o',
 };
 
