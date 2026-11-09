@@ -14,6 +14,9 @@ export const site = {
   email: 'yonimelmel@gmail.com',
   currency: 'COP',
   cancelHours: 12,
+  // About how many COP make 1 ILS, to show Israeli visitors "≈ ₪..." next to peso prices (Hebrew booking page).
+  // Slightly below the market rate (≈1,036 on 2026-11-09) to cover bank conversion fees. Update when the rate moves a lot.
+  ilsRate: 1000,
   // Legal details of Jonathan's Colombian company (footer, /terms/, /privacy/). Required by Bold (payments).
   company: {
     name: 'JM Servicios Digitales S.A.S.',

@@ -16,14 +16,17 @@ export function perPerson(tiers, n) {
 
 /**
  * tour: { tiers, min, addOns } (same shape as the booking page data). addonIds: ids the customer picked.
- * Returns the trip total and the deposit split. All amounts in COP, rounded up to whole thousands.
+ * mode: 'deposit' (40% now, the rest in Colombia) or 'full' (everything now). The 5% card fee is on what is paid now.
+ * Returns the trip total and the split. All amounts in COP, rounded up to whole thousands.
+ * `deposit` = the part of the trip price paid now (before the fee); `charge` = what the card is charged.
  */
-export function quote(tour, people, addonIds = []) {
+export function quote(tour, people, addonIds = [], mode = 'deposit') {
   const n = Math.max(tour.min, Math.floor(Number(people)) || tour.min);
   const pp = perPerson(tour.tiers, n);
   const extras = tour.addOns.filter((a) => addonIds.includes(a.id));
   const total = (pp + extras.reduce((s, a) => s + (a.price ?? 0), 0)) * n;
-  const deposit = up1000(total * DEPOSIT_RATE);
+  const full = mode === 'full';
+  const deposit = full ? total : up1000(total * DEPOSIT_RATE);
   const fee = up1000(deposit * CARD_FEE_RATE);
-  return { n, pp, extras, total, deposit, fee, charge: deposit + fee, remainder: total - deposit };
+  return { n, pp, extras, total, full, deposit, fee, charge: deposit + fee, remainder: total - deposit };
 }

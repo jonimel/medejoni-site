@@ -24,12 +24,13 @@ const L = en
       chosen: 'Your tour', tour: 'Tour', date: 'Date', people: 'People', cont: 'Continue', back: 'Back',
       details: 'Your details', name: 'Full name', phone: 'Phone (WhatsApp)', phonePh: '+1 555 000 0000', email: 'Email',
       hotel: 'Hotel name or pickup address', notes: 'Notes', confirm: 'Confirm and send',
-      howT: 'How does it work?', howX: 'After sending, you can pay a 40% deposit by credit card on Bold’s secure payment page (plus a 5% card fee on the deposit). The rest is paid in Colombia, in cash or to the guide. Yonatan gets back to you to confirm availability, usually the same day.',
+      howT: 'How does it work?', howX: 'After sending, you pay by credit card on Bold’s secure payment page: a 40% deposit (the rest in Colombia, in cash or to the guide) or the full amount. A 5% card fee is added to what you pay by card. Yonatan gets back to you to confirm availability, usually the same day.',
+      payOpt: 'How would you like to pay?', optDep: 'Deposit of 40% now, the rest in cash in Colombia', optFull: 'Full amount now',
       agree1: 'I have read and agree to the ', terms: 'booking and cancellation terms', and: ' and the ', privacy: 'privacy policy', agree2: '. Cancellation up to 12 hours before the tour.',
       send: 'Send booking', doneT: 'Booking received!', thanks: 'Thank you', doneX: '. Yonatan will get back to you soon to confirm the booking.',
-      payT: 'To hold your date, pay the deposit:', payDep: 'Deposit (40%)', payFee: 'Card fee (5%)', payNow: 'To pay now', payRest: 'Balance in Colombia (cash or to the guide)',
-      payBtn: 'Pay the deposit by card', payNote: 'Payment is made on Bold’s secure page. You are charged in Colombian pesos and your bank converts the amount.',
-      moreTours: 'More tours', fastWa: 'Want a quick answer? WhatsApp', summary: 'Booking summary', totalPay: 'Total', copNote: 'Prices in Colombian pesos (COP). 40% deposit by card (+5% card fee), the rest in cash in Colombia.',
+      payT: 'To hold your date, pay the deposit:', payTFull: 'To hold your date, pay now:', payDep: 'Deposit (40%)', payFull: 'Trip price', payFee: 'Card fee (5%)', payNow: 'To pay now', payRest: 'Balance in Colombia (cash or to the guide)',
+      payBtn: 'Pay the deposit by card', payBtnFull: 'Pay by card', payNote: 'Payment is made on Bold’s secure page. You are charged in Colombian pesos and your bank converts the amount.',
+      moreTours: 'More tours', fastWa: 'Want a quick answer? WhatsApp', summary: 'Booking summary', totalPay: 'Total', copNote: 'Prices in Colombian pesos (COP). Pay by card: 40% deposit or the full amount (+5% card fee).',
       edit: 'Change tour, date or people',
     }
   : {
@@ -38,17 +39,18 @@ const L = en
       chosen: 'הטיול שבחרתם', tour: 'טיול', date: 'תאריך', people: 'משתתפים', cont: 'המשך', back: 'חזרה',
       details: 'הפרטים שלכם', name: 'שם מלא', phone: 'טלפון (וואטסאפ)', phonePh: '+972 50 000 0000', email: 'אימייל',
       hotel: 'שם המלון או כתובת לאיסוף', notes: 'הערות', confirm: 'אישור ושליחה',
-      howT: 'איך זה עובד?', howX: 'אחרי השליחה תוכלו לשלם מקדמה של 40% בכרטיס אשראי, בדף התשלום המאובטח של Bold (בתוספת 5% עמלת אשראי על המקדמה). את היתרה משלמים בקולומביה, במזומן או למדריך. יונתן חוזר אליכם לאישור זמינות, בדרך כלל באותו יום.',
+      howT: 'איך זה עובד?', howX: 'אחרי השליחה משלמים בכרטיס אשראי, בדף התשלום המאובטח של Bold: מקדמה של 40% (את היתרה משלמים בקולומביה, במזומן או למדריך) או את כל הסכום. על מה שמשולם באשראי נוספת עמלה של 5%. יונתן חוזר אליכם לאישור זמינות, בדרך כלל באותו יום.',
+      payOpt: 'איך תרצו לשלם?', optDep: 'מקדמה של 40% עכשיו, והיתרה במזומן בקולומביה', optFull: 'תשלום מלא עכשיו',
       agree1: 'קראתי ואני מסכים/ה ל', terms: 'תנאי ההזמנה והביטול', and: ' ול', privacy: 'מדיניות הפרטיות', agree2: '. ביטול עד 12 שעות לפני הטיול.',
       send: 'שליחת ההזמנה', doneT: 'ההזמנה התקבלה!', thanks: 'תודה', doneX: '. יונתן יחזור אליכם בהקדם לאישור ההזמנה.',
-      payT: 'כדי לשריין את התאריך, משלמים מקדמה:', payDep: 'מקדמה (40%)', payFee: 'עמלת אשראי (5%)', payNow: 'לתשלום עכשיו', payRest: 'יתרה בקולומביה (מזומן או למדריך)',
-      payBtn: 'לתשלום המקדמה באשראי', payNote: 'התשלום מתבצע בדף המאובטח של Bold. החיוב בפסו קולומביאני, והבנק שלכם ימיר לשקלים.',
-      moreTours: 'לעוד טיולים', fastWa: 'רוצים תשובה מהירה? וואטסאפ', summary: 'סיכום הזמנה', totalPay: 'סה״כ לתשלום', copNote: 'המחירים בפסו (COP). מקדמה של 40% באשראי (+5% עמלת אשראי), היתרה במזומן בקולומביה.',
+      payT: 'כדי לשריין את התאריך, משלמים מקדמה:', payTFull: 'כדי לשריין את התאריך, משלמים עכשיו:', payDep: 'מקדמה (40%)', payFull: 'מחיר הטיול', payFee: 'עמלת אשראי (5%)', payNow: 'לתשלום עכשיו', payRest: 'יתרה בקולומביה (מזומן או למדריך)',
+      payBtn: 'לתשלום המקדמה באשראי', payBtnFull: 'לתשלום באשראי', payNote: 'התשלום מתבצע בדף המאובטח של Bold. החיוב בפסו קולומביאני, והבנק שלכם ימיר לשקלים.',
+      moreTours: 'לעוד טיולים', fastWa: 'רוצים תשובה מהירה? וואטסאפ', summary: 'סיכום הזמנה', totalPay: 'סה״כ לתשלום', copNote: 'המחירים בפסו (COP). תשלום באשראי: מקדמה של 40% או הכל (+5% עמלת אשראי).',
       edit: 'שינוי טיול, תאריך או משתתפים',
     };
 ---
 <Base lang={lang} title={L.title} description={L.desc} noindex bodyClass="no-wa-float">
-  <div class="wrap b-wrap" data-booking-root data-tours={data} data-wa={site.whatsapp} data-lang={lang}>
+  <div class="wrap b-wrap" data-booking-root data-tours={data} data-wa={site.whatsapp} data-lang={lang} data-ils={en ? '' : String(site.ilsRate)}>
     <h1 class="b-title">{L.h1}</h1>
 
     <ol class="stepper" aria-label={L.steps}>
@@ -103,8 +105,13 @@ const L = en
             <strong>{L.howT}</strong>
             <span>{L.howX}</span>
           </div>
+          <fieldset class="pay-opt">
+            <legend>{L.payOpt}</legend>
+            <label><input type="radio" name="pay_option" value="deposit" checked data-pay-opt /> {L.optDep}</label>
+            <label><input type="radio" name="pay_option" value="full" data-pay-opt /> {L.optFull}</label>
+          </fieldset>
           <dl class="review" data-review></dl>
-          <label class="check"><input type="checkbox" required data-terms /> {L.agree1}<a href={lp(lang, '/terms/')} target="_blank" rel="noopener">{L.terms}</a>{L.and}<a href={lp(lang, '/privacy/')} target="_blank" rel="noopener">{L.privacy}</a>{L.agree2}</label>
+          <label class="check"><input type="checkbox" required data-terms /><span>{L.agree1}<a href={lp(lang, '/terms/')} target="_blank" rel="noopener">{L.terms}</a>{L.and}<a href={lp(lang, '/privacy/')} target="_blank" rel="noopener">{L.privacy}</a>{L.agree2}</span></label>
           <div class="nav-row">
             <button type="button" class="btn btn-outline" data-back>{L.back}</button>
             <button type="submit" class="btn btn-yellow" data-submit>{L.send}</button>
@@ -117,14 +124,14 @@ const L = en
           <h2>{L.doneT}</h2>
           <p>{L.thanks} <span data-done-name></span>{L.doneX}</p>
           <div class="pay" data-pay hidden>
-            <strong>{L.payT}</strong>
+            <strong data-pay-title data-t-dep={L.payT} data-t-full={L.payTFull}>{L.payT}</strong>
             <dl class="pay-lines">
-              <dt>{L.payDep}</dt><dd class="ltr" data-pay-deposit></dd>
+              <dt data-pay-dep-label data-t-dep={L.payDep} data-t-full={L.payFull}>{L.payDep}</dt><dd class="ltr" data-pay-deposit></dd>
               <dt>{L.payFee}</dt><dd class="ltr" data-pay-fee></dd>
-              <dt><strong>{L.payNow}</strong></dt><dd class="ltr"><strong data-pay-charge></strong></dd>
-              <dt>{L.payRest}</dt><dd class="ltr" data-pay-rest></dd>
+              <dt><strong>{L.payNow}</strong></dt><dd class="ltr"><strong data-pay-charge></strong><small class="pay-ils" data-pay-ils></small></dd>
+              <dt data-pay-rest-row>{L.payRest}</dt><dd class="ltr" data-pay-rest></dd>
             </dl>
-            <a class="btn btn-yellow pay-btn" data-pay-link rel="noopener">{L.payBtn}</a>
+            <a class="btn btn-yellow pay-btn" data-pay-link rel="noopener" data-t-dep={L.payBtn} data-t-full={L.payBtnFull}>{L.payBtn}</a>
             <small>{L.payNote}</small>
           </div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
@@ -152,9 +159,16 @@ const L = en
 <style>
   .pay { display: flex; flex-direction: column; gap: 12px; border: 2px solid var(--yellow); border-radius: 16px; padding: 18px; margin: 8px auto 4px; max-width: 460px; text-align: start; }
   .pay[hidden] { display: none; }
+  .b-form fieldset.pay-opt { border: 0; padding: 0; gap: 4px; animation: none; }
+  .b-form .pay-opt legend { font-size: 17px; font-weight: 700; padding: 0 0 4px; }
+  .pay-opt label { display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; }
+  .pay-opt input { width: 20px; height: 20px; accent-color: var(--blue); flex: 0 0 auto; }
+  .ils { color: var(--muted); font-weight: 400; font-size: 0.8em; margin-inline-start: 6px; }
   .pay-lines { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 0; }
   .pay-lines dd { margin: 0; text-align: end; }
   .pay-btn { justify-content: center; }
+  .pay-ils { display: block; color: var(--muted); font-size: 14px; }
+  .pay-ils:empty { display: none; }
   .pay small { color: var(--muted); }
   .b-wrap { padding-top: 32px; padding-bottom: 72px; }
   .b-title { font-size: clamp(26px, 4vw, 38px); font-weight: 800; margin-bottom: 24px; }
@@ -237,6 +251,12 @@ const L = en
   const fPeople = form.querySelector<HTMLInputElement>('[data-f-people]')!;
   const addonsBox = form.querySelector<HTMLElement>('[data-f-addons]')!;
   const fmt = (n: number) => n.toLocaleString('en-US') + ' COP';
+  // Hebrew page only: about how much it is in shekels (site.ilsRate COP per 1 ILS), rounded to 10.
+  const ilsRate = Number(root.dataset.ils) || 0;
+  const ils = (n: number) => (ilsRate ? `(≈\u00a0₪${(Math.round(n / ilsRate / 10) * 10).toLocaleString('en-US')})` : '');
+  // Wrapped in left-to-right isolation marks so the numbers stay in order inside Hebrew text.
+  const fmtIls = (n: number) => (ilsRate ? `\u2066${fmt(n)} ${ils(n)}\u2069` : fmt(n));
+  const payMode = () => (form.querySelector<HTMLInputElement>('[data-pay-opt]:checked')?.value === 'full' ? 'full' : 'deposit');
   // Local date (not UTC), same as the tour page.
   const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
@@ -304,7 +324,7 @@ const L = en
     const add = (a: string, b: string) => { const li = document.createElement('li'); li.innerHTML = `<span></span><span class="ltr"></span>`; li.children[0].textContent = a; li.children[1].textContent = b; lines.append(li); };
     add(`${n} × ${pp.toLocaleString('en-US')}`, fmt(pp * n));
     extras.forEach((e) => add(e.name, e.price ? fmt(e.price * n) : EN ? 'On request' : 'בתיאום'));
-    root.querySelector('[data-s-total]')!.textContent = fmt(total);
+    root.querySelector('[data-s-total]')!.textContent = fmtIls(total);
   }
 
   const editBtn = root.querySelector<HTMLButtonElement>('[data-s-edit]')!;
@@ -333,16 +353,17 @@ const L = en
     const { t, n, extras, total } = totals();
     const fd = new FormData(form);
     const k = EN
-      ? ['Tour', 'Date', 'People', 'Add-ons', 'None', 'Name', 'Phone', 'Total', 'Deposit now (40% + 5% fee)', 'Balance in Colombia']
-      : ['טיול', 'תאריך', 'משתתפים', 'תוספות', 'ללא', 'שם', 'טלפון', 'סה״כ', 'מקדמה עכשיו (40% + 5% עמלה)', 'יתרה בקולומביה'];
+      ? ['Tour', 'Date', 'People', 'Add-ons', 'None', 'Name', 'Phone', 'Total', 'Deposit now (40% + 5% fee)', 'Balance in Colombia', 'To pay now (incl. 5% fee)']
+      : ['טיול', 'תאריך', 'משתתפים', 'תוספות', 'ללא', 'שם', 'טלפון', 'סה״כ', 'מקדמה עכשיו (40% + 5% עמלה)', 'יתרה בקולומביה', 'לתשלום עכשיו (כולל 5% עמלה)'];
     const rows: [string, string][] = [
       [k[0], t.title], [k[1], fDate.value], [k[2], String(n)],
       [k[3], extras.map((e) => e.name).join(', ') || k[4]],
       [k[5], String(fd.get('name') ?? '')], [k[6], String(fd.get('phone') ?? '')],
-      [k[7], fmt(total)],
+      [k[7], fmtIls(total)],
     ];
-    const dq = quote(t, n, extras.map((e) => e.id));
-    rows.push([k[8], fmt(dq.charge)], [k[9], fmt(dq.remainder)]);
+    const dq = quote(t, n, extras.map((e) => e.id), payMode());
+    if (dq.full) rows.push([k[10], fmtIls(dq.charge)]);
+    else rows.push([k[8], fmtIls(dq.charge)], [k[9], fmtIls(dq.remainder)]);
     const dl = root.querySelector('[data-review]')!;
     dl.innerHTML = '';
     rows.forEach(([k, v]) => { const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dl.append(dt, dd); });
@@ -353,6 +374,7 @@ const L = en
   form.querySelectorAll('[data-back]').forEach((b) => b.addEventListener('click', () => go(cur - 1)));
   editBtn.addEventListener('click', () => go(0));
   fTour.addEventListener('change', setupTour);
+  form.querySelectorAll('[data-pay-opt]').forEach((el) => el.addEventListener('change', fillReview));
   [fDate, fPeople].forEach((el) => el.addEventListener('input', render));
 
   form.addEventListener('submit', async (e) => {
@@ -409,7 +431,7 @@ const L = en
       }
       if (!res.ok) throw new Error(String(res.status));
       // When Bold is connected, the server answers with the deposit payment link.
-      let pay: { url: string; deposit: number; fee: number; charge: number; remainder: number } | null = null;
+      let pay: { url: string; deposit: number; fee: number; charge: number; remainder: number; full?: boolean } | null = null;
       try { pay = (JSON.parse(await res.text()) as any).pay ?? null; } catch { /* plain "ok": no online payment */ }
       // Google Analytics: count the booking request (only when analytics is on).
       (window as any).gtag?.('event', 'generate_lead', { form_name: 'booking' });
@@ -420,10 +442,16 @@ const L = en
       done.querySelector<HTMLAnchorElement>('[data-done-wa]')!.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
       if (pay && /^https:\/\/checkout\.bold\.co\//.test(pay.url)) {
         const box = done.querySelector<HTMLElement>('[data-pay]')!;
+        const mode = pay.full ? 'full' : 'dep';
+        box.querySelectorAll<HTMLElement>('[data-t-dep]').forEach((el) => (el.textContent = el.dataset[mode === 'full' ? 'tFull' : 'tDep']!));
         box.querySelector('[data-pay-deposit]')!.textContent = fmt(pay.deposit);
         box.querySelector('[data-pay-fee]')!.textContent = fmt(pay.fee);
         box.querySelector('[data-pay-charge]')!.textContent = fmt(pay.charge);
+        box.querySelector('[data-pay-ils]')!.textContent = ils(pay.charge);
         box.querySelector('[data-pay-rest]')!.textContent = fmt(pay.remainder);
+        // Paid in full: no balance line.
+        box.querySelector<HTMLElement>('[data-pay-rest-row]')!.hidden = !!pay.full;
+        box.querySelector<HTMLElement>('[data-pay-rest]')!.hidden = !!pay.full;
         box.querySelector<HTMLAnchorElement>('[data-pay-link]')!.href = pay.url;
         box.hidden = false;
         (window as any).gtag?.('event', 'begin_checkout', { value: pay.charge, currency: 'COP' });
