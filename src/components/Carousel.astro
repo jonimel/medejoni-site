@@ -1,15 +1,19 @@
 ---
 import Icon from './Icon.astro';
-interface Props { label: string; /** Advance by itself every few seconds. */ auto?: boolean }
-const { label, auto } = Astro.props;
+import { ui, type Lang } from '../i18n';
+interface Props { label: string; /** Advance by itself every few seconds. */ auto?: boolean; lang?: Lang }
+const { label, auto, lang = 'he' } = Astro.props;
+const t = ui[lang];
+// "Previous" sits on the reading-start side: right in Hebrew, left in English.
+const rtl = lang === 'he';
 ---
 <div class="carousel" data-carousel data-auto={auto ? '' : undefined} role="region" aria-label={label}>
   {auto && (
-    <button type="button" class="pause-btn on-light carousel-pause" aria-pressed="false" aria-label="עצירת גלילה" data-carousel-pause hidden>
+    <button type="button" class="pause-btn on-light carousel-pause" aria-pressed="false" aria-label={t.pauseScroll} data-carousel-pause hidden>
       <span class="ico-pause"><Icon name="pause" size={18} /></span><span class="ico-play"><Icon name="play" size={16} /></span>
     </button>
   )}
-  <button type="button" class="carousel-btn prev" aria-label="הקודם"><Icon name="chev-r" size={22} /></button>
+  <button type="button" class="carousel-btn prev" aria-label={t.prev}><Icon name={rtl ? 'chev-r' : 'chev-l'} size={22} /></button>
   <div class="carousel-track"><slot /></div>
-  <button type="button" class="carousel-btn next" aria-label="הבא"><Icon name="chev-l" size={22} /></button>
+  <button type="button" class="carousel-btn next" aria-label={t.next}><Icon name={rtl ? 'chev-l' : 'chev-r'} size={22} /></button>
 </div>

@@ -8,7 +8,7 @@ import { imageSize } from './src/lib/image-size.mjs';
 import { guides, isDraft } from './src/data/guides.ts';
 
 // Pages Google should not index (also kept out of the sitemap).
-const hidden = ['/booking/', '/404/', ...guides.filter(isDraft).map((g) => `/guides/${g.slug}/`)];
+const hidden = ['/booking/', '/en/booking/', '/404/', ...guides.filter(isDraft).map((g) => `/guides/${g.slug}/`)];
 
 /** After the build: mark new-tab links for screen readers, and give every <img src="/images/..."> its real width/height (less layout jumping = better Core Web Vitals)
  *  and a srcset with the small copy, so phones download smaller photos. */
@@ -43,7 +43,8 @@ function imageDimensions() {
             return tag.replace(/^<img\b/, `<img${attrs}`);
           });
           // Links that open a new tab say so to screen readers (WCAG 3.2.5 / IS 5568).
-          const NEW_TAB = ' (נפתח בחלון חדש)';
+          const isEn = /[\\/]en[\\/]/.test(file.slice(root.length - 1));
+          const NEW_TAB = isEn ? ' (opens in a new tab)' : ' (נפתח בחלון חדש)';
           const out2 = out.replace(/<a\b([^>]*\btarget="_blank"[^>]*)>([\s\S]*?)<\/a>/g, (m, attrs, inner) => {
             if (m.includes(NEW_TAB.trim())) return m;
             if (/\saria-label="/.test(attrs)) return m.replace(/(\saria-label="[^"]*)"/, `$1${NEW_TAB}"`);

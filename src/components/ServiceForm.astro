@@ -3,16 +3,21 @@
 // so the email subject tells Jonathan which service the lead is for.
 import HeardFrom from './HeardFrom.astro';
 import type { FormField } from '../data/services';
-interface Props { id: string; title: string; fields: FormField[] }
-const { id, title, fields } = Astro.props;
+import { ui, type Lang } from '../i18n';
+interface Props { id: string; title: string; fields: FormField[]; lang?: Lang }
+const { id, title, fields, lang = 'he' } = Astro.props;
+const t = ui[lang];
+const en = lang === 'en';
+const submit = id === 'trip-planning' ? (en ? 'Send, and I’ll get back to you' : 'שלחו לי ואחזור אליכם') : en ? 'Request a quote' : 'שליחת בקשה להצעת מחיר';
 ---
 <form name={id} method="POST" data-netlify="true" netlify-honeypot="hp_field" class="form-card" data-lead>
   <input type="hidden" name="form-name" value={id} />
+  {en && <input type="hidden" name="lang" value="English" />}
   <p hidden aria-hidden="true"><label>Leave empty <input name="hp_field" tabindex="-1" autocomplete="off" /></label></p>
   <h3>{title}</h3>
-  <label>שם מלא<input name="name" required autocomplete="name" /></label>
-  <label>טלפון<input name="phone" type="tel" inputmode="tel" required autocomplete="tel" dir="ltr" /></label>
-  <label>כמה אנשים?<input name="people" type="number" min="1" max="50" value="2" required inputmode="numeric" /></label>
+  <label>{t.fullName}<input name="name" required autocomplete="name" /></label>
+  <label>{t.phone}<input name="phone" type="tel" inputmode="tel" required autocomplete="tel" dir="ltr" /></label>
+  <label>{t.howMany}<input name="people" type="number" min="1" max="50" value="2" required inputmode="numeric" /></label>
   {fields.map((f) => (
     <label class:list={{ full: f.full }}>
       {f.label}
@@ -25,7 +30,7 @@ const { id, title, fields } = Astro.props;
       )}
     </label>
   ))}
-  <HeardFrom full />
-  <button type="submit" class="btn btn-yellow full">{id === 'trip-planning' ? 'שלחו לי ואחזור אליכם' : 'שליחת בקשה להצעת מחיר'}</button>
+  <HeardFrom full lang={lang} />
+  <button type="submit" class="btn btn-yellow full">{submit}</button>
   <p class="form-status full" role="status" data-status></p>
 </form>

@@ -1,18 +1,28 @@
 ---
 // "How did you hear about us?" Optional. Shown in the lead email as "איך הגיע אלינו".
 // No default answer: partner-link visitors are already marked in the lead email ("הגיע דרך שותף").
-const options = [
+// The value sent stays in Hebrew in both languages, so Jonathan's emails and reports read the same.
+import { ui, type Lang } from '../i18n';
+const optionsHe = [
   { value: 'רשתות חברתיות', label: 'רשתות חברתיות (אינסטגרם, טיקטוק...)' },
   { value: 'הגל', label: 'אפליקציית הגל', partner: 'agal' },
   { value: 'חבר', label: 'חבר' },
   { value: 'המלצה', label: 'המלצה' },
 ];
-interface Props { full?: boolean; class?: string }
-const { full = false, class: cls } = Astro.props;
+const optionsEn = [
+  { value: 'רשתות חברתיות', label: 'Social media (Instagram, TikTok...)' },
+  { value: 'גוגל', label: 'Google / Google Maps' },
+  { value: 'חבר', label: 'A friend' },
+  { value: 'המלצה', label: 'A recommendation' },
+];
+interface Props { full?: boolean; class?: string; lang?: Lang }
+const { full = false, class: cls, lang = 'he' } = Astro.props;
+const t = ui[lang];
+const options: { value: string; label: string; partner?: string }[] = lang === 'en' ? optionsEn : optionsHe;
 ---
-<label class:list={[cls, { full }]}>איך הגעתם אלינו?
+<label class:list={[cls, { full }]}>{t.heardFrom}
   <select name="heard_from" data-heard-from>
-    <option value="">בחרו מהרשימה (לא חובה)</option>
+    <option value="">{t.heardPick}</option>
     {options.map((o) => <option value={o.value} data-partner={o.partner}>{o.label}</option>)}
   </select>
 </label>

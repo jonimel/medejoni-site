@@ -1,0 +1,58 @@
+---
+// Privacy policy in English (+ the same Spanish text as /privacy/). Keep in sync with src/pages/privacy.astro.
+import LegalPage from '../../components/LegalPage.astro';
+import { site } from '../../data/site';
+
+const c = site.company;
+---
+<LegalPage lang="en" title="Privacy Policy" crumb="Privacy policy" description="Medejoni privacy policy: what information the site collects, why, who it’s shared with, and how to see or delete it." intro="What information we collect when you use the site or book, and what we do with it.">
+  <h2>Data controller</h2>
+  <p><span lang="es">{c.name}</span> (NIT {c.nit}), <span lang="es">{c.address}</span>. Email: <a href={`mailto:${site.email}`}>{site.email}</a>. WhatsApp: +{site.whatsapp}. This policy follows Colombian law: Ley 1581 de 2012 and Decreto 1377 de 2013.</p>
+
+  <h2>What we collect</h2>
+  <ul>
+    <li><strong>What you fill in on forms:</strong> name, phone, email, dates, number of people, pickup hotel, notes and “how did you hear about us”.</li>
+    <li><strong>Payments:</strong> card details are entered only on Bold’s payment page and never reach us. Bold only tells us the payment status and amount.</li>
+    <li><strong>Browsing:</strong> Google Analytics collects statistics using cookies.</li>
+    <li><strong>Referrals:</strong> if you arrive through a partner link, an anonymous ID is saved in a cookie, along with the partner code and WhatsApp clicks, with no name, phone or IP.</li>
+  </ul>
+
+  <h2>Why we use it</h2>
+  <p>To handle bookings (confirm availability, arrange pickup, charge the deposit and contact you), for customer service, for accounting and legal obligations, and to improve the site. We don’t sell personal data or send marketing without your permission.</p>
+
+  <h2>Who we share it with</h2>
+  <p>We share what’s needed with the tour’s driver or guide, and with providers who work on our behalf: Bold (payments), Resend (email), Railway (hosting), Supabase (referral statistics) and Google (analytics). Some of them store data outside Colombia.</p>
+
+  <h2>Your rights</h2>
+  <p>You can see, update, correct and delete your data, and withdraw your consent, by writing to {site.email}. We answer requests within 10 business days and complaints within 15 business days. You can also contact Colombia’s Superintendencia de Industria y Comercio.</p>
+
+  <h2>Cookies and consent</h2>
+  <p>We use Google Analytics cookies and anonymous referral cookies; you can block them in your browser. By sending a form on the site, you agree to your data being handled under this policy.</p>
+  <p class="updated">Last updated: November 2026.</p>
+
+  <Fragment slot="es">
+    <h2>Política de tratamiento de datos personales</h2>
+    <p><strong>Responsable:</strong> {c.name}, NIT {c.nit}, {c.address}. Correo: <a href={`mailto:${site.email}`}>{site.email}</a>. WhatsApp: +{site.whatsapp}. Esta política se adopta conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013.</p>
+
+    <h2>Datos que recolectamos</h2>
+    <ul>
+      <li>Datos de los formularios: nombre, teléfono, correo, fechas, número de personas, hotel de recogida, notas y cómo nos conoció.</li>
+      <li>Pagos: los datos de la tarjeta se ingresan solo en la pasarela de Bold y no llegan a nosotros. Bold nos informa solo el estado y el valor del pago.</li>
+      <li>Navegación: Google Analytics recoge datos estadísticos mediante cookies.</li>
+      <li>Referidos: si llega por un enlace de un aliado, se guarda un identificador anónimo en una cookie, el código del aliado y los clics en WhatsApp, sin nombre, teléfono ni IP.</li>
+    </ul>
+
+    <h2>Finalidades</h2>
+    <p>Gestionar reservas (confirmar disponibilidad, coordinar recogida, cobrar el anticipo y contactarlo), atención al cliente, cumplimiento de obligaciones contables y legales, y mejora del sitio. No vendemos datos personales ni enviamos publicidad sin autorización.</p>
+
+    <h2>Transmisión y transferencia</h2>
+    <p>Compartimos los datos necesarios con el conductor o guía del tour y con proveedores que actúan por nuestra cuenta: Bold (pagos), Resend (correo), Railway (hosting), Supabase (estadísticas de referidos) y Google (analítica). Algunos almacenan datos fuera de Colombia.</p>
+
+    <h2>Derechos del titular</h2>
+    <p>Usted puede conocer, actualizar, rectificar y suprimir sus datos, y revocar la autorización, escribiendo a {site.email}. Las consultas se responden en máximo 10 días hábiles y los reclamos en máximo 15 días hábiles. También puede acudir a la Superintendencia de Industria y Comercio.</p>
+
+    <h2>Cookies y autorización</h2>
+    <p>Usamos cookies de Google Analytics y cookies anónimas de referidos; puede bloquearlas en su navegador. Al enviar un formulario en el sitio, usted autoriza el tratamiento de sus datos según esta política.</p>
+    <p class="updated">Última actualización: noviembre de 2026.</p>
+  </Fragment>
+</LegalPage>
