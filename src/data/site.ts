@@ -11,6 +11,12 @@ export const site = {
   email: 'yonimelmel@gmail.com',
   currency: 'COP',
   cancelHours: 12,
+  // Legal details of Jonathan's Colombian company (footer, /terms/, /privacy/). Required by Bold (payments).
+  company: {
+    name: 'JM Servicios Digitales S.A.S.',
+    nit: '902065881',
+    address: 'Laureles, Medellín, Antioquia, Colombia',
+  },
   // Google Analytics 4 "Measurement ID" (looks like G-XXXXXXXXXX). Empty = no analytics.
   gaId: 'G-2PCH4ZRZKL',
   // Google Search Console HTML-tag verification code (only if not verifying through DNS).
