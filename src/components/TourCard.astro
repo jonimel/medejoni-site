@@ -1,28 +1,33 @@
 ---
 import { type Tour, kindLabel, fromPrice, hasTiers } from '../data/tours';
+import { kindLabelEn } from '../data/tours.en';
 import { formatCOP, img, thumb } from '../data/site';
-interface Props { tour: Tour; lazy?: boolean }
-const { tour, lazy = true } = Astro.props;
+import { ui, lp, type Lang } from '../i18n';
+interface Props { tour: Tour; lazy?: boolean; lang?: Lang }
+const { tour, lazy = true, lang = 'he' } = Astro.props;
+const t = ui[lang];
+const kinds = lang === 'en' ? kindLabelEn : kindLabel;
 const price = fromPrice(tour);
 ---
-<a href={`/tours/${tour.slug}/`} class="tour-card card" data-kind={tour.kind} data-couples={tour.couples ? '' : undefined} data-dest={tour.destination} data-price={price} data-title={tour.title}>
+<a href={lp(lang, `/tours/${tour.slug}/`)} class="tour-card card" data-kind={tour.kind} data-couples={tour.couples ? '' : undefined} data-dest={tour.destination} data-price={price} data-title={tour.title}>
   <div class="media">
     <img class="zoom" src={thumb(tour.images[0])} alt={tour.title} loading={lazy ? 'lazy' : 'eager'} width="600" height="420" />
-    <span class="pill">{kindLabel[tour.kind]}</span>
-    {tour.recommended && <span class="pill pill-reco reco">★ מומלץ</span>}
+    <span class="pill">{kinds[tour.kind]}</span>
+    {tour.recommended && <span class="pill pill-reco reco">{t.recommended}</span>}
     {!tour.recommended && tour.badge && <span class="pill pill-reco reco">{tour.badge}</span>}
   </div>
   <div class="body">
-    <span class="place">{tour.place}, קולומביה</span>
+    <span class="place">{tour.place}, {t.colombia}</span>
     <h3>{tour.title}</h3>
     <span class="desc">{tour.short}</span>
-    <div class="tags">{tour.tags.map((t) => <span class="tag">{t}</span>)}</div>
+    <div class="tags">{tour.tags.map((x) => <span class="tag">{x}</span>)}</div>
     <div class="foot">
-      <span class="price-line">{hasTiers(tour) ? 'החל מ־' : ''}<span class="ltr">{formatCOP(price)}</span><small>/ לאדם</small></span>
+      <span class="price-line">{hasTiers(tour) ? t.from : ''}<span class="ltr">{formatCOP(price)}</span><small>/ {t.perPerson}</small></span>
     </div>
   </div>
 </a>
 
 <style>
   .media .pill.reco { right: auto; left: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+  :global([dir='ltr']) .media .pill.reco { left: auto; right: 12px; }
 </style>

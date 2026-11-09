@@ -2,9 +2,25 @@
 // "Leave your details" form. Submissions go to Netlify Forms (form name "lead"),
 // which emails each lead. Submit handling lives in Base.astro.
 import HeardFrom from './HeardFrom.astro';
-interface Props { title?: string; sub?: string; source: string }
-const { title = 'השאירו פרטים, ויונתן יחזור אליכם', sub = 'שאלה על טיול, הסעה או טיסה? אני עונה אישית, בדרך כלל באותו יום.', source } = Astro.props;
-const options = ['טיול', 'הסעה משדה התעופה', 'מעבר בין ערים', 'סגירת טיסות', 'תכנון טיול שלם', 'אחר'];
+import { type Lang } from '../i18n';
+interface Props { title?: string; sub?: string; source: string; lang?: Lang }
+const { lang = 'he' } = Astro.props;
+const he = {
+  title: 'השאירו פרטים, ויונתן יחזור אליכם',
+  sub: 'שאלה על טיול, הסעה או טיסה? אני עונה אישית, בדרך כלל באותו יום.',
+  options: ['טיול', 'הסעה משדה התעופה', 'מעבר בין ערים', 'סגירת טיסות', 'תכנון טיול שלם', 'אחר'],
+  name: 'שם מלא', phone: 'טלפון (וואטסאפ)', interest: 'במה אפשר לעזור?', dates: 'מתי אתם בקולומביה?',
+  datesPh: 'תאריכים משוערים, למשל 10–20 בדצמבר', message: 'הודעה', send: 'שליחה',
+};
+const en = {
+  title: 'Leave your details, and Yonatan will get back to you',
+  sub: 'A question about a tour, a transfer or a flight? I answer personally, usually the same day.',
+  options: ['A tour', 'Airport transfer', 'City-to-city transfer', 'Flight booking', 'Planning a whole trip', 'Other'],
+  name: 'Full name', phone: 'Phone (WhatsApp)', interest: 'How can I help?', dates: 'When are you in Colombia?',
+  datesPh: 'Approximate dates, e.g. Dec 10–20', message: 'Message', send: 'Send',
+};
+const t = lang === 'en' ? en : he;
+const { title = t.title, sub = t.sub, source } = Astro.props;
 ---
 <section class="lead-wrap" id="contact">
   <div class="wrap lead">
@@ -15,16 +31,17 @@ const options = ['טיול', 'הסעה משדה התעופה', 'מעבר בין 
     <form name="lead" method="POST" data-netlify="true" netlify-honeypot="hp_field" class="form-card" data-lead>
       <input type="hidden" name="form-name" value="lead" />
       <input type="hidden" name="source" value={source} />
+      {lang === 'en' && <input type="hidden" name="lang" value="English" />}
       <p hidden aria-hidden="true"><label>Leave empty <input name="hp_field" tabindex="-1" autocomplete="off" /></label></p>
-      <label>שם מלא<input name="name" required autocomplete="name" /></label>
-      <label>טלפון (וואטסאפ)<input name="phone" type="tel" inputmode="tel" required autocomplete="tel" dir="ltr" /></label>
-      <label>במה אפשר לעזור?
-        <select name="interest">{options.map((o) => <option>{o}</option>)}</select>
+      <label>{t.name}<input name="name" required autocomplete="name" /></label>
+      <label>{t.phone}<input name="phone" type="tel" inputmode="tel" required autocomplete="tel" dir="ltr" /></label>
+      <label>{t.interest}
+        <select name="interest">{t.options.map((o) => <option>{o}</option>)}</select>
       </label>
-      <label>מתי אתם בקולומביה?<input name="dates" placeholder="תאריכים משוערים, למשל 10–20 בדצמבר" /></label>
-      <HeardFrom full />
-      <label class="full">הודעה<textarea name="message" rows="3"></textarea></label>
-      <button type="submit" class="btn btn-yellow full">שליחה</button>
+      <label>{t.dates}<input name="dates" placeholder={t.datesPh} /></label>
+      <HeardFrom full lang={lang} />
+      <label class="full">{t.message}<textarea name="message" rows="3"></textarea></label>
+      <button type="submit" class="btn btn-yellow full">{t.send}</button>
       <p class="form-status full" role="status" data-status></p>
     </form>
   </div>

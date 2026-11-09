@@ -1,0 +1,138 @@
+// Two languages: Hebrew (the main site, at /) and English (at /en/).
+// Words that repeat across pages live here. Page-specific text sits in each view, under `he` / `en`.
+
+export type Lang = 'he' | 'en';
+
+/** Link to a page in the given language: lp('en', '/tours/') → '/en/tours/'. */
+export const lp = (lang: Lang, path: string) => (lang === 'en' ? `/en${path === '/' ? '/' : path}` : path);
+
+/** Hebrew pages that have an English version (and the other way round), for hreflang and the language switch. */
+export const translated = (path: string) =>
+  /^\/(en\/)?(|tours\/|tours\/[^/]+\/|services\/|about\/|terms\/|privacy\/)$/.test(path);
+
+export const ui = {
+  he: {
+    dir: 'rtl',
+    locale: 'he_IL',
+    tagline: 'חוויה אותנטית בקולומביה',
+    owner: 'יונתן מילמן',
+    nav: { home: 'דף הבית', destinations: 'יעדים', tours: 'טיולים', services: 'הסעות וטיסות', guides: 'מאמרים', about: 'מי אני' },
+    skip: 'דלג לתוכן הראשי',
+    toHome: ', לדף הבית',
+    mainNav: 'ניווט ראשי',
+    mobileNav: 'תפריט נייד',
+    openMenu: 'פתיחת תפריט',
+    closeMenu: 'סגירת תפריט',
+    switchLabel: 'English',
+    switchAria: 'English version',
+    perPerson: 'לאדם',
+    from: 'החל מ־',
+    colombia: 'קולומביה',
+    recommended: '★ מומלץ',
+    prev: 'הקודם',
+    next: 'הבא',
+    pauseScroll: 'עצירת גלילה',
+    playScroll: 'הפעלת גלילה',
+    crumbs: 'פירורי לחם',
+    // Forms
+    fullName: 'שם מלא',
+    phoneWa: 'טלפון (וואטסאפ)',
+    phone: 'טלפון',
+    howMany: 'כמה אנשים?',
+    send: 'שליחה',
+    sending: 'שולח...',
+    thanks: 'תודה! קיבלנו את הפרטים, ויונתן יחזור אליכם בהקדם.',
+    sendError: 'משהו השתבש בשליחה. נסו שוב בעוד רגע.',
+    tooMany: 'כבר קיבלנו את הפנייה שלכם 🙏 אפשר לשלוח שוב בעוד חצי שעה, או ',
+    tooManyLink: 'לכתוב לי עכשיו בוואטסאפ',
+    heardFrom: 'איך הגעתם אלינו?',
+    heardPick: 'בחרו מהרשימה (לא חובה)',
+    waDefault: 'היי יונתן, אשמח לפרטים על טיול בקולומביה',
+    waQuestion: 'היי יונתן, יש לי שאלה',
+    waFloat: 'שאלות? דברו איתנו בוואטסאפ',
+    newTab: ' (נפתח בחלון חדש)',
+    // Footer
+    myTours: 'הטיולים שלי',
+    allToursArrow: 'לכל הטיולים ←',
+    articles: 'מאמרים',
+    servicesTitle: 'שירותים',
+    info: 'מידע',
+    faq: 'שאלות נפוצות',
+    accessibility: 'הצהרת נגישות',
+    terms: 'תנאי הזמנה וביטולים',
+    privacy: 'מדיניות פרטיות',
+    cancelNote: 'ביטול עד 12 שעות לפני הטיול',
+    talkToMe: 'דברו איתי',
+    talkToMeSub: 'יונתן עונה לכם אישית בוואטסאפ.',
+    whatsapp: 'וואטסאפ',
+    rights: 'כל הזכויות שמורות.',
+    instagram: 'אינסטגרם',
+    tiktok: 'טיקטוק',
+    logoAlt: 'Medejoni – חוויה אותנטית בקולומביה',
+  },
+  en: {
+    dir: 'ltr',
+    locale: 'en_US',
+    tagline: 'Authentic Colombia experiences',
+    owner: 'Yonatan Milman',
+    nav: { home: 'Home', destinations: 'Destinations', tours: 'Tours', services: 'Transfers & flights', guides: 'Articles', about: 'About me' },
+    skip: 'Skip to main content',
+    toHome: ', home page',
+    mainNav: 'Main navigation',
+    mobileNav: 'Mobile menu',
+    openMenu: 'Open menu',
+    closeMenu: 'Close menu',
+    switchLabel: 'עברית',
+    switchAria: 'גרסה בעברית',
+    perPerson: 'per person',
+    from: 'From ',
+    colombia: 'Colombia',
+    recommended: '★ Recommended',
+    prev: 'Previous',
+    next: 'Next',
+    pauseScroll: 'Pause scrolling',
+    playScroll: 'Resume scrolling',
+    crumbs: 'Breadcrumbs',
+    fullName: 'Full name',
+    phoneWa: 'Phone (WhatsApp)',
+    phone: 'Phone',
+    howMany: 'How many people?',
+    send: 'Send',
+    sending: 'Sending...',
+    thanks: 'Thank you! We got your details, and Yonatan will get back to you soon.',
+    sendError: 'Something went wrong. Please try again in a moment.',
+    tooMany: 'We already received your message 🙏 You can send again in half an hour, or ',
+    tooManyLink: 'message me on WhatsApp now',
+    heardFrom: 'How did you hear about us?',
+    heardPick: 'Choose one (optional)',
+    waDefault: 'Hi Yonatan, I’d like details about a tour in Colombia',
+    waQuestion: 'Hi Yonatan, I have a question',
+    waFloat: 'Questions? Chat with us on WhatsApp',
+    newTab: ' (opens in a new tab)',
+    myTours: 'Tours',
+    allToursArrow: 'All tours →',
+    articles: 'Articles',
+    servicesTitle: 'Services',
+    info: 'Info',
+    faq: 'FAQ',
+    accessibility: 'Accessibility',
+    terms: 'Booking & cancellation terms',
+    privacy: 'Privacy policy',
+    cancelNote: 'Free cancellation up to 12 hours before',
+    talkToMe: 'Talk to me',
+    talkToMeSub: 'Yonatan answers you personally on WhatsApp.',
+    whatsapp: 'WhatsApp',
+    rights: 'All rights reserved.',
+    instagram: 'Instagram',
+    tiktok: 'TikTok',
+    logoAlt: 'Medejoni – Authentic Colombia experiences',
+  },
+} as const;
+
+export type UI = (typeof ui)[Lang];
+
+/** English alt text from a photo's file name, e.g. 'jardin-cave-waterfall' → 'Jardin cave waterfall'. */
+export const altEn = (slug: string) => {
+  const s = slug.replace(/-/g, ' ');
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};

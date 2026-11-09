@@ -1,14 +1,17 @@
 ---
 // Shared layout for the legal pages (/terms/, /privacy/): Hebrew first, then the same text in Spanish
 // (for Colombian authorities and the payment company Bold, which reviews the site).
+// The English site (/en/terms/, /en/privacy/) uses it too, with lang="en": English first, then Spanish.
 import Base from '../layouts/Base.astro';
-interface Props { title: string; description: string; crumb: string; intro: string }
-const { title, description, crumb, intro } = Astro.props;
+import { ui, lp, type Lang } from '../i18n';
+interface Props { title: string; description: string; crumb: string; intro: string; lang?: Lang }
+const { title, description, crumb, intro, lang = 'he' } = Astro.props;
+const t = ui[lang];
 ---
-<Base title={title} description={description}>
+<Base lang={lang} title={title} description={description}>
   <section class="page-top">
     <div class="wrap" style="padding-top:40px;padding-bottom:40px">
-      <nav class="crumbs" aria-label="פירורי לחם" style="padding-top:0;color:var(--ink)"><a href="/" style="color:var(--ink)">דף הבית</a> › {crumb}</nav>
+      <nav class="crumbs" aria-label={t.crumbs} style="padding-top:0;color:var(--ink)"><a href={lp(lang, '/')} style="color:var(--ink)">{t.nav.home}</a> › {crumb}</nav>
       <h1 style="font-size:clamp(32px,5vw,50px);font-weight:800">{title}</h1>
       <p style="font-size:19px;margin-top:10px">{intro}</p>
       <p style="margin-top:8px"><a href="#es" lang="es" style="color:var(--ink);text-decoration:underline">Versión en español</a></p>
@@ -30,6 +33,6 @@ const { title, description, crumb, intro } = Astro.props;
   .legal :global(p + p) { margin-top: 10px; }
   .legal :global(ul) { padding-inline-start: 22px; margin: 0; display: flex; flex-direction: column; gap: 6px; }
   .legal :global(.legal-box) { margin: 18px 0; padding: 18px 22px; background: var(--cream); border-radius: 16px; }
-  .legal-es { margin-top: 56px; padding-top: 32px; border-top: 2px dashed var(--line); text-align: left; }
+  .legal-es { margin-top: 56px; padding-top: 32px; border-top: 2px dashed var(--line); text-align: start; }
   .legal :global(.updated) { margin-top: 32px; color: var(--muted); font-size: 15px; }
 </style>
