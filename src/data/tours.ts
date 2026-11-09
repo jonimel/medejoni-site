@@ -46,7 +46,7 @@ export interface Tour {
   featured?: boolean;
   /** Shown under the "טיולים לזוגות" filter on the home page. */
   couples?: boolean;
-  /** "מומלץ" badge on the card and page; recommended tours are listed first. */
+  /** "מומלץ" badge on the card and page; recommended tours are listed near the top. */
   recommended?: boolean;
   /** 3–4 short points under the title ("בקצרה"). */
   highlights?: string[];
@@ -61,7 +61,7 @@ export interface Tour {
   bring?: string[];
   /** "טוב לדעת" list. */
   goodToKnow?: string[];
-  /** Extra badge on the card and page, e.g. "לאמיצים בלבד". */
+  /** Extra badge on the card and page, e.g. "למשוגעים בלבד". Tours with a badge are listed first. */
   badge?: string;
   /** Dark "before you book" box with strict rules (for edgier tours). */
   warning?: { title: string; text: string; rules: string[]; note: string };
@@ -750,7 +750,9 @@ const allTours: Tour[] = [
 ];
 
 // Recommended tours first, then the rest in catalog order.
-export const tours: Tour[] = [...allTours].sort((a, b) => Number(!!b.recommended) - Number(!!a.recommended));
+// Order: tours with a badge (e.g. "למשוגעים בלבד") first, then "מומלץ", then the rest.
+const rank = (t: Tour) => (t.badge ? 2 : t.recommended ? 1 : 0);
+export const tours: Tour[] = [...allTours].sort((a, b) => rank(b) - rank(a));
 
 export const fromPrice = (t: Tour) => Math.min(...t.tiers.map((x) => x.price));
 export const hasTiers = (t: Tour) => t.tiers.length > 1;
