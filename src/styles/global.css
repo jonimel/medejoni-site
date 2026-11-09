@@ -72,6 +72,7 @@ button { font: inherit; }
 
 .pill { display: inline-block; font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 999px; background: #fff; color: var(--ink); border: 1px solid var(--line); }
 .pill-blue, .pill-soft { background: var(--cream); border-color: var(--cream); }
+.pill-dark { background: #1d1d1f; border-color: #1d1d1f; color: var(--yellow); font-weight: 800; }
 .pill-reco { background: var(--red); border-color: var(--red); color: #fff; font-weight: 800; }
 .tag { font-size: 13px; color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 3px 9px; }
 /* Icons: one style everywhere, blue icon on a soft cream circle. */

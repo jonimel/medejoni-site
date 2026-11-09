@@ -5,6 +5,15 @@
  */
 export const photoAlt: Record<string, string> = {
   'medellin-colombia': "מדיין קולומביה – נוף פנורמי של העיר ועמק אבורה ביום",
+  'israeloco-medellin-barrio-street-party': "סיור שכונות במדג'ין – מסיבת רחוב בבאריו בהרי העיר",
+  'israeloco-el-picacho-viewpoint-medellin-night': "מצפה אל פיקאצו – הנוף הכי גבוה על מדג'ין בלילה",
+  'israeloco-barrio-medellin-hills': "באריו בהרי מדג'ין – רחוב מקושט בשכונה מקומית",
+  'israeloco-medellin-street-food-arepas': "אוכל רחוב במדג'ין – ארפות על הגריל בדוכן שכונתי",
+  'israeloco-barrio-christmas-street-medellin': "רחוב מקושט לחג המולד בשכונה במדג'ין",
+  'israeloco-medellin-street-horse-night': "רחוב שכונתי במדג'ין בלילה – סוס ליד דוכני האוכל",
+  'israeloco-barrio-street-cooking-fire': "בישול על האש ברחוב בשכונה במדג'ין",
+  'israeloco-medellin-neighborhood-bar-night': "פאב שכונתי במדג'ין בלילה",
+  'israeloco-medellin-night-motorbike': "חיי הלילה בשכונות של מדג'ין – אופנוע ברחוב",
   'medellin-tours-viewpoint-evening': "סיורים במדיין – תצפית על אורות העיר בשעת ערב",
   'medellin-nightlife-city-lights': "חיי לילה במדיין – אורות העיר בלילה מהמצפה",
   'medellin-attractions-viewpoint-night': "אטרקציות במדיין – כוכב מואר במצפה מעל העיר בלילה",

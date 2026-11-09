@@ -108,6 +108,7 @@ const booking = JSON.stringify({
       <article>
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
           {tour.recommended && <span class="pill pill-reco">★ מומלץ</span>}
+          {tour.badge && <span class="pill pill-dark">{tour.badge}</span>}
           <span class="pill">{kindLabel[tour.kind]}</span>
           <span class="pill pill-soft">{tour.duration}</span>
         </div>
@@ -137,6 +138,15 @@ const booking = JSON.stringify({
             </video>
             <figcaption>{tour.video.title}</figcaption>
           </figure>
+        )}
+
+        {tour.warning && (
+          <aside class="warn" aria-labelledby="warn-title">
+            <h2 id="warn-title">⚠️ {tour.warning.title}</h2>
+            <p>{tour.warning.text}</p>
+            <ul>{tour.warning.rules.map((x) => <li>{x}</li>)}</ul>
+            <p class="warn-note">{tour.warning.note}</p>
+          </aside>
         )}
 
         <div class="inc">
@@ -292,6 +302,13 @@ const booking = JSON.stringify({
   .highlights { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
   .highlights li { background: var(--cream); color: var(--ink); border-radius: 999px; padding: 6px 14px; font-size: 15px; font-weight: 600; }
   .bring { margin: 0; padding-inline-start: 22px; display: flex; flex-direction: column; gap: 8px; font-size: 17px; line-height: 1.6; }
+  .warn { margin: 28px 0; background: #1d1d1f; color: #fff; border-radius: 16px; padding: 22px 22px 20px; border-inline-start: 6px solid var(--yellow); }
+  .warn h2 { font-size: 21px; font-weight: 800; margin: 0 0 8px; color: var(--yellow); }
+  .warn p { margin: 0 0 12px; font-size: 16px; line-height: 1.65; color: #eee; }
+  .warn ul { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .warn li { position: relative; padding-inline-start: 26px; font-size: 16px; font-weight: 600; line-height: 1.5; }
+  .warn li::before { content: '✕'; position: absolute; inset-inline-start: 0; color: var(--yellow); font-weight: 800; }
+  .warn .warn-note { margin: 0; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.18); font-size: 15px; color: #ccc; }
   .how { margin-top: 32px; background: var(--cream); border-radius: 16px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; font-size: 16px; line-height: 1.6; }
   .how strong { font-size: 18px; }
   .tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
