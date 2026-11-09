@@ -33,6 +33,8 @@ export const site = {
     hideDays: 7, // after it was shown, don't show it again to the same visitor for this many days
   },
   gscVerification: 'nDcN8UFi78rtWutRJ-orbP2TN-MdSRLeYE2bxJkod-o',
+  // Bing Webmaster Tools verification (msvalidate.01).
+  bingVerification: '3434C4D36C55B1987DFD2F8FA9D5D57A',
 };
 
 /** Builds a wa.me link with a prefilled Hebrew message. */
