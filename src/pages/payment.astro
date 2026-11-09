@@ -1,0 +1,46 @@
+---
+// Bold sends the customer back here after paying the deposit (callback_url in server.mjs),
+// with ?bold-order-id=...&bold-tx-status=approved | rejected | failed | pending.
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { waLink } from '../data/site';
+---
+<Base title="תשלום המקדמה" description="סטטוס תשלום המקדמה ב-Medejoni." noindex>
+  <section class="wrap section pay-back" data-pay-back>
+    <span class="pb-icon" aria-hidden="true" data-pb-icon>✓</span>
+    <h1 data-pb-title>תודה! המקדמה התקבלה</h1>
+    <p data-pb-text>התאריך שלכם שמור. יונתן יחזור אליכם בוואטסאפ עם כל הפרטים לפני הטיול. את היתרה משלמים בקולומביה, במזומן או למדריך.</p>
+    <div class="pb-actions">
+      <a href="/tours/" class="btn btn-outline">לעוד טיולים</a>
+      <a href={waLink('היי יונתן, שילמתי מקדמה באתר על טיול')} class="btn btn-yellow" target="_blank" rel="noopener"><Icon name="whatsapp" size={18} />וואטסאפ ליונתן</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pay-back { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 18px; min-height: 50vh; justify-content: center; }
+  .pay-back h1 { font-size: 32px; }
+  .pay-back p { font-size: 18px; line-height: 1.6; color: var(--muted); max-width: 520px; }
+  .pb-icon { width: 72px; height: 72px; border-radius: 50%; background: var(--ok-bg); color: var(--ok); font-size: 36px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .pb-icon.is-bad { background: #fde8e8; color: #b42318; }
+  .pb-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+</style>
+
+<script>
+  const status = (new URLSearchParams(location.search).get('bold-tx-status') || 'approved').toLowerCase();
+  const box = document.querySelector<HTMLElement>('[data-pay-back]')!;
+  const set = (icon: string, title: string, text: string, bad = false) => {
+    const i = box.querySelector<HTMLElement>('[data-pb-icon]')!;
+    i.textContent = icon;
+    i.classList.toggle('is-bad', bad);
+    box.querySelector('[data-pb-title]')!.textContent = title;
+    box.querySelector('[data-pb-text]')!.textContent = text;
+  };
+  if (status === 'pending' || status === 'processing') {
+    set('…', 'התשלום בבדיקה', 'Bold עדיין מאשרת את התשלום. ברגע שהוא יאושר יונתן יקבל עדכון ויחזור אליכם.');
+  } else if (status !== 'approved') {
+    set('!', 'התשלום לא עבר', 'לא חויבתם. אפשר לנסות שוב מהלינק שקיבלתם, עם כרטיס אחר, או לכתוב ליונתן בוואטסאפ ונסדר את זה.', true);
+  } else {
+    (window as any).gtag?.('event', 'purchase', { currency: 'COP' });
+  }
+</script>

@@ -27,6 +27,7 @@ import HeardFrom from '../components/HeardFrom.astro';
         <input type="hidden" name="addons" data-h-addons />
         <input type="hidden" name="total" data-h-total />
         <input type="hidden" name="tour_title" data-h-title />
+        <input type="hidden" name="addon_ids" data-h-addon-ids />
         <p hidden aria-hidden="true"><label>Leave empty <input name="hp_field" tabindex="-1" autocomplete="off" /></label></p>
         <fieldset data-step="1">
           <legend tabindex="-1">הטיול שבחרתם</legend>
@@ -63,7 +64,7 @@ import HeardFrom from '../components/HeardFrom.astro';
           <legend tabindex="-1">אישור ושליחה</legend>
           <div class="note">
             <strong>איך זה עובד?</strong>
-            <span>ההזמנה נשלחת ליונתן. הוא חוזר אליכם לאישור זמינות ופרטי תשלום, בדרך כלל באותו יום. תשלום באתר (מלא או מקדמה) יתווסף בהמשך.</span>
+            <span>אחרי השליחה תוכלו לשלם מקדמה של 40% בכרטיס אשראי, בדף התשלום המאובטח של Bold (בתוספת 5% עמלת אשראי על המקדמה). את היתרה משלמים בקולומביה, במזומן או למדריך. יונתן חוזר אליכם לאישור זמינות, בדרך כלל באותו יום.</span>
           </div>
           <dl class="review" data-review></dl>
           <label class="check"><input type="checkbox" required data-terms /> קראתי ואני מסכים/ה לתנאי הביטול: ביטול עד 12 שעות לפני הטיול.</label>
@@ -77,7 +78,18 @@ import HeardFrom from '../components/HeardFrom.astro';
         <div class="done" data-done hidden tabindex="-1">
           <span class="done-icon" aria-hidden="true">✓</span>
           <h2>ההזמנה התקבלה!</h2>
-          <p>תודה <span data-done-name></span>. יונתן יחזור אליכם בהקדם לאישור הזמנה ופרטי תשלום.</p>
+          <p>תודה <span data-done-name></span>. יונתן יחזור אליכם בהקדם לאישור ההזמנה.</p>
+          <div class="pay" data-pay hidden>
+            <strong>כדי לשריין את התאריך, משלמים מקדמה:</strong>
+            <dl class="pay-lines">
+              <dt>מקדמה (40%)</dt><dd class="ltr" data-pay-deposit></dd>
+              <dt>עמלת אשראי (5%)</dt><dd class="ltr" data-pay-fee></dd>
+              <dt><strong>לתשלום עכשיו</strong></dt><dd class="ltr"><strong data-pay-charge></strong></dd>
+              <dt>יתרה בקולומביה (מזומן או למדריך)</dt><dd class="ltr" data-pay-rest></dd>
+            </dl>
+            <a class="btn btn-yellow pay-btn" data-pay-link rel="noopener">לתשלום המקדמה באשראי</a>
+            <small>התשלום מתבצע בדף המאובטח של Bold. החיוב בפסו קולומביאני, והבנק שלכם ימיר לשקלים.</small>
+          </div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
             <a href="/tours/" class="btn btn-outline">לעוד טיולים</a>
             <a class="btn btn-yellow" target="_blank" rel="noopener" data-done-wa><Icon name="whatsapp" size={18} />רוצים תשובה מהירה? וואטסאפ</a>
@@ -101,6 +113,12 @@ import HeardFrom from '../components/HeardFrom.astro';
 </Base>
 
 <style>
+  .pay { display: flex; flex-direction: column; gap: 12px; border: 2px solid var(--yellow); border-radius: 16px; padding: 18px; margin: 8px auto 4px; max-width: 460px; text-align: start; }
+  .pay[hidden] { display: none; }
+  .pay-lines { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 0; }
+  .pay-lines dd { margin: 0; text-align: end; }
+  .pay-btn { justify-content: center; }
+  .pay small { color: var(--muted); }
   .b-wrap { padding-top: 32px; padding-bottom: 72px; }
   .b-title { font-size: clamp(26px, 4vw, 38px); font-weight: 800; margin-bottom: 24px; }
   .stepper { list-style: none; padding: 0; margin: 0 0 32px; display: flex; gap: 8px; counter-reset: s; }
@@ -167,6 +185,7 @@ import HeardFrom from '../components/HeardFrom.astro';
 <script>
   type Tier = { min: number; price: number };
   type AddOn = { id: string; name: string; price?: number };
+  import { quote } from '../lib/deposit.mjs';
   type T = { slug: string; title: string; image: string; tiers: Tier[]; min: number; addOns: AddOn[]; single?: boolean; pickup: string; ahead: number };
 
   const root = document.querySelector<HTMLElement>('[data-booking-root]')!;
@@ -281,6 +300,8 @@ import HeardFrom from '../components/HeardFrom.astro';
       ['שם', String(fd.get('name') ?? '')], ['טלפון', String(fd.get('phone') ?? '')],
       ['סה״כ', fmt(total)],
     ];
+    const q = quote(t, n, extras.map((e) => e.id));
+    rows.push(['מקדמה עכשיו (40% + 5% עמלה)', fmt(q.charge)], ['יתרה בקולומביה', fmt(q.remainder)]);
     const dl = root.querySelector('[data-review]')!;
     dl.innerHTML = '';
     rows.forEach(([k, v]) => { const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dl.append(dt, dd); });
@@ -316,6 +337,7 @@ import HeardFrom from '../components/HeardFrom.astro';
     form.querySelector<HTMLInputElement>('[data-h-addons]')!.value = extras.map((x) => x.name).join(', ');
     form.querySelector<HTMLInputElement>('[data-h-total]')!.value = fmt(total);
     form.querySelector<HTMLInputElement>('[data-h-title]')!.value = t.title;
+    form.querySelector<HTMLInputElement>('[data-h-addon-ids]')!.value = extras.map((x) => x.id).join(',');
     const btn = form.querySelector<HTMLButtonElement>('[data-submit]')!;
     const err = form.querySelector<HTMLElement>('[data-err]')!;
     btn.disabled = true;
@@ -342,6 +364,9 @@ import HeardFrom from '../components/HeardFrom.astro';
         return;
       }
       if (!res.ok) throw new Error(String(res.status));
+      // When Bold is connected, the server answers with the deposit payment link.
+      let pay: { url: string; deposit: number; fee: number; charge: number; remainder: number } | null = null;
+      try { pay = (JSON.parse(await res.text()) as any).pay ?? null; } catch { /* plain "ok": no online payment */ }
       // Google Analytics: count the booking request (only when analytics is on).
       (window as any).gtag?.('event', 'generate_lead', { form_name: 'booking' });
       steps.forEach((s) => (s.hidden = true));
@@ -349,6 +374,16 @@ import HeardFrom from '../components/HeardFrom.astro';
       const done = form.querySelector<HTMLElement>('[data-done]')!;
       done.querySelector('[data-done-name]')!.textContent = String(fd.get('name') ?? '');
       done.querySelector<HTMLAnchorElement>('[data-done-wa]')!.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
+      if (pay && /^https:\/\/checkout\.bold\.co\//.test(pay.url)) {
+        const box = done.querySelector<HTMLElement>('[data-pay]')!;
+        box.querySelector('[data-pay-deposit]')!.textContent = fmt(pay.deposit);
+        box.querySelector('[data-pay-fee]')!.textContent = fmt(pay.fee);
+        box.querySelector('[data-pay-charge]')!.textContent = fmt(pay.charge);
+        box.querySelector('[data-pay-rest]')!.textContent = fmt(pay.remainder);
+        box.querySelector<HTMLAnchorElement>('[data-pay-link]')!.href = pay.url;
+        box.hidden = false;
+        (window as any).gtag?.('event', 'begin_checkout', { value: pay.charge, currency: 'COP' });
+      }
       done.hidden = false;
       done.focus();
       root.scrollIntoView({ behavior: 'smooth', block: 'start' });

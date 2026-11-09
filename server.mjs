@@ -13,13 +13,17 @@
 //   NOINDEX         set to 1 ONLY on a preview copy of the site (e.g. the V2 preview service),
 //                   so Google does not index it. Never set it on the live medejoni.com service.
 //   SUPABASE_SERVICE_KEY  optional, the "service_role" secret key. Server only, never sent to browsers.
+//   BOLD_API_KEY    optional, Bold "Llave de identidad" (bold.co panel → Integraciones → Llaves de integración).
+//                   When set, each booking gets a Bold payment link for the deposit (src/lib/deposit.mjs).
+//                   Server only, never sent to browsers.
 import { createServer } from 'node:http';
 import { randomUUID } from 'node:crypto';
 import { brotliCompressSync, gzipSync, constants as zlib } from 'node:zlib';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
+import { quote } from './src/lib/deposit.mjs';
 
 const root = join(fileURLToPath(new URL('.', import.meta.url)), 'dist');
 const port = Number(process.env.PORT) || 3000;
@@ -42,6 +46,7 @@ const labels = {
   addons: 'תוספות', total: 'סה״כ', landing_date: 'תאריך נחיתה', landing_airport: 'שדה נחיתה', destination: 'יעד',
   from: 'מאיפה', to: 'לאן', tour: 'קוד טיול', email: 'אימייל', hotel: 'איסוף מ', notes: 'הערות',
   interest: 'מתעניין ב', dates: 'מתי בקולומביה', arrival_date: 'תאריך הגעה', days: 'כמה ימים', message: 'הודעה', source: 'מקור', partner: 'הגיע דרך שותף', heard_from: 'איך הגיע אלינו',
+  deposit: 'מקדמה ב-Bold', remainder: 'יתרה לתשלום בקולומביה', pay_link: 'לינק תשלום', pay_id: 'מזהה תשלום ב-Bold',
 };
 const formTitles = {
   booking: 'הזמנת טיול', lead: 'השארת פרטים', 'airport-transfer': 'הסעה משדה התעופה',
@@ -163,6 +168,47 @@ async function trackReferral(req) {
   supabaseRpc('log_referral_visit', body);
   const flags = 'Path=/; SameSite=Lax; Secure; HttpOnly';
   return [`mj_vid=${visitorId}; Max-Age=31536000; ${flags}`, `mj_ref=${raw}; ${flags}`];
+}
+
+// ---- Bold deposit link (https://developers.bold.co/pagos-en-linea/api-link-de-pagos) ----
+// The amount is worked out here from the price list saved at build time (.server/prices.json),
+// never taken from the browser. Card details are typed on Bold's own page (checkout.bold.co), not on this site.
+const pricesFile = new URL('./.server/prices.json', import.meta.url);
+const prices = existsSync(pricesFile) ? JSON.parse(readFileSync(pricesFile, 'utf8')) : [];
+const boldOn = () => Boolean(process.env.BOLD_API_KEY) && prices.length > 0;
+const fmtCOP = (n) => n.toLocaleString('en-US') + ' COP';
+
+/** Creates a Bold payment link for this booking's deposit. Returns null when it can't (the booking still goes through). */
+async function createDepositLink(fields) {
+  if (!boldOn()) return null;
+  const tour = prices.find((t) => t.slug === fields.tour);
+  if (!tour) return null;
+  const q = quote(tour, fields.people, String(fields.addon_ids || '').split(',').filter(Boolean));
+  const body = {
+    amount_type: 'CLOSE',
+    amount: { currency: 'COP', total_amount: q.charge, tip_amount: 0, taxes: [] },
+    // Letters, digits, _ and - only, at most 60 characters.
+    reference: `MJ-${tour.slug.slice(0, 32)}-${Date.now()}`,
+    description: `מקדמה ${tour.title}`.slice(0, 100),
+    callback_url: 'https://medejoni.com/payment/',
+  };
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email || '')) body.payer_email = fields.email;
+  try {
+    const res = await fetch('https://integrations.api.bold.co/online/link/v1', {
+      method: 'POST',
+      headers: { Authorization: `x-api-key ${process.env.BOLD_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(8000),
+    });
+    const data = await res.json().catch(() => ({}));
+    const url = data?.payload?.url;
+    if (!res.ok || !url) { console.error('Bold link failed:', res.status, JSON.stringify(data)); return null; }
+    console.log('Bold link created:', data.payload.payment_link, body.reference, q.charge);
+    return { ...q, url, id: data.payload.payment_link, reference: body.reference };
+  } catch (e) {
+    console.error('Bold link failed:', e.message);
+    return null;
+  }
 }
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -320,8 +366,26 @@ createServer(async (req, res) => {
       // Every lead is written to the Railway logs too, so none is lost even if the email fails.
       console.log('Lead received:', JSON.stringify(fields));
       try {
+        const pay = fields['form-name'] === 'booking' ? await createDepositLink(fields) : null;
+        if (pay) {
+          Object.assign(fields, {
+            deposit: `${fmtCOP(pay.deposit)} + עמלת אשראי ${fmtCOP(pay.fee)} = ${fmtCOP(pay.charge)}`,
+            total: fmtCOP(pay.total),
+            remainder: fmtCOP(pay.remainder),
+            pay_link: pay.url,
+            pay_id: `${pay.id} (${pay.reference})`,
+          });
+        } else if (fields['form-name'] === 'booking' && boldOn()) {
+          fields.pay_link = 'לא נוצר לינק תשלום (תקלה ב-Bold). צריך לשלוח ללקוח לינק ידני.';
+        }
+        delete fields.addon_ids;
         await sendLead(fields);
-        res.writeHead(200).end('ok');
+        if (pay) {
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+            .end(JSON.stringify({ pay: { url: pay.url, deposit: pay.deposit, fee: pay.fee, charge: pay.charge, remainder: pay.remainder, total: pay.total } }));
+        } else {
+          res.writeHead(200).end('ok');
+        }
       } catch (e) {
         console.error('Lead email failed:', e.message, JSON.stringify(fields));
         leadLog.get(clientIp(req))?.pop(); // a send that failed on our side doesn't count toward the limit
@@ -353,4 +417,7 @@ createServer(async (req, res) => {
   console.log(supabaseOn()
     ? `Partner tracking: ON (Supabase ${new URL(process.env.SUPABASE_URL).host}, key type ${process.env.SUPABASE_SERVICE_KEY.slice(0, 10)}...)`
     : 'Partner tracking: OFF (SUPABASE_URL / SUPABASE_SERVICE_KEY not set)');
+  console.log(boldOn()
+    ? `Bold deposits: ON (${prices.length} tours in price list)`
+    : `Bold deposits: OFF (${process.env.BOLD_API_KEY ? '.server/prices.json missing, run the build' : 'BOLD_API_KEY not set'})`);
 });
