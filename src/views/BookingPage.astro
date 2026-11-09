@@ -251,9 +251,10 @@ const L = en
   const fPeople = form.querySelector<HTMLInputElement>('[data-f-people]')!;
   const addonsBox = form.querySelector<HTMLElement>('[data-f-addons]')!;
   const fmt = (n: number) => n.toLocaleString('en-US') + ' COP';
-  // Hebrew page only: about how much it is in shekels (site.ilsRate COP per 1 ILS), rounded to 10.
-  const ilsRate = Number(root.dataset.ils) || 0;
-  const ils = (n: number) => (ilsRate ? `(≈\u00a0₪${(Math.round(n / ilsRate / 10) * 10).toLocaleString('en-US')})` : '');
+  // Hebrew page only: about how much it is in shekels, in whole shekels. The live market rate comes from
+  // /api/rate (server.mjs); until it arrives, or if it fails, the fixed site.ilsRate is used.
+  let ilsRate = Number(root.dataset.ils) || 0;
+  const ils = (n: number) => (ilsRate ? `(≈\u00a0₪${Math.round(n / ilsRate).toLocaleString('en-US')})` : '');
   // Wrapped in left-to-right isolation marks so the numbers stay in order inside Hebrew text.
   const fmtIls = (n: number) => (ilsRate ? `\u2066${fmt(n)} ${ils(n)}\u2069` : fmt(n));
   const payMode = () => (form.querySelector<HTMLInputElement>('[data-pay-opt]:checked')?.value === 'full' ? 'full' : 'deposit');
@@ -469,6 +470,14 @@ const L = en
   });
 
   setupTour();
+  if (ilsRate) {
+    fetch('/api/rate').then((r) => (r.ok ? r.json() : null)).then((d) => {
+      if (!d?.copPerIls) return;
+      ilsRate = d.copPerIls;
+      render();
+      if (cur === 2) fillReview();
+    }).catch(() => { /* keep the fixed rate */ });
+  }
   // Coming from a tour page ("להזמנה") with the trip, date and people already chosen: go straight to
   // "הפרטים שלכם". Step 1 is shown only when the trip has add-ons to pick. The summary shows the choice.
   if (q.get('tour') === fTour.value && q.get('date') && q.get('people') && !tour().addOns.length) go(1, false);

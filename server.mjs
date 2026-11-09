@@ -213,6 +213,24 @@ async function createDepositLink(fields) {
   }
 }
 
+// ---- Shekel rate, so the Hebrew booking page can show "≈ ₪..." next to peso prices ----
+// Market rate (COP per 1 ILS) from open.er-api.com (free, no key, updated daily), cached for 6 hours.
+// If it can't be fetched, the page keeps the fixed fallback rate (site.ilsRate).
+let ilsRate = { cop: 0, at: 0 };
+async function copPerIls() {
+  if (ilsRate.cop && Date.now() - ilsRate.at < 6 * 3600_000) return ilsRate.cop;
+  try {
+    const res = await fetch('https://open.er-api.com/v6/latest/ILS', { signal: AbortSignal.timeout(4000) });
+    const data = await res.json();
+    const cop = Number(data?.rates?.COP);
+    if (res.ok && data?.result === 'success' && cop > 100 && cop < 10000) ilsRate = { cop, at: Date.now() };
+    else console.error('Shekel rate: unexpected answer', res.status);
+  } catch (e) {
+    console.error('Shekel rate failed:', e.message);
+  }
+  return ilsRate.cop; // 0 = unknown (an old rate is still used if a refresh fails)
+}
+
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
 async function sendLead(fields) {
@@ -344,6 +362,12 @@ createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/api/visit') {
       const setCookie = await trackReferral(req);
       res.writeHead(204, setCookie.length ? { 'Set-Cookie': setCookie } : {}).end();
+      return;
+    }
+    if (req.method === 'GET' && url.pathname === '/api/rate') {
+      const cop = await copPerIls();
+      res.writeHead(cop ? 200 : 503, { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600' })
+        .end(JSON.stringify(cop ? { copPerIls: cop } : { error: 'unavailable' }));
       return;
     }
     if (req.method === 'POST' && url.pathname === '/api/wa-click') {
