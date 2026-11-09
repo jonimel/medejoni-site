@@ -76,6 +76,7 @@ const footerTours = tours.filter((t) => t.featured).slice(0, 4);
   {!noindex && <link rel="alternate" hreflang="he" href={canonical} />}
   {!noindex && <link rel="alternate" hreflang="x-default" href={canonical} />}
   {site.gscVerification && <meta name="google-site-verification" content={site.gscVerification} />}
+  {site.bingVerification && <meta name="msvalidate.01" content={site.bingVerification} />}
   <meta property="og:type" content={ogType} />
   <meta property="og:locale" content="he_IL" />
   <meta property="og:site_name" content={site.name} />
