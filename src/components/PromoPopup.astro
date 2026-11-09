@@ -1,0 +1,110 @@
+---
+// Small tour promotion card. Settings: `promo` in src/data/site.ts.
+// Shown after a few seconds or half a page of scrolling (or when the mouse leaves the page on desktop),
+// once per visitor per `hideDays`. Not shown on booking/payment/legal pages or on single tour pages
+// (the visitor already picked a tour there, and the card would cover the booking box).
+import { site, formatCOP, thumb } from '../data/site';
+import { getTour, fromPrice, hasTiers } from '../data/tours';
+const p = site.promo;
+const tour = p.enabled ? getTour(p.tour) : undefined;
+const path = Astro.url.pathname;
+const skip = ['/booking', '/payment', '/terms', '/privacy', '/accessibility', '/404'];
+const tourPage = /^\/tours\/[^/]+/.test(path);
+const show = tour && !tourPage && !skip.some((s) => path.startsWith(s));
+const price = tour ? fromPrice(tour) : 0;
+---
+{show && tour && (
+  <aside id="mj-promo" class="mj-promo" role="dialog" aria-modal="false" aria-labelledby="mj-promo-title" hidden
+    data-delay={p.delaySeconds} data-days={p.hideDays} data-tour={tour.slug}>
+    <button type="button" class="mj-promo-x" aria-label="סגירה" data-promo-close>✕</button>
+    <img src={thumb(p.image || tour.images[0])} alt="" width="600" height="300" loading="lazy" decoding="async" />
+    <div class="mj-promo-body">
+      <span class="mj-promo-label">{p.label}</span>
+      <h2 id="mj-promo-title">{tour.title}</h2>
+      <p>{p.text || tour.short}</p>
+      <div class="mj-promo-price">{hasTiers(tour) ? 'החל מ־' : ''}<b class="ltr">{formatCOP(price)}</b> לאדם</div>
+      <a class="mj-promo-go" href={`/tours/${tour.slug}/`} data-promo-go>{p.button}</a>
+    </div>
+  </aside>
+)}
+
+<style is:global>
+  .mj-promo {
+    position: fixed; z-index: 90; background: #fff; border-radius: 18px; overflow: hidden;
+    box-shadow: 0 18px 48px rgba(17, 24, 39, 0.28);
+    width: 360px; bottom: 24px; right: 24px;
+    transform: translateY(24px); opacity: 0; transition: transform 0.35s ease, opacity 0.35s ease;
+  }
+  .mj-promo.is-in { transform: none; opacity: 1; }
+  .mj-promo[hidden] { display: none; }
+  .mj-promo img { display: block; width: 100%; height: 150px; object-fit: cover; }
+  .mj-promo-body { padding: 14px 18px 18px; }
+  .mj-promo-label { display: inline-block; background: var(--yellow); color: var(--ink); font-weight: 700; font-size: 13px; padding: 3px 10px; border-radius: 99px; }
+  .mj-promo h2 { margin: 8px 0 4px; font-size: 21px; line-height: 1.25; color: var(--ink); }
+  .mj-promo p { margin: 0 0 10px; font-size: 15px; line-height: 1.45; color: var(--text); }
+  .mj-promo-price { font-size: 15px; color: var(--text); margin-bottom: 12px; }
+  .mj-promo-price b { color: var(--ink); font-size: 17px; }
+  .mj-promo-go { display: block; text-align: center; background: var(--blue); color: #fff; font-weight: 700; padding: 12px; border-radius: 12px; text-decoration: none; }
+  .mj-promo-go:hover { background: var(--blue-dark); color: #fff; }
+  .mj-promo-x {
+    position: absolute; top: 10px; left: 10px; width: 40px; height: 40px; border-radius: 50%; border: 0;
+    background: rgba(255, 255, 255, 0.95); color: var(--ink); font-size: 17px; line-height: 1; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  @media (max-width: 640px) {
+    .mj-promo { width: auto; left: 10px; right: 10px; bottom: 10px; }
+    .mj-promo img { height: 96px; }
+    .mj-promo-body { padding: 12px 16px 14px; }
+    .mj-promo h2 { font-size: 19px; }
+    .mj-promo p { font-size: 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .mj-promo { transition: none; transform: none; } }
+</style>
+
+<script>
+  const box = document.getElementById('mj-promo');
+  if (box) {
+    const KEY = 'mj_promo_seen';
+    const days = Number(box.dataset.days) || 7;
+    const tour = box.dataset.tour || '';
+    let seenRecently = false;
+    try {
+      const v = JSON.parse(localStorage.getItem(KEY) || 'null');
+      seenRecently = !!v && v.tour === tour && v.until > Date.now();
+    } catch { /* storage blocked: still show once on this page */ }
+    const track = (action: string) => { try { (window as any).gtag?.('event', 'promo_popup', { action, tour }); } catch { /* ignore */ } };
+    let shown = false;
+    const show = () => {
+      // Not while the mobile menu is open or a form field is being typed in.
+      if (shown || document.getElementById('mobile-nav')?.classList.contains('is-open')) return;
+      const a = document.activeElement;
+      if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) return;
+      shown = true;
+      cleanup();
+      try { localStorage.setItem(KEY, JSON.stringify({ tour, until: Date.now() + days * 864e5 })); } catch { /* ignore */ }
+      box.hidden = false;
+      requestAnimationFrame(() => requestAnimationFrame(() => box.classList.add('is-in')));
+      track('shown');
+    };
+    const close = () => {
+      box.classList.remove('is-in');
+      setTimeout(() => { box.hidden = true; }, 350);
+      track('closed');
+    };
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      if (max > 0 && scrollY / max >= 0.5) show();
+    };
+    const onLeave = (e: MouseEvent) => { if (e.clientY <= 0) show(); };
+    let timer = 0;
+    const cleanup = () => { clearTimeout(timer); removeEventListener('scroll', onScroll); document.removeEventListener('mouseout', onLeave); };
+    if (!seenRecently) {
+      timer = window.setTimeout(show, (Number(box.dataset.delay) || 15) * 1000);
+      addEventListener('scroll', onScroll, { passive: true });
+      if (matchMedia('(hover: hover) and (pointer: fine)').matches) document.addEventListener('mouseout', onLeave);
+    }
+    box.querySelector('[data-promo-close]')?.addEventListener('click', close);
+    box.querySelector('[data-promo-go]')?.addEventListener('click', () => track('clicked'));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !box.hidden) close(); });
+  }
+</script>
