@@ -24,10 +24,12 @@ const L = en
       chosen: 'Your tour', tour: 'Tour', date: 'Date', people: 'People', cont: 'Continue', back: 'Back',
       details: 'Your details', name: 'Full name', phone: 'Phone (WhatsApp)', phonePh: '+1 555 000 0000', email: 'Email',
       hotel: 'Hotel name or pickup address', notes: 'Notes', confirm: 'Confirm and send',
-      howT: 'How does it work?', howX: 'Your booking goes to Yonatan. He gets back to you to confirm availability and payment details, usually the same day.',
+      howT: 'How does it work?', howX: 'After sending, you can pay a 40% deposit by credit card on Bold’s secure payment page (plus a 5% card fee on the deposit). The rest is paid in Colombia, in cash or to the guide. Yonatan gets back to you to confirm availability, usually the same day.',
       agree1: 'I have read and agree to the ', terms: 'booking and cancellation terms', and: ' and the ', privacy: 'privacy policy', agree2: '. Cancellation up to 12 hours before the tour.',
-      send: 'Send booking', doneT: 'Booking received!', thanks: 'Thank you', doneX: '. Yonatan will get back to you soon to confirm the booking and payment details.',
-      moreTours: 'More tours', fastWa: 'Want a quick answer? WhatsApp', summary: 'Booking summary', totalPay: 'Total', copNote: 'Prices are in Colombian pesos (COP), per person.',
+      send: 'Send booking', doneT: 'Booking received!', thanks: 'Thank you', doneX: '. Yonatan will get back to you soon to confirm the booking.',
+      payT: 'To hold your date, pay the deposit:', payDep: 'Deposit (40%)', payFee: 'Card fee (5%)', payNow: 'To pay now', payRest: 'Balance in Colombia (cash or to the guide)',
+      payBtn: 'Pay the deposit by card', payNote: 'Payment is made on Bold’s secure page. You are charged in Colombian pesos and your bank converts the amount.',
+      moreTours: 'More tours', fastWa: 'Want a quick answer? WhatsApp', summary: 'Booking summary', totalPay: 'Total', copNote: 'Prices in Colombian pesos (COP). 40% deposit by card (+5% card fee), the rest in cash in Colombia.',
       edit: 'Change tour, date or people',
     }
   : {
@@ -36,10 +38,12 @@ const L = en
       chosen: 'הטיול שבחרתם', tour: 'טיול', date: 'תאריך', people: 'משתתפים', cont: 'המשך', back: 'חזרה',
       details: 'הפרטים שלכם', name: 'שם מלא', phone: 'טלפון (וואטסאפ)', phonePh: '+972 50 000 0000', email: 'אימייל',
       hotel: 'שם המלון או כתובת לאיסוף', notes: 'הערות', confirm: 'אישור ושליחה',
-      howT: 'איך זה עובד?', howX: 'ההזמנה נשלחת ליונתן. הוא חוזר אליכם לאישור זמינות ופרטי תשלום, בדרך כלל באותו יום. תשלום באתר (מלא או מקדמה) יתווסף בהמשך.',
+      howT: 'איך זה עובד?', howX: 'אחרי השליחה תוכלו לשלם מקדמה של 40% בכרטיס אשראי, בדף התשלום המאובטח של Bold (בתוספת 5% עמלת אשראי על המקדמה). את היתרה משלמים בקולומביה, במזומן או למדריך. יונתן חוזר אליכם לאישור זמינות, בדרך כלל באותו יום.',
       agree1: 'קראתי ואני מסכים/ה ל', terms: 'תנאי ההזמנה והביטול', and: ' ול', privacy: 'מדיניות הפרטיות', agree2: '. ביטול עד 12 שעות לפני הטיול.',
-      send: 'שליחת ההזמנה', doneT: 'ההזמנה התקבלה!', thanks: 'תודה', doneX: '. יונתן יחזור אליכם בהקדם לאישור הזמנה ופרטי תשלום.',
-      moreTours: 'לעוד טיולים', fastWa: 'רוצים תשובה מהירה? וואטסאפ', summary: 'סיכום הזמנה', totalPay: 'סה״כ לתשלום', copNote: 'המחירים בפסו קולומביאני (COP), לאדם.',
+      send: 'שליחת ההזמנה', doneT: 'ההזמנה התקבלה!', thanks: 'תודה', doneX: '. יונתן יחזור אליכם בהקדם לאישור ההזמנה.',
+      payT: 'כדי לשריין את התאריך, משלמים מקדמה:', payDep: 'מקדמה (40%)', payFee: 'עמלת אשראי (5%)', payNow: 'לתשלום עכשיו', payRest: 'יתרה בקולומביה (מזומן או למדריך)',
+      payBtn: 'לתשלום המקדמה באשראי', payNote: 'התשלום מתבצע בדף המאובטח של Bold. החיוב בפסו קולומביאני, והבנק שלכם ימיר לשקלים.',
+      moreTours: 'לעוד טיולים', fastWa: 'רוצים תשובה מהירה? וואטסאפ', summary: 'סיכום הזמנה', totalPay: 'סה״כ לתשלום', copNote: 'המחירים בפסו (COP). מקדמה של 40% באשראי (+5% עמלת אשראי), היתרה במזומן בקולומביה.',
       edit: 'שינוי טיול, תאריך או משתתפים',
     };
 ---
@@ -59,6 +63,7 @@ const L = en
         <input type="hidden" name="addons" data-h-addons />
         <input type="hidden" name="total" data-h-total />
         <input type="hidden" name="tour_title" data-h-title />
+        <input type="hidden" name="addon_ids" data-h-addon-ids />
         {en && <input type="hidden" name="lang" value="English" />}
         <p hidden aria-hidden="true"><label>Leave empty <input name="hp_field" tabindex="-1" autocomplete="off" /></label></p>
         <fieldset data-step="1">
@@ -111,6 +116,17 @@ const L = en
           <span class="done-icon" aria-hidden="true">✓</span>
           <h2>{L.doneT}</h2>
           <p>{L.thanks} <span data-done-name></span>{L.doneX}</p>
+          <div class="pay" data-pay hidden>
+            <strong>{L.payT}</strong>
+            <dl class="pay-lines">
+              <dt>{L.payDep}</dt><dd class="ltr" data-pay-deposit></dd>
+              <dt>{L.payFee}</dt><dd class="ltr" data-pay-fee></dd>
+              <dt><strong>{L.payNow}</strong></dt><dd class="ltr"><strong data-pay-charge></strong></dd>
+              <dt>{L.payRest}</dt><dd class="ltr" data-pay-rest></dd>
+            </dl>
+            <a class="btn btn-yellow pay-btn" data-pay-link rel="noopener">{L.payBtn}</a>
+            <small>{L.payNote}</small>
+          </div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
             <a href={lp(lang, '/tours/')} class="btn btn-outline">{L.moreTours}</a>
             <a class="btn btn-yellow" target="_blank" rel="noopener" data-done-wa><Icon name="whatsapp" size={18} />{L.fastWa}</a>
@@ -134,6 +150,12 @@ const L = en
 </Base>
 
 <style>
+  .pay { display: flex; flex-direction: column; gap: 12px; border: 2px solid var(--yellow); border-radius: 16px; padding: 18px; margin: 8px auto 4px; max-width: 460px; text-align: start; }
+  .pay[hidden] { display: none; }
+  .pay-lines { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 0; }
+  .pay-lines dd { margin: 0; text-align: end; }
+  .pay-btn { justify-content: center; }
+  .pay small { color: var(--muted); }
   .b-wrap { padding-top: 32px; padding-bottom: 72px; }
   .b-title { font-size: clamp(26px, 4vw, 38px); font-weight: 800; margin-bottom: 24px; }
   .stepper { list-style: none; padding: 0; margin: 0 0 32px; display: flex; gap: 8px; counter-reset: s; }
@@ -200,6 +222,7 @@ const L = en
 <script>
   type Tier = { min: number; price: number };
   type AddOn = { id: string; name: string; price?: number };
+  import { quote } from '../lib/deposit.mjs';
   type T = { slug: string; title: string; image: string; tiers: Tier[]; min: number; addOns: AddOn[]; single?: boolean; hotel: boolean; ahead: number };
 
   const root = document.querySelector<HTMLElement>('[data-booking-root]')!;
@@ -310,14 +333,16 @@ const L = en
     const { t, n, extras, total } = totals();
     const fd = new FormData(form);
     const k = EN
-      ? ['Tour', 'Date', 'People', 'Add-ons', 'None', 'Name', 'Phone', 'Total']
-      : ['טיול', 'תאריך', 'משתתפים', 'תוספות', 'ללא', 'שם', 'טלפון', 'סה״כ'];
+      ? ['Tour', 'Date', 'People', 'Add-ons', 'None', 'Name', 'Phone', 'Total', 'Deposit now (40% + 5% fee)', 'Balance in Colombia']
+      : ['טיול', 'תאריך', 'משתתפים', 'תוספות', 'ללא', 'שם', 'טלפון', 'סה״כ', 'מקדמה עכשיו (40% + 5% עמלה)', 'יתרה בקולומביה'];
     const rows: [string, string][] = [
       [k[0], t.title], [k[1], fDate.value], [k[2], String(n)],
       [k[3], extras.map((e) => e.name).join(', ') || k[4]],
       [k[5], String(fd.get('name') ?? '')], [k[6], String(fd.get('phone') ?? '')],
       [k[7], fmt(total)],
     ];
+    const dq = quote(t, n, extras.map((e) => e.id));
+    rows.push([k[8], fmt(dq.charge)], [k[9], fmt(dq.remainder)]);
     const dl = root.querySelector('[data-review]')!;
     dl.innerHTML = '';
     rows.forEach(([k, v]) => { const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dl.append(dt, dd); });
@@ -356,6 +381,7 @@ const L = en
     form.querySelector<HTMLInputElement>('[data-h-addons]')!.value = extras.map((x) => x.name).join(', ');
     form.querySelector<HTMLInputElement>('[data-h-total]')!.value = fmt(total);
     form.querySelector<HTMLInputElement>('[data-h-title]')!.value = t.title;
+    form.querySelector<HTMLInputElement>('[data-h-addon-ids]')!.value = extras.map((x) => x.id).join(',');
     const btn = form.querySelector<HTMLButtonElement>('[data-submit]')!;
     const err = form.querySelector<HTMLElement>('[data-err]')!;
     btn.disabled = true;
@@ -382,6 +408,9 @@ const L = en
         return;
       }
       if (!res.ok) throw new Error(String(res.status));
+      // When Bold is connected, the server answers with the deposit payment link.
+      let pay: { url: string; deposit: number; fee: number; charge: number; remainder: number } | null = null;
+      try { pay = (JSON.parse(await res.text()) as any).pay ?? null; } catch { /* plain "ok": no online payment */ }
       // Google Analytics: count the booking request (only when analytics is on).
       (window as any).gtag?.('event', 'generate_lead', { form_name: 'booking' });
       steps.forEach((s) => (s.hidden = true));
@@ -389,6 +418,16 @@ const L = en
       const done = form.querySelector<HTMLElement>('[data-done]')!;
       done.querySelector('[data-done-name]')!.textContent = String(fd.get('name') ?? '');
       done.querySelector<HTMLAnchorElement>('[data-done-wa]')!.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
+      if (pay && /^https:\/\/checkout\.bold\.co\//.test(pay.url)) {
+        const box = done.querySelector<HTMLElement>('[data-pay]')!;
+        box.querySelector('[data-pay-deposit]')!.textContent = fmt(pay.deposit);
+        box.querySelector('[data-pay-fee]')!.textContent = fmt(pay.fee);
+        box.querySelector('[data-pay-charge]')!.textContent = fmt(pay.charge);
+        box.querySelector('[data-pay-rest]')!.textContent = fmt(pay.remainder);
+        box.querySelector<HTMLAnchorElement>('[data-pay-link]')!.href = pay.url;
+        box.hidden = false;
+        (window as any).gtag?.('event', 'begin_checkout', { value: pay.charge, currency: 'COP' });
+      }
       done.hidden = false;
       done.focus();
       root.scrollIntoView({ behavior: 'smooth', block: 'start' });

@@ -1,14 +1,15 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-import { readdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, statSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { imageSize } from './src/lib/image-size.mjs';
 import { guides, isDraft } from './src/data/guides.ts';
+import { tours } from './src/data/tours.ts';
 
 // Pages Google should not index (also kept out of the sitemap).
-const hidden = ['/booking/', '/en/booking/', '/404/', ...guides.filter(isDraft).map((g) => `/guides/${g.slug}/`)];
+const hidden = ['/booking/', '/en/booking/', '/payment/', '/en/payment/', '/404/', ...guides.filter(isDraft).map((g) => `/guides/${g.slug}/`)];
 
 /** After the build: mark new-tab links for screen readers, and give every <img src="/images/..."> its real width/height (less layout jumping = better Core Web Vitals)
  *  and a srcset with the small copy, so phones download smaller photos. */
@@ -57,7 +58,23 @@ function imageDimensions() {
   };
 }
 
+/** After the build: save the price list for server.mjs (.server/prices.json, not public), so the server
+ *  works out the Bold deposit itself instead of trusting the amount the browser sends. */
+function serverPrices() {
+  return {
+    name: 'server-prices',
+    hooks: {
+      'astro:build:done': () => {
+        const dir = fileURLToPath(new URL('./.server/', import.meta.url));
+        mkdirSync(dir, { recursive: true });
+        const list = tours.map((t) => ({ slug: t.slug, title: t.title, tiers: t.tiers, min: t.minPeople, addOns: t.addOns }));
+        writeFileSync(join(dir, 'prices.json'), JSON.stringify(list));
+      },
+    },
+  };
+}
+
 export default defineConfig({
   site: 'https://medejoni.com',
-  integrations: [sitemap({ filter: (page) => !hidden.some((p) => page.endsWith(p)) }), imageDimensions()],
+  integrations: [sitemap({ filter: (page) => !hidden.some((p) => page.endsWith(p)) }), imageDimensions(), serverPrices()],
 });
