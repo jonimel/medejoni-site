@@ -76,5 +76,9 @@ function serverPrices() {
 
 export default defineConfig({
   site: 'https://medejoni.com',
-  integrations: [sitemap({ filter: (page) => !hidden.some((p) => page.endsWith(p)) }), imageDimensions(), serverPrices()],
+  integrations: [sitemap({
+    filter: (page) => !hidden.some((p) => page.endsWith(p)),
+    // Tells Google which English page is the twin of which Hebrew page (same as the hreflang tags on the pages).
+    i18n: { defaultLocale: 'he', locales: { he: 'he', en: 'en' } },
+  }), imageDimensions(), serverPrices()],
 });
