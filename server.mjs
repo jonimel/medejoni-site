@@ -421,6 +421,14 @@ createServer(async (req, res) => {
       }
       return;
     }
+    // One address per page for Google: /tours/index.html or /about.html -> /tours/ and /about/ (301).
+    if (req.method === 'GET' || req.method === 'HEAD') {
+      const clean = url.pathname.replace(/\/index\.html$/, '/').replace(/^(\/.+)\.html$/, '$1/');
+      if (clean !== url.pathname) {
+        res.writeHead(301, { Location: clean + url.search }).end();
+        return;
+      }
+    }
     let decoded;
     try { decoded = decodeURIComponent(url.pathname); } catch { res.writeHead(400).end('Bad request'); return; }
     let path = normalize(join(root, decoded));
