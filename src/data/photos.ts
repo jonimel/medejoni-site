@@ -103,6 +103,12 @@ export const photoAlt: Record<string, string> = {
   'horse-riding-caldas-antioquia': "רכיבה על סוסים בקלדס, אנטיוקיה – סוס מוכן לרכיבה בחווה",
   'farm-animals-medellin-family-trip': "טיול משפחות במדיין – מלטפים פרד בחווה עם חיות בקלדס",
   'river-near-medellin-nature-trip': "טיול בטבע ליד מדיין – הנהר והיער הירוק בקלדס",
+  'san-antonio-de-prado-green-hills': "גבעות ירוקות וכפרים בהרים של סן אנטוניו דה פראדו, מערב מדג'ין",
+  'west-medellin-restaurant-lunch-mountain-view': "ארוחה קולומביאנית עם נוף להרים במסעדה במערב מדג'ין",
+  'west-medellin-mirador-restaurant-terrace': "מרפסת עץ של מסעדה עם תצפית על ההרים במערב מדג'ין",
+  'west-medellin-viewpoint-coffee-colombian-flag': "קפה קולומביאני במצפה, עם דגל קולומביה ונוף להרים הירוקים",
+  'west-medellin-mountains-green-valley': "רכסים ירוקים ועמקים מהמצפה במערב מדג'ין",
+  'west-medellin-mountain-viewpoint-clouds': "שקיעה ועננים מעל ההרים, מהמצפה במערב מדג'ין",
 };
 
 /** Hebrew description of a photo, for alt text. */
