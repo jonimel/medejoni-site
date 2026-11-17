@@ -102,8 +102,8 @@ const en: Record<string, TourText> = {
     place: 'Medellín',
     short: "The Pablo Escobar Museum, his grave, the rooftop of the house where he was killed and Parque Inflexión.",
     intro: 'A private Pablo Escobar tour in Medellín, with a local guide who knows the story up close. Hotel pickup, with a recommended 9:00 AM start.',
-    includes: [hotel, 'Driver', 'Local English-speaking guide', 'Pablo Escobar Museum entrance'],
-    excludes: [],
+    includes: [hotel, 'Driver', 'Local English-speaking guide'],
+    excludes: ['Pablo Escobar Museum entrance'],
     schedule: [
       { title: 'Pablo Escobar Museum', text: 'The first stop: his story up close.' },
       { title: "Pablo Escobar's grave", text: 'At Jardines Montesacro cemetery.' },
@@ -116,7 +116,7 @@ const en: Record<string, TourText> = {
     bring: ['A copy of your passport', 'Comfortable clothes and shoes'],
     pickup: hotel,
     duration: '4 to 5 hours (depending on traffic)',
-    tags: [hotel, 'Museum included', 'Private guide'],
+    tags: [hotel, 'Pablo Escobar Museum', 'Private guide'],
     faq: [
       { q: 'Is the Pablo Escobar tour safe?', a: 'Yes. All the places on the tour are open to the public.' },
       { q: 'Can I combine it with Comuna 13?', a: 'Yes. There is a combined Pablo Escobar and Comuna 13 tour in one day.' },
@@ -146,8 +146,8 @@ const en: Record<string, TourText> = {
     short: "Medellín's two big stories in one day: following Pablo Escobar, then the graffiti and hip-hop of Comuna 13.",
     intro:
       'A day that connects both sides of Medellín. First, follow the story of Pablo Escobar: the museum, his grave, the rooftop of the house where he was killed and Parque Inflexión. Then head to Comuna 13 for the street art, hip-hop shows, outdoor escalators and the story of the neighborhood that became a symbol of the city’s change.',
-    includes: [hotel, 'Driver', 'Local English-speaking guide', 'Pablo Escobar Museum entrance'],
-    excludes: [],
+    includes: [hotel, 'Driver', 'Local English-speaking guide'],
+    excludes: ['Pablo Escobar Museum entrance'],
     schedule: [
       { title: 'Hotel pickup' },
       { title: 'Following Pablo Escobar', text: 'The Pablo Escobar Museum, his grave, the rooftop of the house where he was killed and Parque Inflexión.' },
