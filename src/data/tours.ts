@@ -638,8 +638,8 @@ const allTours: Tour[] = [
     duration: 'יום מלא',
     tags: ['8:00 עד 19:00', 'טבע והרים', 'מצפה'],
     images: [
-      'san-antonio-de-prado-green-hills',
       'west-medellin-mountains-green-valley',
+      'san-antonio-de-prado-green-hills',
       'west-medellin-viewpoint-coffee-colombian-flag',
       'west-medellin-restaurant-lunch-mountain-view',
       'west-medellin-mirador-restaurant-terrace',
