@@ -363,6 +363,7 @@ const en: Record<string, TourText> = {
   },
   'green-west-medellin-day-trip': {
     title: 'Green Escape: West Medellín Mountains',
+    badge: 'New!',
     place: 'West Medellín',
     short: 'A day in the green mountains above the city: a local village, lunch with a view and a mountain viewpoint.',
     intro:

@@ -604,6 +604,7 @@ const allTours: Tour[] = [
   {
     slug: 'green-west-medellin-day-trip',
     title: "ירוק בעיניים: מערב מדג'ין",
+    badge: 'חדש!',
     kind: 'private',
     destination: 'medellin',
     place: "מערב מדג'ין",
