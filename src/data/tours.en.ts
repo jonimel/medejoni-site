@@ -4,7 +4,7 @@
 import { tours, type Tour, type TourKind } from './tours';
 
 type TourText = Pick<Tour, 'title' | 'place' | 'short' | 'intro' | 'includes' | 'excludes' | 'pickup' | 'duration' | 'tags' | 'faq'> &
-  Partial<Pick<Tour, 'schedule' | 'highlights' | 'start' | 'end' | 'guide' | 'ages' | 'bring' | 'goodToKnow' | 'addOnsNote' | 'badge' | 'warning'>> & {
+  Partial<Pick<Tour, 'schedule' | 'highlights' | 'start' | 'end' | 'guide' | 'ages' | 'bring' | 'goodToKnow' | 'addOnsNote' | 'badge' | 'warning' | 'cancel'>> & {
     /** Add-on names by id. */
     addOns?: Record<string, string>;
     videoTitle?: string;
@@ -392,6 +392,48 @@ const en: Record<string, TourText> = {
       { q: 'Can we do it on a weekday?', a: 'Yes, but the mountain viewpoint is open only on Saturdays, Sundays and holidays, so on weekdays we skip it.' },
       { q: 'Is lunch included?', a: 'No. Everyone orders and pays at the restaurant for what they like.' },
       ...commonFaq,
+    ],
+  },
+  'amazon-jungle-leticia-4-days': {
+    title: 'Amazon Discovery: 4 Days in the Jungle',
+    place: 'Leticia, Amazonas',
+    short: '4 days and 3 nights at a lodge on the Javari River: rainforest hikes, lake boat trips, monkeys and sunsets on the water.',
+    intro:
+      'Fly to Leticia, at the southern tip of Colombia, then ride a boat for about two hours up the Javari River, between Peru and Brazil, to a lodge facing a lake deep in the jungle. 4 days of hikes in old-growth rainforest, boat trips on the lakes looking for monkeys, sloths and birds, and sunsets on the water.',
+    includes: [
+      'Welcome at Leticia airport',
+      'Land and river transport, both ways',
+      '3 nights in a private room at the lakeside lodge',
+      'All meals: breakfast, lunch and dinner, plus water',
+      'Boots, raincoat, hammocks, mosquito nets, blankets and towels',
+      'Local English-speaking guides and all activities',
+      'On-site medical assistance',
+    ],
+    excludes: ['Flights to Leticia and back', 'Leticia tourist entry tax', 'Alcoholic drinks and tips'],
+    schedule: [
+      { title: 'Day 1: Land in Leticia and boat to the lodge', text: 'We meet you at the airport and ride about two hours up the Javari River to the lodge on the lake.' },
+      { title: 'Day 2: Rainforest hike', text: 'A jungle hike with a local guide, and the medicinal plants of the indigenous communities.' },
+      { title: 'Day 3: Lakes and streams', text: 'Boat trips looking for monkeys, sloths, anteaters, birds and giant water lilies. Traditional fishing and a sunset on the water.' },
+      { title: 'Day 4: Back to Leticia', text: 'Boat back to the airport.' },
+    ],
+    highlights: ['Old-growth rainforest', 'Lakes and the Javari River', 'Monkeys, sloths and birds', '3 nights at a lakeside lodge'],
+    guide: 'Local English-speaking guides',
+    bring: ['Passport', 'Yellow fever vaccination card', 'Insect repellent and sunscreen', 'Light long clothes', 'Headlamp', 'Cash in pesos'],
+    goodToKnow: [
+      'The price depends on the season and the group size. After you book, I get back to you with the final price.',
+      'High water (December to June): more boat trips through the flooded forest. Low water (July to November): river beaches and more hiking. Great all year.',
+      'The order of activities changes with the weather and the water level.',
+    ],
+    pickup: 'Leticia airport',
+    cancel: 'By arrangement',
+    duration: '4 days, 3 nights',
+    tags: ['4 days / 3 nights', 'Lodging & meals', 'Jungle & river'],
+    faq: [
+      { q: 'Are flights included?', a: 'No. You fly to Leticia yourselves, and from the airport we take care of everything else. Happy to help you pick a flight.' },
+      { q: 'Why is the price a range?', a: 'The price per person depends on the season and the group size. After you book, I send you the final price.' },
+      { q: 'Can we do it as a private trip?', a: 'Yes. You can join a group or go private. Message me on WhatsApp.' },
+      { q: 'Do I need a vaccine?', a: 'A yellow fever vaccine is recommended at least 10 days before the flight. Bring the vaccination card.' },
+      { q: 'Is the price per person?', a: 'Yes. Prices are per person, in Colombian pesos (COP).' },
     ],
   },
   'tayrona-cabo-san-juan': {

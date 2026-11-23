@@ -53,6 +53,11 @@ export function formatCOP(n: number) {
   return n.toLocaleString('en-US') + ' COP';
 }
 
+/** A price range, e.g. "2,500,000–3,500,000 COP". */
+export function formatCOPRange(from: number, to: number) {
+  return `${from.toLocaleString('en-US')}–${to.toLocaleString('en-US')} COP`;
+}
+
 /** Pages use WebP (smaller, same quality). The .jpg originals stay for social previews. */
 export const img = (name: string) => `/images/${name}.webp`;
 /** Smaller (max 800px) WebP for cards and thumbnails, so lists load fast. */

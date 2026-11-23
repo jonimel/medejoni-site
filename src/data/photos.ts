@@ -109,6 +109,12 @@ export const photoAlt: Record<string, string> = {
   'west-medellin-viewpoint-coffee-colombian-flag': "קפה קולומביאני במצפה, עם דגל קולומביה ונוף להרים הירוקים",
   'west-medellin-mountains-green-valley': "רכסים ירוקים ועמקים מהמצפה במערב מדג'ין",
   'west-medellin-mountain-viewpoint-clouds': "שקיעה ועננים מעל ההרים, מהמצפה במערב מדג'ין",
+  'amazon-river-sunset-boat-leticia': 'סירה על הנהר בשקיעה באמזונס, ליד לטיסיה',
+  'amazon-jungle-boardwalk-lake': 'שביל עץ בג׳ונגל של האמזונס שמוביל אל האגם',
+  'amazon-canoe-sunset-javari-river': 'שיט בקאנו בשקיעה על נהר ג׳אווארי באמזונס',
+  'amazon-kayak-jungle-river': 'קיאק בפלג בתוך הג׳ונגל של האמזונס',
+  'amazon-squirrel-monkey-leticia': 'קוף סנאי יושב על ראש של מטיילת באמזונס',
+  'amazon-jungle-night-walk-spider': 'עכביש על גזע עץ בהליכת לילה בג׳ונגל של האמזונס',
 };
 
 /** Hebrew description of a photo, for alt text. */
