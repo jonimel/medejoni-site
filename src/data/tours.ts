@@ -660,7 +660,7 @@ const allTours: Tour[] = [
   },
   {
     slug: 'amazon-jungle-leticia-4-days',
-    title: 'גילוי האמזונס: 4 ימים בג׳ונגל',
+    title: 'אמזונס קולומביה – טיול מודרך בג׳ונגל',
     kind: 'group',
     destination: 'amazonas',
     place: 'לטיסיה, אמזונס',

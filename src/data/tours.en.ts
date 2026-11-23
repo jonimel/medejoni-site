@@ -395,7 +395,7 @@ const en: Record<string, TourText> = {
     ],
   },
   'amazon-jungle-leticia-4-days': {
-    title: 'Amazon Discovery: 4 Days in the Jungle',
+    title: 'Colombian Amazon – Guided Jungle Trip',
     place: 'Leticia, Amazonas',
     short: '4 days and 3 nights at a lodge on the Javari River: rainforest hikes, lake boat trips, monkeys and sunsets on the water.',
     intro:
