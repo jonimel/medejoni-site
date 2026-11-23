@@ -64,4 +64,5 @@ export const destNamesEn: Record<string, string> = {
   salento: 'Salento',
   cartagena: 'Cartagena',
   'santa-marta': 'Santa Marta',
+  amazonas: 'Amazon (Leticia)',
 };

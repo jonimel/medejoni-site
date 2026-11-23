@@ -14,7 +14,7 @@ const en = lang === 'en';
 const list = en ? toursEn : tours;
 // Minimal tour data for the client-side booking flow.
 const data = JSON.stringify(list.map((t) => ({
-  slug: t.slug, title: t.title, image: `/images/${t.images[0]}.webp`, tiers: t.tiers, min: t.minPeople,
+  slug: t.slug, title: t.title, image: `/images/${t.images[0]}.webp`, tiers: t.tiers, to: t.priceTo, min: t.minPeople,
   addOns: t.addOns, single: !!t.singleAddOn, hotel: hotelPickup(t.slug), ahead: t.bookAheadHours,
 })));
 const L = en
@@ -32,6 +32,8 @@ const L = en
       payBtn: 'Pay the deposit by card', payBtnFull: 'Pay by card', payNote: 'Payment is made on Bold’s secure page. You are charged in Colombian pesos and your bank converts the amount.',
       moreTours: 'More tours', fastWa: 'Want a quick answer? WhatsApp', summary: 'Booking summary', totalPay: 'Total', copNote: 'Prices in Colombian pesos (COP). Pay by card: 40% deposit or the full amount (+5% card fee).',
       edit: 'Change tour, date or people',
+      rangeHow: 'This trip’s price depends on the season and the group size. After you send, Yonatan gets back to you with the final price and how to pay. Nothing is charged now.',
+      rangeNote: 'Estimate in Colombian pesos (COP). Yonatan confirms the final price after you book.',
     }
   : {
       title: 'הזמנת טיול', desc: 'השלמת הזמנה לטיול בקולומביה עם Medejoni.', h1: 'השלמת הזמנה', steps: 'שלבי ההזמנה',
@@ -47,6 +49,8 @@ const L = en
       payBtn: 'לתשלום המקדמה באשראי', payBtnFull: 'לתשלום באשראי', payNote: 'התשלום מתבצע בדף המאובטח של Bold. החיוב בפסו קולומביאני, והבנק שלכם ימיר לשקלים.',
       moreTours: 'לעוד טיולים', fastWa: 'רוצים תשובה מהירה? וואטסאפ', summary: 'סיכום הזמנה', totalPay: 'סה״כ לתשלום', copNote: 'המחירים בפסו (COP). תשלום באשראי: מקדמה של 40% או הכל (+5% עמלת אשראי).',
       edit: 'שינוי טיול, תאריך או משתתפים',
+      rangeHow: 'המחיר של הטיול הזה תלוי בעונה ובמספר המשתתפים. אחרי השליחה יונתן חוזר אליכם עם המחיר הסופי ואיך משלמים. שום דבר לא מחויב עכשיו.',
+      rangeNote: 'הערכה בפסו (COP). יונתן מאשר את המחיר הסופי אחרי ההזמנה.',
     };
 ---
 <Base lang={lang} title={L.title} description={L.desc} noindex bodyClass="no-wa-float">
@@ -103,7 +107,7 @@ const L = en
           <legend tabindex="-1">{L.confirm}</legend>
           <div class="note">
             <strong>{L.howT}</strong>
-            <span>{L.howX}</span>
+            <span data-how data-t-std={L.howX} data-t-range={L.rangeHow}>{L.howX}</span>
           </div>
           <fieldset class="pay-opt">
             <legend>{L.payOpt}</legend>
@@ -148,7 +152,7 @@ const L = en
           <span data-s-meta style="color:var(--muted)"></span>
           <ul data-s-lines></ul>
           <div class="s-total" aria-live="polite"><span>{L.totalPay}</span><strong class="ltr" data-s-total></strong></div>
-          <small class="s-note" style="color:var(--muted)">{L.copNote}</small>
+          <small class="s-note" style="color:var(--muted)" data-s-note data-t-std={L.copNote} data-t-range={L.rangeNote}>{L.copNote}</small>
           <button type="button" class="s-edit" data-s-edit hidden>{L.edit}</button>
         </div>
       </aside>
@@ -157,6 +161,7 @@ const L = en
 </Base>
 
 <style>
+  .summary.is-range [data-s-total] { font-size: 19px; white-space: nowrap; }
   .pay { display: flex; flex-direction: column; gap: 12px; border: 2px solid var(--yellow); border-radius: 16px; padding: 18px; margin: 8px auto 4px; max-width: 460px; text-align: start; }
   .pay[hidden] { display: none; }
   .b-form fieldset.pay-opt { border: 0; padding: 0; gap: 4px; animation: none; }
@@ -237,7 +242,7 @@ const L = en
   type Tier = { min: number; price: number };
   type AddOn = { id: string; name: string; price?: number };
   import { quote } from '../lib/deposit.mjs';
-  type T = { slug: string; title: string; image: string; tiers: Tier[]; min: number; addOns: AddOn[]; single?: boolean; hotel: boolean; ahead: number };
+  type T = { slug: string; title: string; image: string; tiers: Tier[]; to?: number; min: number; addOns: AddOn[]; single?: boolean; hotel: boolean; ahead: number };
 
   const root = document.querySelector<HTMLElement>('[data-booking-root]')!;
   const tours = JSON.parse(root.dataset.tours!) as T[];
@@ -312,17 +317,36 @@ const L = en
     const pp = perPerson(t, n);
     const extras = t.addOns.filter((a) => selectedAddons.has(a.id));
     const total = (pp + extras.reduce((s, a) => s + (a.price ?? 0), 0)) * n;
-    return { t, n, pp, extras, total };
+    // Range-priced tours: the top of the range for the group (no online payment for these).
+    const totalTo = t.to ? t.to * n : 0;
+    return { t, n, pp, extras, total, totalTo };
+  }
+  const fmtRange = (a: number, b: number) => `${a.toLocaleString('en-US')}–${b.toLocaleString('en-US')} COP`;
+  /** Show the right texts and hide card payment for range-priced tours. */
+  function rangeMode(on: boolean) {
+    const pick = (el: HTMLElement) => (el.textContent = (on ? el.dataset.tRange : el.dataset.tStd) ?? '');
+    pick(root.querySelector<HTMLElement>('[data-how]')!);
+    pick(root.querySelector<HTMLElement>('[data-s-note]')!);
+    const po = form.querySelector<HTMLFieldSetElement>('.pay-opt')!;
+    po.hidden = on;
+    root.querySelector('.summary')!.classList.toggle('is-range', on);
+    // Disabled radios are not sent, so the lead email shows no payment choice.
+    po.querySelectorAll<HTMLInputElement>('input').forEach((i) => (i.disabled = on));
   }
 
   function render() {
-    const { t, n, pp, extras, total } = totals();
+    const { t, n, pp, extras, total, totalTo } = totals();
+    rangeMode(!!t.to);
     root.querySelector<HTMLImageElement>('[data-s-img]')!.src = t.image;
     root.querySelector('[data-s-title]')!.textContent = t.title;
     root.querySelector('[data-s-meta]')!.textContent = `${fDate.value ? new Date(fDate.value + 'T12:00').toLocaleDateString(EN ? 'en-US' : 'he-IL', { weekday: 'long', day: 'numeric', month: 'long' }) : ''} · ${n} ${EN ? 'people' : 'משתתפים'}`;
     const lines = root.querySelector('[data-s-lines]')!;
     lines.innerHTML = '';
     const add = (a: string, b: string) => { const li = document.createElement('li'); li.innerHTML = `<span></span><span class="ltr"></span>`; li.children[0].textContent = a; li.children[1].textContent = b; lines.append(li); };
+    if (t.to) {
+      root.querySelector('[data-s-total]')!.textContent = `\u2066${fmtRange(total, totalTo)}\u2069`;
+      return;
+    }
     add(`${n} × ${pp.toLocaleString('en-US')}`, fmt(pp * n));
     extras.forEach((e) => add(e.name, e.price ? fmt(e.price * n) : EN ? 'On request' : 'בתיאום'));
     root.querySelector('[data-s-total]')!.textContent = fmtIls(total);
@@ -351,7 +375,7 @@ const L = en
     return ok;
   }
   function fillReview() {
-    const { t, n, extras, total } = totals();
+    const { t, n, extras, total, totalTo } = totals();
     const fd = new FormData(form);
     const k = EN
       ? ['Tour', 'Date', 'People', 'Add-ons', 'None', 'Name', 'Phone', 'Total', 'Deposit now (40% + 5% fee)', 'Balance in Colombia', 'To pay now (incl. 5% fee)']
@@ -362,9 +386,14 @@ const L = en
       [k[5], String(fd.get('name') ?? '')], [k[6], String(fd.get('phone') ?? '')],
       [k[7], fmtIls(total)],
     ];
+    if (t.to) {
+      rows[rows.length - 1] = [k[7], fmtRange(total, totalTo)];
+      rows.push([EN ? 'Final price' : 'מחיר סופי', EN ? 'Yonatan sends it after you book' : 'יונתן שולח אחרי ההזמנה']);
+    } else {
     const dq = quote(t, n, extras.map((e) => e.id), payMode());
     if (dq.full) rows.push([k[10], fmtIls(dq.charge)]);
     else rows.push([k[8], fmtIls(dq.charge)], [k[9], fmtIls(dq.remainder)]);
+    }
     const dl = root.querySelector('[data-review]')!;
     dl.innerHTML = '';
     rows.forEach(([k, v]) => { const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dl.append(dt, dd); });
@@ -382,7 +411,8 @@ const L = en
     e.preventDefault();
     const terms = form.querySelector<HTMLInputElement>('[data-terms]')!;
     if (!terms.checked) { terms.reportValidity(); return; }
-    const { t, n, extras, total } = totals();
+    const { t, n, extras, total, totalTo } = totals();
+    const totalTxt = t.to ? fmtRange(total, totalTo) : fmt(total);
     const fd = new FormData(form);
     const w = EN
       ? ['Hi Yonatan, I would like to book:', 'Tour', 'Date', 'People', 'Add-ons', 'Estimated total', 'Name', 'Phone', 'Email', 'Pickup from', 'Notes']
@@ -393,7 +423,7 @@ const L = en
       `${w[2]}: ${fDate.value}`,
       `${w[3]}: ${n}`,
       extras.length ? `${w[4]}: ${extras.map((x) => x.name).join(', ')}` : '',
-      `${w[5]}: ${fmt(total)}`,
+      `${w[5]}: ${totalTxt}`,
       `${w[6]}: ${fd.get('name')}`,
       `${w[7]}: ${fd.get('phone')}`,
       fd.get('email') ? `${w[8]}: ${fd.get('email')}` : '',
@@ -402,7 +432,7 @@ const L = en
     ].filter(Boolean).join('\n');
     // Send the booking to Netlify Forms, which emails it to Jonathan.
     form.querySelector<HTMLInputElement>('[data-h-addons]')!.value = extras.map((x) => x.name).join(', ');
-    form.querySelector<HTMLInputElement>('[data-h-total]')!.value = fmt(total);
+    form.querySelector<HTMLInputElement>('[data-h-total]')!.value = totalTxt;
     form.querySelector<HTMLInputElement>('[data-h-title]')!.value = t.title;
     form.querySelector<HTMLInputElement>('[data-h-addon-ids]')!.value = extras.map((x) => x.id).join(',');
     const btn = form.querySelector<HTMLButtonElement>('[data-submit]')!;

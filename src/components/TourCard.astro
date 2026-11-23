@@ -1,7 +1,7 @@
 ---
 import { type Tour, kindLabel, fromPrice, hasTiers } from '../data/tours';
 import { kindLabelEn } from '../data/tours.en';
-import { formatCOP, img, thumb } from '../data/site';
+import { formatCOP, formatCOPRange, img, thumb } from '../data/site';
 import { ui, lp, type Lang } from '../i18n';
 interface Props { tour: Tour; lazy?: boolean; lang?: Lang }
 const { tour, lazy = true, lang = 'he' } = Astro.props;
@@ -22,7 +22,7 @@ const price = fromPrice(tour);
     <span class="desc">{tour.short}</span>
     <div class="tags">{tour.tags.map((x) => <span class="tag">{x}</span>)}</div>
     <div class="foot">
-      <span class="price-line">{hasTiers(tour) ? t.from : ''}<span class="ltr">{formatCOP(price)}</span><small>/ {t.perPerson}</small></span>
+      <span class="price-line">{tour.priceTo ? <span class="ltr">{formatCOPRange(price, tour.priceTo)}</span> : <>{hasTiers(tour) ? t.from : ''}<span class="ltr">{formatCOP(price)}</span></>}<small>/ {t.perPerson}</small></span>
     </div>
   </div>
 </a>

@@ -96,6 +96,22 @@ export const destinations: Destination[] = [
     ],
     gallery: ['tayrona-park-beach-rocks', 'santa-marta-speedboat', 'santa-marta-colombia-taganga', 'tayrona-park-cabo-san-juan'],
   },
+  {
+    slug: 'amazonas',
+    name: 'אמזונס',
+    latin: 'Amazonas',
+    image: 'amazon-river-sunset-boat-leticia',
+    hero: 'amazon-canoe-sunset-javari-river',
+    intro: 'יער הגשם הגדול בעולם: נהרות, אגמים, קופים ועצלנים, ולילות בלודג׳ בלב הג׳ונגל ליד לטיסיה.',
+    bestTime: 'חם ולח כל השנה. דצמבר–יוני: מים גבוהים ושיט ביער המוצף. יולי–נובמבר: מים נמוכים, חופי נהר ויותר הליכות.',
+    highlights: [
+      { title: 'לטיסיה', text: 'העיר בקצה הדרומי של קולומביה, על המשולש של קולומביה, פרו וברזיל. מגיעים אליה בטיסה.' },
+      { title: 'נהר ג׳אווארי', text: 'נהר באמזונס על הגבול בין פרו לברזיל, שטים בו כשעתיים מלטיסיה ללב הג׳ונגל.' },
+      { title: 'חיות בר', text: 'קופים, עצלנים, דובי נמלים וציפורים צבעוניות, בבית הטבעי שלהם.' },
+      { title: 'ויקטוריה רג׳יה', text: 'שושן המים הענק של האמזונס, עם עלים שמגיעים לרוחב של יותר ממטר.' },
+    ],
+    gallery: ['amazon-jungle-boardwalk-lake', 'amazon-squirrel-monkey-leticia', 'amazon-kayak-jungle-river', 'amazon-river-sunset-boat-leticia'],
+  },
 ];
 
 export const getDestination = (slug: string) => destinations.find((d) => d.slug === slug);

@@ -67,7 +67,8 @@ function serverPrices() {
       'astro:build:done': () => {
         const dir = fileURLToPath(new URL('./.server/', import.meta.url));
         mkdirSync(dir, { recursive: true });
-        const list = tours.map((t) => ({ slug: t.slug, title: t.title, tiers: t.tiers, min: t.minPeople, addOns: t.addOns }));
+        // Range-priced tours (priceTo) get no online payment: Jonathan confirms the final price himself.
+        const list = tours.filter((t) => !t.priceTo).map((t) => ({ slug: t.slug, title: t.title, tiers: t.tiers, min: t.minPeople, addOns: t.addOns }));
         writeFileSync(join(dir, 'prices.json'), JSON.stringify(list));
       },
     },
