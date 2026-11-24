@@ -26,6 +26,7 @@ export const guides: Guide[] = [
     tag: 'מסלולים',
     description: 'בונים מסלול לקולומביה? גלו איך לשלב מדג׳ין, גואטפה, אזור הקפה והקריביים בשבועיים, ומה כדאי לדעת על החוויות שמקבלות תשומת לב.',
     markdown: true,
+    tours: ['guatape-group', 'comuna-13-tour', 'amazon-jungle-leticia-4-days'],
     sections: [],
   },
   {
@@ -37,6 +38,7 @@ export const guides: Guide[] = [
     tag: 'תכנון',
     description: 'מתי כדאי לטוס לקולומביה? מדריך לעונות הגשם, למדג׳ין, לבוגוטה ולחופים, עם חלוקה לחודשים וטיפים לבניית מסלול שמתאים לעונה.',
     markdown: true,
+    tours: ['amazon-jungle-leticia-4-days'],
     sections: [],
   },
   {
@@ -71,7 +73,7 @@ export const guides: Guide[] = [
     tag: 'מדריך עיר',
     description: "מה עושים במדג'ין? קומונה 13, אל פובלדו ולאורלס, סיור אסקובר, תצפיות, משחק של נסיונל וחיי לילה, עם טיפים מקומיים.",
     markdown: true,
-    tours: ['comuna-13-tour', 'pablo-escobar-tour', 'medellin-viewpoints-tour', 'atletico-nacional-match', 'chiva-rumbera'],
+    tours: ['comuna-13-tour', 'pablo-escobar-tour', 'medellin-viewpoints-tour', 'israeloco-medellin-barrio-tour', 'atletico-nacional-match', 'chiva-rumbera'],
     sections: [],
   },
   {
@@ -82,7 +84,7 @@ export const guides: Guide[] = [
     tag: 'טבע',
     description: "טבע ליד מדג'ין: חרדין עם מערה ומפל, רכיבה על סוסים, כפרי אנטיוקיה, מצנח רחיפה וגואטפה. איך בוחרים את טיול היום שמתאים לכם.",
     markdown: true,
-    tours: ['jardin-day-trip', 'colombian-for-a-day', 'guatape-private'],
+    tours: ['jardin-day-trip', 'green-west-medellin-day-trip', 'colombian-for-a-day', 'guatape-private'],
     sections: [],
   },
   {

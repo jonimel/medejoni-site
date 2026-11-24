@@ -46,7 +46,7 @@ const ld = [
   },
 ];
 ---
-<Base title={seo?.title ?? `טיולים ב${dest.name} (${dest.latin}) עם יונתן`} description={seo?.description ?? `${dest.intro} חוויה מקומית ואותנטית ב${dest.name} עם יונתן מילמן.`} image={img(dest.hero)} imageAlt={`${dest.name} (${dest.latin}), קולומביה`} nav="destinations" jsonLd={ld}>
+<Base title={seo?.title ?? `טיולים ב${dest.name} (${dest.latin}), קולומביה`} description={seo?.description ?? `${dest.intro} חוויה מקומית ואותנטית ב${dest.name}, בארגון של יונתן מילמן.`} image={img(dest.hero)} imageAlt={`${dest.name} (${dest.latin}), קולומביה`} nav="destinations" jsonLd={ld}>
   <section class="d-hero">
     <img src={img(dest.hero)} alt={alt(dest.hero) || `${dest.name} (${dest.latin}), קולומביה`} fetchpriority="high" />
     <div class="wrap d-hero-body">
