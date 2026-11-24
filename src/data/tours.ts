@@ -342,7 +342,7 @@ const allTours: Tour[] = [
     duration: 'יום מלא',
     tags: ['מצנח או פיינטבול', 'דייג וארוחה', 'שקיעה'],
     images: ['paragliding-medellin', 'paragliding-medellin-tandem-flight', 'san-pedro-trout-fishing-lunch', 'paintball-antioquia', 'san-pedro-de-los-milagros-cows', 'antioquia-countryside-colombia', 'private-tour-medellin-fishing'],
-    video: { name: 'paragliding-medellin-video', poster: 'paragliding-medellin-tandem-flight', title: 'מצנח רחיפה מעל מדיין – וידאו מהטיול קולומביאני ליום אחד' },
+    video: { name: 'paragliding-medellin-video', poster: 'paragliding-medellin-tandem-flight', title: 'מצנח רחיפה מעל מדג׳ין – וידאו מהטיול קולומביאני ליום אחד' },
     faq: [
       { q: 'אפשר לעשות גם מצנח וגם פיינטבול?', a: 'לא. בוחרים אטרקציה אחת.' },
       { q: 'מי מלווה אותנו?', a: 'מדריך מקומי דובר אנגלית. אני דואג לכל הפרטים וזמין לכם בוואטסאפ לאורך כל היום.' },
@@ -372,7 +372,7 @@ const allTours: Tour[] = [
     duration: 'ערב',
     tags: ['כולל כרטיס', 'כל הבירות כלולות'],
     images: ['atletico-nacional-stadium-flags', 'atletico-nacional-match-medellin', 'atletico-nacional-fans-medellin'],
-    video: { name: 'atletico-nacional-stadium-video', poster: 'atletico-nacional-stadium-flags', title: 'האווירה ביציע במשחק של אתלטיקו נסיונל במדיין – וידאו' },
+    video: { name: 'atletico-nacional-stadium-video', poster: 'atletico-nacional-stadium-flags', title: 'האווירה ביציע במשחק של אתלטיקו נסיונל במדג׳ין – וידאו' },
     faq: [{ q: 'מתי יש משחקים?', a: 'לפי לוח המשחקים של הליגה. כתבו ליונתן ונבדוק תאריכים פנויים.' }, ...commonFaq],
     featured: true,
   },
@@ -709,7 +709,7 @@ const allTours: Tour[] = [
       'amazon-jungle-night-walk-spider',
     ],
     faq: [
-      { q: 'הטיסה כלולה?', a: 'לא. טסים ללטיסיה בעצמכם, ומשדה התעופה אנחנו דואגים לכל השאר. אשמח לעזור לכם לבחור טיסה.' },
+      { q: 'הטיסה כלולה?', a: 'לא. טסים ללטיסיה בעצמכם, ומשדה התעופה אני דואג לכל השאר. אשמח לעזור לכם לבחור טיסה.' },
       { q: 'למה המחיר הוא טווח?', a: 'המחיר לאדם תלוי בעונה ובמספר המשתתפים. אחרי ההזמנה אשלח לכם את המחיר הסופי.' },
       { q: 'אפשר לעשות את הטיול באופן פרטי?', a: 'כן. אפשר להצטרף לקבוצה או לצאת בטיול פרטי. כתבו לי בוואטסאפ.' },
       { q: 'צריך חיסון?', a: 'מומלץ להתחסן נגד קדחת צהובה לפחות 10 ימים לפני הטיסה, ולהביא את כרטיס החיסון.' },
