@@ -455,7 +455,7 @@ const L = en
         })(),
       });
       if (res.status === 429) {
-        // Spam guard: more than 3 sends in 30 minutes from this address.
+        // Spam guard: more than 1 send in 10 minutes from this address.
         (window as any).mjTooMany(err);
         err.hidden = false;
         return;
