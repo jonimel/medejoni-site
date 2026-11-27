@@ -281,7 +281,7 @@ const footerServices = en ? servicesEn : services;
 
     // Message for a visitor who sent more than 3 forms in 30 minutes (the server answers 429), with a WhatsApp link.
     (window as any).mjTooMany = (el: HTMLElement) => {
-      el.textContent = EN ? 'We already received your message 🙏 You can send again in half an hour, or ' : 'כבר קיבלנו את הפנייה שלכם 🙏 אפשר לשלוח שוב בעוד חצי שעה, או ';
+      el.textContent = EN ? 'We already received your message 🙏 You can send again in 10 minutes, or ' : 'כבר קיבלנו את הפנייה שלכם 🙏 אפשר לשלוח שוב בעוד 10 דקות, או ';
       const a = document.createElement('a');
       a.href = document.querySelector<HTMLAnchorElement>('.wa-float')?.href || 'https://wa.me/';
       a.target = '_blank';
@@ -314,7 +314,7 @@ const footerServices = en ? servicesEn : services;
             })(),
           });
           if (res.status === 429) {
-            // Spam guard: more than 3 sends in 30 minutes from this address.
+            // Spam guard: more than 1 send in 10 minutes from this address.
             status.classList.add('err');
             (window as any).mjTooMany(status);
             return;

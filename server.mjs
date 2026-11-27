@@ -91,10 +91,10 @@ function supabaseRpc(fn, body) {
 const supabaseOn = () => Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY);
 const validVisitor = (id) => (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id || '') ? id : null);
 
-// Spam guard for the site's forms (all forms together): at most 3 sends per 30 minutes from one IP address.
+// Spam guard for the site's forms (all forms together): at most 1 send per 10 minutes from one IP address.
 // Kept in memory, so it starts fresh after each deploy, which is fine for this purpose.
-const LEAD_LIMIT = 3;
-const LEAD_WINDOW_MS = 30 * 60_000;
+const LEAD_LIMIT = 1;
+const LEAD_WINDOW_MS = 10 * 60_000;
 const leadLog = new Map();
 // Railway puts the visitor's real address in X-Real-IP (a visitor can't fake it); X-Forwarded-For is the fallback.
 const clientIp = (req) => String(req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
@@ -110,6 +110,28 @@ function tooManyLeads(req) {
   leadLog.set(ip, recent);
   if (leadLog.size > 5000) for (const [k, v] of leadLog) if (v.every((t) => now - t >= LEAD_WINDOW_MS)) leadLog.delete(k);
   return false;
+}
+
+// Only real site forms become leads. Bots that POST anything else (for example WordPress XML-RPC
+// calls to /xmlrpc.php) used to reach Jonathan as empty "leads".
+const SITE_FORMS = new Set(Object.keys(formTitles));
+function notARealForm(req, fields) {
+  const type = String(req.headers['content-type'] || '').toLowerCase();
+  if (!type.startsWith('application/x-www-form-urlencoded')) return 'not a form';
+  if (!SITE_FORMS.has(fields['form-name'])) return 'unknown form';
+  const contact = String(fields.phone || '').trim() || String(fields.email || '').trim();
+  if (!String(fields.name || '').trim() || !contact) return 'no name or contact';
+  return '';
+}
+
+// Sales pitches typed in by hand (SEO, web design, marketing offers) written without any Hebrew.
+// They are not emailed, only written to the Railway logs, so nothing is lost.
+const PITCH = /\b(seo|geo|backlinks?|search engines?|first page of google|google ranking|online (visibility|presence)|web ?design|web development|digital marketing|marketing (agency|services)|lead generation|social media (marketing|management)|guest posts?|chatgpt|perplexity|redesign)\b/i;
+const HEBREW = /[֐-׿]/;
+// Only the free-text boxes people type in (chosen options like the tour name are often Hebrew and would hide a pitch).
+function isSalesPitch(fields) {
+  const text = [fields.name, fields.message, fields.notes].map((v) => String(v || '')).join(' ');
+  return !HEBREW.test(text) && PITCH.test(text);
 }
 
 // Simple limit so one browser/bot can't flood the WhatsApp-click table: 20 clicks per 10 minutes per IP.
@@ -384,8 +406,19 @@ createServer(async (req, res) => {
         res.writeHead(200).end('ok');
         return;
       }
+      const fake = notARealForm(req, fields);
+      if (fake) {
+        console.log(`Spam blocked (${fake}):`, clientIp(req), url.pathname, JSON.stringify(fields).slice(0, 500));
+        res.writeHead(400).end('bad request');
+        return;
+      }
+      if (isSalesPitch(fields)) {
+        console.log('Spam blocked (sales pitch, kept here only):', clientIp(req), JSON.stringify(fields));
+        res.writeHead(200).end('ok');
+        return;
+      }
       if (tooManyLeads(req)) {
-        console.log('Spam blocked (more than 3 sends in 30 minutes):', clientIp(req), JSON.stringify(fields));
+        console.log('Spam blocked (more than 1 send in 10 minutes):', clientIp(req), JSON.stringify(fields));
         res.writeHead(429, { 'Content-Type': 'text/plain; charset=utf-8' }).end('too many');
         return;
       }
