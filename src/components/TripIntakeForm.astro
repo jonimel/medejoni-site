@@ -1,0 +1,263 @@
+---
+// Trip-planning intake form (Hebrew), on /services/#trip-planning.
+// A short step-by-step questionnaire, almost all tap-to-choose, so Jonathan gets a full picture of the client
+// before the first call. It posts to the server like every other site form (form-name "trip-planning"),
+// so it is emailed to Jonathan automatically (server.mjs → Resend). Each answer is sent under its Hebrew
+// question as the field name, so the email reads as question → answer, in the order of the form.
+// If sending fails, the client gets a WhatsApp button with all the answers ready, so no lead is lost.
+import { site } from '../data/site';
+---
+<form name="trip-planning" method="POST" class="form-card intake" novalidate data-intake data-wa={site.whatsapp}>
+  <input type="hidden" name="form-name" value="trip-planning" />
+  <p hidden aria-hidden="true"><label>Leave empty <input name="hp_field" tabindex="-1" autocomplete="off" /></label></p>
+  <div class="intake-head">
+    <h3>בואו נתכנן לכם טיול</h3>
+    <p>קחו 5 דקות ותמלאו את הטופס, כדי שנכיר אתכם הכי טוב שאפשר. רוב התשובות בלחיצה אחת.</p>
+  </div>
+  <div class="intake-prog" aria-hidden="true" data-prog></div>
+  <p class="intake-stepno" data-stepno></p>
+  <div class="intake-body" data-body>
+    <noscript><p>כדי למלא את הטופס צריך להפעיל JavaScript, או לכתוב לי ישירות בוואטסאפ.</p></noscript>
+  </div>
+  <div class="intake-nav" data-nav>
+    <button type="button" class="btn intake-back" data-back hidden>חזרה</button>
+    <button type="button" class="btn btn-yellow intake-next" data-next>הבא</button>
+  </div>
+</form>
+
+<style is:global>
+  .intake { display: block; }
+  .intake-head h3 { font-size: 24px; margin: 0 0 6px; }
+  .intake-head p { color: var(--muted); margin: 0; font-size: 16px; }
+  .intake-prog { display: flex; gap: 4px; margin: 18px 0 6px; direction: rtl; }
+  .intake-prog i { flex: 1; height: 6px; border-radius: 3px; background: var(--line); }
+  .intake-prog i.on { background: var(--yellow); }
+  .intake-stepno { font-size: 14px; color: var(--muted); margin: 0 0 10px; }
+  .intake-body h4 { font-size: 21px; margin: 0 0 2px; }
+  .intake-body .sub { color: var(--muted); margin: 0; font-size: 15px; }
+  .intake-q { margin-top: 18px; }
+  .intake-q > .lbl, .intake-q > label { display: block; font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+  .intake-q .hint { font-weight: 400; color: var(--muted); font-size: 14px; }
+  .intake-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .intake .chip { white-space: normal; text-align: center; font-size: 15px; font-weight: 500; padding: 8px 15px; line-height: 1.3; }
+  .intake .chip[aria-pressed='true'] { font-weight: 700; }
+  .intake-q input, .intake-q textarea { display: block; width: 100%; }
+  .intake-q textarea { min-height: 84px; resize: vertical; }
+  .intake-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+  .intake-two .intake-q { margin-top: 18px; }
+  .intake-err { color: var(--red); font-size: 14px; font-weight: 600; margin-top: 6px; }
+  .intake-nav { display: flex; gap: 10px; margin-top: 24px; }
+  .intake-nav .intake-next { flex: 1; }
+  .intake-back { background: #fff; border: 1px solid var(--line-strong); color: var(--ink); }
+  .intake-done { text-align: center; padding: 8px 0; }
+  .intake-done .big { font-size: 48px; line-height: 1; }
+  .intake-done p { color: var(--text); }
+  .intake-done .btn { margin-top: 12px; }
+  @media (max-width: 420px) { .intake-two { grid-template-columns: minmax(0, 1fr); } }
+</style>
+
+<script>
+  type Q = { id: string; t: string; type: string; o?: string[]; req?: boolean; hint?: string; key?: string; show?: (s: Record<string, any>) => boolean };
+  const booked = (s: Record<string, any>) => ['הוזמנה', 'הוזמנו', 'חלק הוזמנו', 'הכול הוזמן'].some((v) => [s.intlFlight, s.domFlight, s.hotels].includes(v));
+  const hasDates = (s: Record<string, any>) => !!s.datesKnown && s.datesKnown !== 'עוד לא';
+  const STEPS: { h: string; s?: string; q: Q[] }[] = [
+    { h: 'מי אתם', s: 'כדי שאדע איך לחזור אליכם.', q: [
+      { id: 'name', key: 'name', t: 'שם מלא', type: 'text', req: true },
+      { id: 'phone', key: 'phone', t: 'מספר וואטסאפ', type: 'tel', req: true, hint: 'עם קידומת מדינה' },
+      { id: 'email', key: 'email', t: 'אימייל', type: 'email', hint: 'לא חובה' },
+      { id: 'from', t: 'מאיפה אתם', type: 'one', o: ['ישראל', 'חו״ל'] },
+    ] },
+    { h: 'מי מטייל', q: [
+      { id: 'count', t: 'כמה אתם', type: 'one', req: true, o: ['1', '2', '3 עד 4', '5 עד 8', '9+'] },
+      { id: 'group', t: 'מי נוסע', type: 'one', o: ['זוג', 'משפחה עם ילדים', 'חברים', 'לבד', 'מסיבת רווקים / רווקות', 'קבוצה'] },
+      { id: 'ages', t: 'גילאים', hint: 'אפשר לבחור כמה', type: 'many', req: true, o: ['ילדים עד 12', 'נוער 13 עד 17', '18 עד 30', '30 עד 45', '45 עד 60', '60+'] },
+      { id: 'occasion', t: 'יש אירוע מיוחד?', type: 'one', o: ['אין', 'ירח דבש', 'יום הולדת', 'אחרי צבא', 'פרישה', 'אחר'] },
+    ] },
+    { h: 'מתי וכמה זמן', q: [
+      { id: 'datesKnown', t: 'יש כבר תאריכים?', type: 'one', req: true, o: ['סגורים', 'בערך', 'עוד לא'] },
+      { id: 'arrive', t: 'תאריך הגעה', type: 'date', show: hasDates },
+      { id: 'leave', t: 'תאריך יציאה', type: 'date', show: hasDates },
+      { id: 'month', t: 'חודש משוער', type: 'one', show: (s) => s.datesKnown === 'עוד לא', o: ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'] },
+      { id: 'length', t: 'משך הטיול', type: 'one', req: true, o: ['עד שבוע', '1 עד 2 שבועות', '2 עד 3 שבועות', '3 שבועות ומעלה'] },
+    ] },
+    { h: 'הסגנון שלכם', s: 'אין תשובה נכונה, זה רק כדי לכוון את הקצב.', q: [
+      { id: 'pace', t: 'קצב הטיול', type: 'one', req: true, o: ['רגוע', 'בינוני', 'אקסטרים'] },
+      { id: 'days', t: 'איך נראים הימים', type: 'one', o: ['הרבה זמן חופשי', 'שילוב', 'לוח מלא'] },
+      { id: 'guide', t: 'סיורים', type: 'one', o: ['פרטיים', 'קבוצתיים', 'שילוב', 'עצמאי ברובו'] },
+    ] },
+    { h: 'מה מעניין אתכם', s: 'בחרו כמה שרוצים.', q: [
+      { id: 'interests', t: 'תחומי עניין', type: 'many', req: true, o: ['טבע ונופים', 'חופים והים הקריבי', 'ג׳ונגל', 'טרקים', 'אקסטרים (מצנחי רחיפה, רפטינג, טרקטורונים)', 'היסטוריה ופבלו אסקובר', 'אומנות רחוב וקומונה 13', 'קפה וחוות', 'אוכל מקומי', 'חיי לילה ומסיבות', 'סלסה', 'כדורגל', 'בעלי חיים וציפורים', 'כפרים קטנים', 'צילום', 'ספא ורוגע'] },
+      { id: 'places', t: 'מקומות שכבר בראש', type: 'many', o: ['מדג׳ין', 'גואטפה', 'קרטחנה', 'סנטה מרתה וטאיירונה', 'מינקה', 'סלנטו ואזור הקפה', 'בוגוטה', 'ז׳רדין', 'האמזונס', 'לא יודעים, תמליץ לי'] },
+    ] },
+    { h: 'לינה ותקציב', q: [
+      { id: 'lodging', t: 'סגנון לינה', hint: 'אפשר לבחור כמה', type: 'many', o: ['הוסטל', 'מלון בוטיק', 'מלון רגיל', 'דירה', 'יוקרה', 'שילוב'] },
+      { id: 'rooms', t: 'חדרים', type: 'one', o: ['חדר משותף', 'חדר לכל זוג', 'חדר לכל אחד'] },
+      { id: 'budget', t: 'תקציב לאדם ליום, בלי טיסות', type: 'one', o: ['עד 50$', '50 עד 100$', '100 עד 200$', '200$ ומעלה', 'עוד לא יודעים'] },
+    ] },
+    { h: 'מה כבר סגור', s: 'כדי שאשמור על מה שכבר הזמנתם.', q: [
+      { id: 'intlFlight', t: 'טיסה לקולומביה', type: 'one', o: ['הוזמנה', 'עוד לא', 'רוצים עזרה'] },
+      { id: 'domFlight', t: 'טיסות פנים', type: 'one', o: ['הוזמנו', 'עוד לא', 'רוצים עזרה'] },
+      { id: 'hotels', t: 'לינות', type: 'one', o: ['חלק הוזמנו', 'הכול הוזמן', 'עוד לא'] },
+      { id: 'transfer', t: 'הסעה משדה התעופה', type: 'one', o: ['צריך', 'לא צריך', 'לא בטוחים'] },
+      { id: 'booked', t: 'פרטים על מה שהוזמן', type: 'area', hint: 'טיסות, שעות, מלונות. לא חובה', show: booked },
+    ] },
+    { h: 'אוכל, בריאות ושפה', q: [
+      { id: 'food', t: 'אוכל', hint: 'אפשר לבחור כמה', type: 'many', o: ['אוכלים הכול', 'צמחוני', 'טבעוני', 'כשר', 'בלי גלוטן', 'אלרגיות'] },
+      { id: 'allergy', t: 'לאיזה מאכלים יש אלרגיה?', type: 'text', show: (s) => (s.food || []).includes('אלרגיות') },
+      { id: 'limits', t: 'מגבלות', hint: 'אפשר לבחור כמה', type: 'many', o: ['אין', 'קושי בהליכה', 'גב או ברכיים', 'פחד גבהים', 'מחלת ים', 'אחר'] },
+      { id: 'langs', t: 'שפות שאתם מדברים', hint: 'אפשר לבחור כמה', type: 'many', o: ['עברית', 'אנגלית', 'ספרדית'] },
+    ] },
+    { h: 'כמעט סיימנו', q: [
+      { id: 'heard', key: 'heard_from', t: 'איך הגעתם אליי', type: 'one', o: ['אינסטגרם', 'טיקטוק', 'אפליקציית הגל', 'חבר המליץ', 'גוגל', 'אחר'] },
+      { id: 'notes', key: 'notes', t: 'משהו שחשוב שאדע?', type: 'area', hint: 'חלומות, חששות, דברים שאתם לא רוצים' },
+    ] },
+  ];
+  // Picking one of these clears the other choices in the same question (and the other way around).
+  const ALONE = ['אין', 'אוכלים הכול', 'לא יודעים, תמליץ לי'];
+
+  const form = document.querySelector<HTMLFormElement>('form[data-intake]');
+  if (form) {
+    const S: Record<string, any> = {};
+    let cur = 0;
+    const $ = <T extends HTMLElement>(sel: string) => form.querySelector<T>(sel)!;
+    const body = $('[data-body]'), prog = $('[data-prog]'), stepno = $('[data-stepno]');
+    const next = $<HTMLButtonElement>('[data-next]'), back = $<HTMLButtonElement>('[data-back]'), nav = $('[data-nav]');
+    const esc = (v: unknown) => String(v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+    const vis = (q: Q) => !q.show || q.show(S);
+    const all = STEPS.flatMap((s) => s.q);
+    const today = new Date().toISOString().slice(0, 10);
+    const STORE = 'mj_intake';
+    const save = () => { try { sessionStorage.setItem(STORE, JSON.stringify({ S, cur })); } catch { /* ignore */ } };
+    try { const d = JSON.parse(sessionStorage.getItem(STORE) || 'null'); if (d?.S) { Object.assign(S, d.S); cur = Math.min(d.cur || 0, STEPS.length - 1); } } catch { /* ignore */ }
+
+    const field = (q: Q) => {
+      const lab = `${esc(q.t)}${q.req ? ' *' : ''}${q.hint ? ` <span class="hint">${esc(q.hint)}</span>` : ''}`;
+      if (q.type === 'one' || q.type === 'many') {
+        const sel: string[] = q.type === 'one' ? [S[q.id]] : S[q.id] || [];
+        return `<div class="intake-q" data-q="${q.id}"><span class="lbl" id="iq_${q.id}">${lab}</span><div class="intake-chips" role="group" aria-labelledby="iq_${q.id}">${q.o!.map((o) => `<button type="button" class="chip" data-id="${q.id}" data-v="${esc(o)}" aria-pressed="${sel.includes(o)}">${esc(o)}</button>`).join('')}</div></div>`;
+      }
+      const v = esc(S[q.id] || '');
+      const attrs = q.type === 'tel' ? ' inputmode="tel" autocomplete="tel" dir="ltr"' : q.type === 'email' ? ' autocomplete="email" dir="ltr"' : q.id === 'name' ? ' autocomplete="name"' : q.type === 'date' ? ` min="${today}"` : '';
+      const input = q.type === 'area' ? `<textarea id="ii_${q.id}" data-id="${q.id}" rows="3">${v}</textarea>` : `<input id="ii_${q.id}" data-id="${q.id}" type="${q.type}" value="${v}"${attrs}>`;
+      return `<div class="intake-q" data-q="${q.id}"><label for="ii_${q.id}">${lab}</label>${input}</div>`;
+    };
+
+    const render = () => {
+      prog.innerHTML = STEPS.map((_, i) => `<i class="${i <= cur ? 'on' : ''}"></i>`).join('');
+      const st = STEPS[cur];
+      stepno.textContent = `שלב ${cur + 1} מתוך ${STEPS.length}`;
+      const qs = st.q.filter(vis);
+      const parts = qs.filter((q) => q.type !== 'date').map(field);
+      const dates = qs.filter((q) => q.type === 'date');
+      if (dates.length) parts.splice(qs.findIndex((q) => q.type === 'date'), 0, `<div class="intake-two">${dates.map(field).join('')}</div>`);
+      body.innerHTML = `<h4>${esc(st.h)}</h4>${st.s ? `<p class="sub">${esc(st.s)}</p>` : ''}${parts.join('')}`;
+      back.hidden = cur === 0;
+      next.textContent = cur === STEPS.length - 1 ? 'שליחה' : 'הבא';
+      save();
+    };
+
+    const check = () => {
+      form.querySelectorAll('.intake-err').forEach((e) => e.remove());
+      const bad = STEPS[cur].q.filter(vis).filter((q) => {
+        const v = S[q.id];
+        if (q.type === 'tel') return !v || String(v).replace(/\D/g, '').length < 8;
+        if (q.type === 'email') return !!v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v).trim());
+        if (!q.req) return false;
+        return Array.isArray(v) ? !v.length : !v || !String(v).trim();
+      });
+      bad.forEach((q) => {
+        const e = document.createElement('div');
+        e.className = 'intake-err';
+        e.textContent = q.type === 'tel' ? 'צריך מספר וואטסאפ תקין' : q.type === 'email' ? 'כתובת המייל לא תקינה' : 'צריך לענות על זה';
+        form.querySelector(`[data-q="${q.id}"]`)?.append(e);
+      });
+      if (bad.length) form.querySelector(`[data-q="${bad[0].id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return !bad.length;
+    };
+
+    const fmtDate = (v: string) => { const [y, m, d] = v.split('-'); return `${+d}.${+m}.${y}`; };
+    const answers = () => all.filter(vis).map((q) => {
+      let v = S[q.id];
+      if (Array.isArray(v)) v = v.join(', ');
+      if (q.type === 'date' && v) v = fmtDate(v);
+      return [q, String(v ?? '').trim()] as const;
+    }).filter(([, v]) => v);
+    const waLink = () => {
+      const lines = ['שלום יונתן, מילאתי את טופס תכנון הטיול באתר 🙂', ''];
+      STEPS.forEach((st) => {
+        const rows = answers().filter(([q]) => st.q.includes(q)).map(([q, v]) => `${q.t}: ${v}`);
+        if (rows.length) lines.push(`*${st.h}*`, ...rows, '');
+      });
+      return `https://wa.me/${form.dataset.wa}?text=${encodeURIComponent(lines.join('\n').trim())}`;
+    };
+
+    const done = (ok: boolean, tooMany = false) => {
+      prog.innerHTML = STEPS.map(() => '<i class="on"></i>').join('');
+      stepno.textContent = '';
+      const first = esc(String(S.name || '').trim().split(/\s+/)[0]);
+      body.innerHTML = ok
+        ? `<div class="intake-done"><div class="big" aria-hidden="true">💛</div><h4>תודה${first ? `, ${first}` : ''}!</h4><p>קיבלתי את כל הפרטים, ואחזור אליכם בוואטסאפ תוך 24 שעות.</p><a class="btn btn-outline" href="${esc(waLink())}" target="_blank" rel="noopener">רוצים לדבר כבר עכשיו? לוואטסאפ</a></div>`
+        : `<div class="intake-done"><h4>${tooMany ? 'כבר קיבלתי מכם פנייה ממש עכשיו' : 'משהו השתבש בשליחה'}</h4><p>${tooMany ? 'אם תרצו להוסיף משהו,' : 'כדי שהתשובות לא ילכו לאיבוד,'} שלחו לי אותן בלחיצה בוואטסאפ:</p><a class="btn btn-yellow" href="${esc(waLink())}" target="_blank" rel="noopener">שליחת התשובות בוואטסאפ</a></div>`;
+      nav.hidden = true;
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    const submit = async () => {
+      next.disabled = true;
+      next.textContent = 'שולח...';
+      const data = new URLSearchParams();
+      data.set('form-name', 'trip-planning');
+      data.set('hp_field', (form.elements.namedItem('hp_field') as HTMLInputElement).value);
+      answers().forEach(([q, v]) => data.set(q.key || q.t, v));
+      try { const p = JSON.parse(localStorage.getItem('mj_partner') || 'null'); if (p && p.until > Date.now()) data.set('partner', p.code); } catch { /* ignore */ }
+      try {
+        const res = await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: data.toString() });
+        if (res.status === 429) return done(false, true);
+        if (!res.ok) throw new Error(String(res.status));
+        (window as any).gtag?.('event', 'generate_lead', { form_name: 'trip-planning' });
+        try { sessionStorage.removeItem(STORE); } catch { /* ignore */ }
+        done(true);
+      } catch {
+        done(false);
+      } finally {
+        next.disabled = false;
+      }
+    };
+
+    body.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('.chip');
+      if (!b) return;
+      const id = b.dataset.id!, v = b.dataset.v!, q = all.find((x) => x.id === id)!;
+      if (q.type === 'one') S[id] = S[id] === v ? undefined : v;
+      else {
+        let a: string[] = S[id] || [];
+        if (a.includes(v)) a = a.filter((x) => x !== v);
+        else a = ALONE.includes(v) ? [v] : a.filter((x) => !ALONE.includes(x)).concat(v);
+        S[id] = a;
+      }
+      const y = window.scrollY;
+      render();
+      window.scrollTo(0, y);
+      form.querySelector<HTMLButtonElement>(`.chip[data-id="${id}"][data-v="${CSS.escape(v)}"]`)?.focus({ preventScroll: true });
+    });
+    body.addEventListener('input', (e) => {
+      const el = e.target as HTMLInputElement;
+      if (el.dataset.id) { S[el.dataset.id] = el.value; save(); }
+    });
+    form.addEventListener('submit', (e) => e.preventDefault());
+    next.addEventListener('click', () => {
+      if (!check()) return;
+      if (cur === STEPS.length - 1) { submit(); return; }
+      cur++;
+      render();
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    back.addEventListener('click', () => {
+      if (cur === 0) return;
+      cur--;
+      render();
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    render();
+  }
+</script>
