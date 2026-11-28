@@ -9,7 +9,7 @@ import { guides, isDraft } from './src/data/guides.ts';
 import { tours } from './src/data/tours.ts';
 
 // Pages Google should not index (also kept out of the sitemap).
-const hidden = ['/booking/', '/en/booking/', '/payment/', '/en/payment/', '/404/', ...guides.filter(isDraft).map((g) => `/guides/${g.slug}/`)];
+const hidden = ['/form/', '/booking/', '/en/booking/', '/payment/', '/en/payment/', '/404/', ...guides.filter(isDraft).map((g) => `/guides/${g.slug}/`)];
 
 /** After the build: mark new-tab links for screen readers, and give every <img src="/images/..."> its real width/height (less layout jumping = better Core Web Vitals)
  *  and a srcset with the small copy, so phones download smaller photos. */
